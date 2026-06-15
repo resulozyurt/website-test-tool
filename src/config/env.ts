@@ -19,9 +19,12 @@ const EnvSchema = z.object({
   PROXY_AE: z.string().optional(),
   PROXY_TR: z.string().optional(),
 
-  // --- Owner allowlist header (lets the monitor through the bot challenge) ---
+  // --- Owner allowlist overrides (let the monitor through the bot challenge) ---
   MONITOR_HEADER_NAME: z.string().optional(),
   MONITOR_HEADER_VALUE: z.string().optional(),
+  // The Kinsta-allowlisted user-agent; the currently used method. Sent ONLY to
+  // the target host (see src/runner/browser.ts) so the token never leaks.
+  MONITOR_USER_AGENT: z.string().optional(),
 
   // --- Runtime tuning ---
   SETTLE_MS: z.coerce.number().int().positive().default(4000),

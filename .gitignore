@@ -8,6 +8,9 @@ node_modules/
 # Generated PoC output (screenshots + report)
 poc-output/
 
+# Generated runner output (screenshots)
+runner-output/
+
 # Build artifacts
 dist/
 
