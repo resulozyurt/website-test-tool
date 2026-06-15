@@ -1,0 +1,23 @@
+{
+  "name": "website-test-tool",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Independent geo/locale monitoring and testing harness for fieldpie.com.",
+  "type": "module",
+  "scripts": {
+    "poc": "tsx src/poc.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "playwright": "^1.49.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}

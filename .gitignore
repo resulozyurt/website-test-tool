@@ -1,0 +1,16 @@
+# Dependencies
+node_modules/
+
+# Secrets and local environment
+.env
+.env.local
+
+# Generated PoC output (screenshots + report)
+poc-output/
+
+# Build artifacts
+dist/
+
+# OS / editor noise
+.DS_Store
+*.log
