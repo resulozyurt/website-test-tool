@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import type { Page, Response } from "playwright";
+import type { BrowserContext, Page, Response } from "playwright";
 
 /** Cache and locale signals read from the main document response headers. */
 export interface CacheSignals {
@@ -8,6 +8,13 @@ export interface CacheSignals {
   cfCacheStatus: string | null;
   contentLanguage: string | null;
   server: string | null;
+}
+
+/** The IP and country the proxy actually exited from. */
+export interface ExitInfo {
+  ip: string | null;
+  country: string | null;
+  error: string | null;
 }
 
 /** Content markers extracted from the rendered DOM. */
@@ -23,6 +30,48 @@ export interface ContentMarkers {
   turkishDetected: boolean;
   /** Stable hash of the locale-relevant content, used for cross-country diffing. */
   fingerprint: string;
+}
+
+/**
+ * Asks an external IP service, through the same proxy context, which IP and
+ * country the request exits from. This is how we confirm whether the AE proxy
+ * really lands in AE and which IP the TR request used.
+ */
+export async function getExitInfo(context: BrowserContext): Promise<ExitInfo> {
+  try {
+    const res = await context.request.get(
+      "http://ip-api.com/json/?fields=status,country,countryCode,query",
+      { timeout: 20000 },
+    );
+    const data = (await res.json()) as {
+      query?: string;
+      countryCode?: string;
+    };
+    return {
+      ip: data.query ?? null,
+      country: data.countryCode ?? null,
+      error: null,
+    };
+  } catch (err) {
+    return {
+      ip: null,
+      country: null,
+      error: err instanceof Error ? err.message : String(err),
+    };
+  }
+}
+
+/** Heuristic: does this response body look like a Cloudflare/WAF block page? */
+export function looksLikeBlockPage(body: string): boolean {
+  const t = body.toLowerCase();
+  return (
+    t.includes("cloudflare") ||
+    t.includes("attention required") ||
+    t.includes("you have been blocked") ||
+    t.includes("access denied") ||
+    t.includes("ray id") ||
+    t.includes("error 1020")
+  );
 }
 
 /** Reads the headers that tell us whether the response was cached and localized. */
@@ -55,9 +104,7 @@ export async function extractMarkers(page: Page): Promise<ContentMarkers> {
       document.querySelector("h1")?.textContent?.trim() ?? "";
 
     // Detect call-to-action buttons by their visible text.
-    const buttonText = Array.from(
-      document.querySelectorAll("a, button"),
-    )
+    const buttonText = Array.from(document.querySelectorAll("a, button"))
       .map((el) => (el.textContent ?? "").trim().toLowerCase())
       .join(" | ");
 
@@ -73,7 +120,7 @@ export async function extractMarkers(page: Page): Promise<ContentMarkers> {
   const hasBookDemo = raw.buttonText.includes("book a demo");
 
   // Currency symbols that distinguish market pricing.
-  const currencySymbols = ["$", "₺", "AED", "€", "£"].filter((sym) =>
+  const currencySymbols = ["$", "TRY", "AED", "EUR", "GBP"].filter((sym) =>
     raw.bodyText.includes(sym),
   );
 
@@ -85,8 +132,8 @@ export async function extractMarkers(page: Page): Promise<ContentMarkers> {
 
   // Turkish-specific characters and a few common Turkish words.
   const turkishDetected =
-    /[çğıöşü]/i.test(raw.bodyText) ||
-    /\b(ücretsiz|deneme|fiyat|iletişim|başla)\b/i.test(raw.bodyText);
+    /[\u00e7\u011f\u0131\u00f6\u015f\u00fc]/i.test(raw.bodyText) ||
+    /\b(ucretsiz|deneme|fiyat|iletisim|basla)\b/i.test(raw.bodyText);
 
   const fingerprintSource = [
     raw.htmlLang,

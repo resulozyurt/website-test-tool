@@ -3,34 +3,123 @@ import { join } from "node:path";
 import "dotenv/config";
 import { chromium } from "playwright";
 import { MARKETS, type Market } from "./markets.js";
-import { getProxyConfig } from "./proxy.js";
+import { getProxyConfig, type ProxyConfig } from "./proxy.js";
 import {
   extractMarkers,
+  getExitInfo,
+  looksLikeBlockPage,
   readCacheSignals,
   type CacheSignals,
   type ContentMarkers,
+  type ExitInfo,
 } from "./checks.js";
 
 const OUTPUT_DIR = "poc-output";
 const SETTLE_MS = Number(process.env.SETTLE_MS ?? 4000);
 const NAV_TIMEOUT_MS = Number(process.env.NAV_TIMEOUT_MS ?? 45000);
+const DEFAULT_BASE_URL = "https://www.fieldpie.com";
+
+/** One visit attempt through a specific proxy variant. */
+interface Attempt {
+  variant: "configured" | "fresh-session";
+  exit: ExitInfo;
+  cache: CacheSignals | null;
+  markers: ContentMarkers | null;
+  blockDetected: boolean;
+  bodySnippet: string | null;
+  screenshot: string | null;
+  error: string | null;
+}
 
 interface MarketResult {
   country: string;
   expectedLanguage: string;
   url: string;
   proxyConfigured: boolean;
-  error: string | null;
-  cache: CacheSignals | null;
-  markers: ContentMarkers | null;
-  screenshot: string | null;
+  attempts: Attempt[];
   /** True when a non-TR market unexpectedly served Turkish content. */
   silentTurkishFallback: boolean;
 }
 
-/** Visits a single market through its country proxy and captures all signals. */
+function emptyAttempt(variant: Attempt["variant"], error: string | null): Attempt {
+  return {
+    variant,
+    exit: { ip: null, country: null, error: null },
+    cache: null,
+    markers: null,
+    blockDetected: false,
+    bodySnippet: null,
+    screenshot: null,
+    error,
+  };
+}
+
+/**
+ * DataImpulse pins a sticky IP via ";sessid.<id>" in the username. Replacing the
+ * id (or appending one) forces a different exit IP, which lets us tell whether a
+ * block is specific to one IP or affects the whole country pool.
+ */
+function withFreshSession(proxy: ProxyConfig): ProxyConfig {
+  if (!proxy.username) {
+    return proxy;
+  }
+  const token = `r${Math.random().toString(36).slice(2, 10)}`;
+  const hasSession = /;sessid\.[^;]+/.test(proxy.username);
+  const username = hasSession
+    ? proxy.username.replace(/;sessid\.[^;]+/, `;sessid.${token}`)
+    : `${proxy.username};sessid.${token}`;
+  return { ...proxy, username };
+}
+
+/** Runs a single visit attempt and captures every signal. */
+async function runAttempt(
+  market: Market,
+  url: string,
+  proxy: ProxyConfig,
+  variant: Attempt["variant"],
+): Promise<Attempt> {
+  const attempt = emptyAttempt(variant, null);
+  const browser = await chromium.launch({ proxy });
+  try {
+    const context = await browser.newContext({
+      locale: "en-US",
+      viewport: { width: 1366, height: 900 },
+    });
+
+    // Confirm the real exit IP and country first (same sticky session).
+    attempt.exit = await getExitInfo(context);
+
+    const page = await context.newPage();
+    const response = await page.goto(url, {
+      waitUntil: "domcontentloaded",
+      timeout: NAV_TIMEOUT_MS,
+    });
+    await page.waitForTimeout(SETTLE_MS);
+
+    attempt.cache = readCacheSignals(response);
+    attempt.markers = await extractMarkers(page);
+
+    const status = response?.status() ?? 0;
+    if (status !== 200 && response) {
+      const body = await response.text();
+      attempt.blockDetected = looksLikeBlockPage(body);
+      attempt.bodySnippet = body.slice(0, 300).replace(/\s+/g, " ").trim();
+    }
+
+    const screenshotPath = join(OUTPUT_DIR, `${market.country}-${variant}.png`);
+    await page.screenshot({ path: screenshotPath, fullPage: true });
+    attempt.screenshot = screenshotPath;
+  } catch (err) {
+    attempt.error = err instanceof Error ? err.message : String(err);
+  } finally {
+    await browser.close();
+  }
+  return attempt;
+}
+
+/** Visits a market; retries once with a fresh IP if the first attempt is not 200. */
 async function visitMarket(market: Market): Promise<MarketResult> {
-  const baseUrl = process.env.TARGET_BASE_URL ?? "https://fieldpie.com";
+  const baseUrl = process.env.TARGET_BASE_URL ?? DEFAULT_BASE_URL;
   const url = new URL(market.path, baseUrl).toString();
   const proxy = getProxyConfig(market);
 
@@ -39,88 +128,89 @@ async function visitMarket(market: Market): Promise<MarketResult> {
     expectedLanguage: market.expectedLanguage,
     url,
     proxyConfigured: proxy !== null,
-    error: null,
-    cache: null,
-    markers: null,
-    screenshot: null,
+    attempts: [],
     silentTurkishFallback: false,
   };
 
   if (!proxy) {
-    result.error = `No proxy configured for ${market.country} (set ${market.proxyEnvKey}).`;
+    result.attempts.push(
+      emptyAttempt(
+        "configured",
+        `No proxy configured for ${market.country} (set ${market.proxyEnvKey}).`,
+      ),
+    );
     return result;
   }
 
-  const browser = await chromium.launch({ proxy });
-  try {
-    const context = await browser.newContext({
-      locale: "en-US",
-      viewport: { width: 1366, height: 900 },
-    });
-    const page = await context.newPage();
+  const first = await runAttempt(market, url, proxy, "configured");
+  result.attempts.push(first);
 
-    const response = await page.goto(url, {
-      waitUntil: "domcontentloaded",
-      timeout: NAV_TIMEOUT_MS,
-    });
-    await page.waitForTimeout(SETTLE_MS);
+  const firstStatus = first.cache?.httpStatus ?? 0;
+  if (firstStatus !== 200 || first.error) {
+    const second = await runAttempt(
+      market,
+      url,
+      withFreshSession(proxy),
+      "fresh-session",
+    );
+    result.attempts.push(second);
+  }
 
-    result.cache = readCacheSignals(response);
-    result.markers = await extractMarkers(page);
-
-    // A non-TR market that renders Turkish (lang=tr or Turkish text) indicates
-    // the "silent fallback to TR" failure we explicitly want to catch.
-    if (market.country !== "TR" && result.markers) {
-      result.silentTurkishFallback =
-        result.markers.htmlLang.toLowerCase().startsWith("tr") ||
-        result.markers.turkishDetected;
-    }
-
-    const screenshotPath = join(OUTPUT_DIR, `${market.country}.png`);
-    await page.screenshot({ path: screenshotPath, fullPage: true });
-    result.screenshot = screenshotPath;
-  } catch (err) {
-    result.error = err instanceof Error ? err.message : String(err);
-  } finally {
-    await browser.close();
+  // Evaluate the silent-Turkish-fallback flag on the best available attempt.
+  const ok =
+    result.attempts.find((a) => a.cache?.httpStatus === 200) ??
+    result.attempts[0];
+  if (market.country !== "TR" && ok?.markers) {
+    result.silentTurkishFallback =
+      ok.markers.htmlLang.toLowerCase().startsWith("tr") ||
+      ok.markers.turkishDetected;
   }
 
   return result;
 }
 
-/** Prints a compact human-readable summary to the console. */
+function printAttempt(market: MarketResult, a: Attempt): void {
+  console.log(`  -- attempt: ${a.variant}`);
+  if (a.error) {
+    console.log(`     ERROR: ${a.error}`);
+  }
+  console.log(`     exit IP/country: ${a.exit.ip ?? "?"} / ${a.exit.country ?? "?"}`);
+  if (a.exit.country && a.exit.country !== market.country) {
+    console.log(`     >> WARNING: exited from ${a.exit.country}, expected ${market.country}`);
+  }
+  console.log(`     HTTP:           ${a.cache?.httpStatus ?? "(none)"}`);
+  console.log(`     x-kinsta-cache: ${a.cache?.kinstaCache ?? "(absent)"}`);
+  console.log(`     html lang:      ${a.markers?.htmlLang || "(none)"}`);
+  console.log(`     CTA:            trial=${a.markers?.hasStartFreeTrial} demo=${a.markers?.hasBookDemo}`);
+  console.log(`     phone:          ${a.markers?.phoneNumbers.join(", ") || "(none)"}`);
+  console.log(`     fingerprint:    ${a.markers?.fingerprint ?? "(none)"}`);
+  if (a.blockDetected) {
+    console.log("     >> looks like a block page (Cloudflare/WAF)");
+  }
+  if (a.bodySnippet) {
+    console.log(`     body: ${a.bodySnippet}`);
+  }
+}
+
 function printSummary(results: MarketResult[]): void {
   console.log("\n=== Phase 0 verification summary ===\n");
   for (const r of results) {
     console.log(`[${r.country}] ${r.url}`);
-    if (r.error) {
-      console.log(`  ERROR: ${r.error}\n`);
-      continue;
+    for (const a of r.attempts) {
+      printAttempt(r, a);
     }
-    console.log(`  HTTP:           ${r.cache?.httpStatus}`);
-    console.log(`  x-kinsta-cache: ${r.cache?.kinstaCache ?? "(absent)"}`);
-    console.log(`  cf-cache-status:${r.cache?.cfCacheStatus ?? "(absent)"}`);
-    console.log(`  html lang:      ${r.markers?.htmlLang || "(none)"}`);
-    console.log(`  CTA:            trial=${r.markers?.hasStartFreeTrial} demo=${r.markers?.hasBookDemo}`);
-    console.log(`  currency:       ${r.markers?.currencySymbols.join(", ") || "(none)"}`);
-    console.log(`  phone:          ${r.markers?.phoneNumbers.join(", ") || "(none)"}`);
-    console.log(`  fingerprint:    ${r.markers?.fingerprint}`);
     if (r.silentTurkishFallback) {
       console.log("  >> WARNING: silent Turkish fallback detected!");
     }
     console.log("");
   }
 
-  // Cross-country differentiation: distinct fingerprints mean the cache served
-  // different content per country, which is what we expect.
-  const fingerprints = results
-    .filter((r) => r.markers)
-    .map((r) => r.markers!.fingerprint);
-  const uniqueCount = new Set(fingerprints).size;
-  console.log(`Distinct content fingerprints: ${uniqueCount} of ${fingerprints.length}`);
-  if (fingerprints.length > 1 && uniqueCount === 1) {
-    console.log(">> WARNING: all countries returned identical content (cache not differentiating).");
-  }
+  // Cross-country differentiation across the successful (200) attempts.
+  const okFingerprints = results
+    .map((r) => r.attempts.find((a) => a.cache?.httpStatus === 200)?.markers?.fingerprint)
+    .filter((fp): fp is string => Boolean(fp));
+  const uniqueCount = new Set(okFingerprints).size;
+  console.log(`Distinct content fingerprints (200 only): ${uniqueCount} of ${okFingerprints.length}`);
   console.log("\nFull details written to poc-output/report.json\n");
 }
 
@@ -135,7 +225,7 @@ async function main(): Promise<void> {
 
   const report = {
     generatedAt: new Date().toISOString(),
-    target: process.env.TARGET_BASE_URL ?? "https://fieldpie.com",
+    target: process.env.TARGET_BASE_URL ?? DEFAULT_BASE_URL,
     results,
   };
   await writeFile(
