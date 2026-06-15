@@ -1,21 +1,26 @@
 /**
- * PROD lane sweep runner core (Phase 2, Step 1).
+ * PROD lane sweep runner (Phase 2, Step 2).
  *
- * Drives the seeded test matrix (active markets x active pages) against the
- * production environment, captures real signals through each country proxy, and
- * persists one `runs` row per market+page visit under a single `sweeps` row.
+ * Two passes:
+ *   1. Capture every active market x page through its country proxy.
+ *   2. Run deterministic checks (incl. sweep-level cross-country), persist a
+ *      run + its checks, and derive the run/sweep status from the checks.
  *
- * The per-run status here is PROVISIONAL (http 200 and not a block page ->
- * pass; otherwise fail/error). Step 2 replaces this with a status aggregated
- * from deterministic `checks`. Runs are persisted independently (no outer
- * transaction) so a crash on one market still leaves the others recorded.
+ * Runs are persisted independently so a crash on one market still leaves the
+ * others recorded.
  *
  * Usage: npm run sweep
  */
 
 import { mkdir } from "node:fs/promises";
 import { join } from "node:path";
-import type { RunStatus, SweepStatus } from "../types.js";
+import type {
+  CountryCode,
+  ExpectationSet,
+  LanguageCode,
+  RunStatus,
+  SweepStatus,
+} from "../types.js";
 import { closePool } from "../db/client.js";
 import {
   createRun,
@@ -23,11 +28,19 @@ import {
   finishRun,
   finishSweep,
   getEnvironmentByKey,
+  insertCheck,
   listMarkets,
   listPages,
 } from "../db/repository.js";
+import { resolveExpectations } from "../config/expectations.js";
 import { capturePage, type CaptureResult } from "./capture.js";
 import { proxyEnvKey, resolveProxy } from "./proxy.js";
+import {
+  aggregateRunStatus,
+  crossCountryCheck,
+  fingerprintKey,
+  runDeterministicChecks,
+} from "./checks.js";
 
 const STATUS_RANK: Record<RunStatus, number> = {
   pass: 0,
@@ -36,21 +49,19 @@ const STATUS_RANK: Record<RunStatus, number> = {
   error: 3,
 };
 
+/** A captured run held in memory between pass 1 and pass 2. */
+interface CapturedRun {
+  runId: number;
+  country: CountryCode;
+  language: LanguageCode;
+  pageKey: string;
+  capture: CaptureResult;
+  expectation: ExpectationSet;
+}
+
 /** Returns the worse (higher-severity) of two run statuses. */
 function worse(a: RunStatus, b: RunStatus): RunStatus {
   return STATUS_RANK[b] > STATUS_RANK[a] ? b : a;
-}
-
-/** Provisional run status until the Step 2 check engine takes over. */
-function provisionalStatus(capture: CaptureResult): RunStatus {
-  if (capture.error) {
-    return "error";
-  }
-  const http = capture.cache?.httpStatus ?? 0;
-  if (http !== 200 || capture.blockDetected) {
-    return "fail";
-  }
-  return "pass";
 }
 
 function rollUp(worstRun: RunStatus): SweepStatus {
@@ -61,6 +72,14 @@ function rollUp(worstRun: RunStatus): SweepStatus {
     return "warn";
   }
   return "pass";
+}
+
+function isHealthy(capture: CaptureResult): boolean {
+  return (
+    !capture.error &&
+    capture.cache?.httpStatus === 200 &&
+    !capture.blockDetected
+  );
 }
 
 async function main(): Promise<void> {
@@ -87,6 +106,8 @@ async function main(): Promise<void> {
 
   let worstRun: RunStatus = "pass";
 
+  // --- Pass 1: capture every market x page ---------------------------------
+  const captured: CapturedRun[] = [];
   for (const market of markets) {
     const proxy = resolveProxy(market.countryCode);
 
@@ -108,13 +129,17 @@ async function main(): Promise<void> {
       });
 
       if (!proxy) {
-        await finishRun(runRow.id, {
-          status: "error",
-          error: `No proxy configured (set ${proxyEnvKey(market.countryCode)}).`,
+        const message = `No proxy configured (set ${proxyEnvKey(market.countryCode)}).`;
+        await finishRun(runRow.id, { status: "error", error: message });
+        await insertCheck(runRow.id, {
+          type: "http_health",
+          severity: "critical",
+          status: "fail",
+          expected: "reachable",
+          actual: null,
+          message,
         });
-        console.log(
-          `run #${runRow.id} ${market.countryCode}/${page.pageKey} -> error (no proxy)`,
-        );
+        console.log(`run #${runRow.id} ${market.countryCode}/${page.pageKey} -> error (no proxy)`);
         worstRun = worse(worstRun, "error");
         continue;
       }
@@ -123,7 +148,6 @@ async function main(): Promise<void> {
         outputDir,
         `${market.countryCode}-${market.language}-${page.pageKey}.png`,
       );
-
       const capture = await capturePage({
         url,
         country: market.countryCode,
@@ -131,31 +155,88 @@ async function main(): Promise<void> {
         screenshotPath,
       });
 
-      const status = provisionalStatus(capture);
-      await finishRun(runRow.id, {
-        status,
-        exitIp: capture.exit.ip,
-        exitCountry: capture.exit.country,
-        httpStatus: capture.cache?.httpStatus ?? null,
-        kinstaCache: capture.cache?.kinstaCache ?? null,
-        cfCacheStatus: capture.cache?.cfCacheStatus ?? null,
-        contentLanguage: capture.cache?.contentLanguage ?? null,
-        screenshotKey: capture.screenshotPath,
-        rawHeaders: capture.rawHeaders,
-        consoleErrors:
-          capture.consoleErrors.length > 0 ? capture.consoleErrors : null,
-        networkErrors:
-          capture.networkErrors.length > 0 ? capture.networkErrors : null,
-        error: capture.error,
+      captured.push({
+        runId: runRow.id,
+        country: market.countryCode,
+        language: market.language,
+        pageKey: page.pageKey,
+        capture,
+        expectation: resolveExpectations(
+          market.countryCode,
+          market.language,
+          page.pageKey,
+        ),
       });
-
-      console.log(
-        `run #${runRow.id} ${market.countryCode}/${market.language}/${page.pageKey} -> ${status} ` +
-          `(http=${capture.cache?.httpStatus ?? "?"}, exit=${capture.exit.country ?? "?"}, ` +
-          `lang=${capture.markers?.htmlLang || "?"}, kinsta=${capture.cache?.kinstaCache ?? "-"})`,
-      );
-      worstRun = worse(worstRun, status);
     }
+  }
+
+  // Fingerprints from healthy captures only (don't compare against error pages).
+  const fingerprints = new Map<string, string>();
+  for (const item of captured) {
+    const fp = item.capture.markers?.fingerprint;
+    if (fp && isHealthy(item.capture)) {
+      fingerprints.set(fingerprintKey(item.pageKey, item.country), fp);
+    }
+  }
+
+  // --- Pass 2: check, persist, and derive status ---------------------------
+  for (const item of captured) {
+    const checks = runDeterministicChecks(item.capture, item.expectation);
+    const cross = crossCountryCheck(
+      item.country,
+      item.pageKey,
+      item.expectation,
+      fingerprints,
+    );
+    if (cross) {
+      checks.push(cross);
+    }
+
+    const status = aggregateRunStatus(item.capture, checks);
+    const { capture } = item;
+
+    await finishRun(item.runId, {
+      status,
+      exitIp: capture.exit.ip,
+      exitCountry: capture.exit.country,
+      httpStatus: capture.cache?.httpStatus ?? null,
+      kinstaCache: capture.cache?.kinstaCache ?? null,
+      cfCacheStatus: capture.cache?.cfCacheStatus ?? null,
+      contentLanguage: capture.cache?.contentLanguage ?? null,
+      screenshotKey: capture.screenshotPath,
+      rawHeaders: capture.rawHeaders,
+      consoleErrors:
+        capture.consoleErrors.length > 0 ? capture.consoleErrors : null,
+      networkErrors:
+        capture.networkErrors.length > 0 ? capture.networkErrors : null,
+      error: capture.error,
+    });
+
+    for (const c of checks) {
+      await insertCheck(
+        item.runId,
+        {
+          type: c.type,
+          severity: c.severity,
+          status: c.status,
+          expected: c.expected,
+          actual: c.actual,
+          message: c.message,
+        },
+        c.evidence ?? null,
+      );
+    }
+
+    const failed = checks.filter((c) => c.status !== "pass");
+    const tail = failed.length
+      ? ` [${failed.map((c) => `${c.type}:${c.status}`).join(", ")}]`
+      : "";
+    console.log(
+      `run #${item.runId} ${item.country}/${item.language}/${item.pageKey} -> ${status}` +
+        ` (http=${capture.cache?.httpStatus ?? "?"}, exit=${capture.exit.country ?? "?"}, ` +
+        `lang=${capture.markers?.htmlLang || "?"}, kinsta=${capture.cache?.kinstaCache ?? "-"})${tail}`,
+    );
+    worstRun = worse(worstRun, status);
   }
 
   const sweepStatus = rollUp(worstRun);
