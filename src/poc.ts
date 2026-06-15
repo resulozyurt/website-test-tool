@@ -1,7 +1,7 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import "dotenv/config";
-import { chromium } from "playwright";
+import { chromium, type BrowserContext } from "playwright";
 import { MARKETS, type Market } from "./markets.js";
 import { getProxyConfig, type ProxyConfig } from "./proxy.js";
 import {
@@ -18,6 +18,15 @@ const OUTPUT_DIR = "poc-output";
 const SETTLE_MS = Number(process.env.SETTLE_MS ?? 4000);
 const NAV_TIMEOUT_MS = Number(process.env.NAV_TIMEOUT_MS ?? 45000);
 const DEFAULT_BASE_URL = "https://www.fieldpie.com";
+
+// Optional owner allowlist overrides, matched by a rule on the site owner's
+// side (Kinsta/Cloudflare) so this monitor is recognized and let through the
+// bot challenge. Both are sent ONLY to the target host so the secret value /
+// identifying token never leaks to third parties.
+const MONITOR_HEADER_NAME = (process.env.MONITOR_HEADER_NAME ?? "").trim();
+const MONITOR_HEADER_VALUE = (process.env.MONITOR_HEADER_VALUE ?? "").trim();
+const MONITOR_USER_AGENT = (process.env.MONITOR_USER_AGENT ?? "").trim();
+const TARGET_HOST_SUFFIX = "fieldpie.com";
 
 /** One visit attempt through a specific proxy variant. */
 interface Attempt {
@@ -71,6 +80,39 @@ function withFreshSession(proxy: ProxyConfig): ProxyConfig {
   return { ...proxy, username };
 }
 
+/**
+ * Adds the allowlist header and/or custom user-agent to requests aimed at the
+ * target host only. No-op when neither is configured.
+ */
+async function attachMonitorOverrides(context: BrowserContext): Promise<void> {
+  const hasHeader = Boolean(MONITOR_HEADER_NAME && MONITOR_HEADER_VALUE);
+  const hasUserAgent = Boolean(MONITOR_USER_AGENT);
+  if (!hasHeader && !hasUserAgent) {
+    return;
+  }
+  await context.route("**/*", async (route) => {
+    const request = route.request();
+    let host = "";
+    try {
+      host = new URL(request.url()).hostname;
+    } catch {
+      host = "";
+    }
+    if (host.endsWith(TARGET_HOST_SUFFIX)) {
+      const headers = { ...request.headers() };
+      if (hasHeader) {
+        headers[MONITOR_HEADER_NAME.toLowerCase()] = MONITOR_HEADER_VALUE;
+      }
+      if (hasUserAgent) {
+        headers["user-agent"] = MONITOR_USER_AGENT;
+      }
+      await route.continue({ headers });
+    } else {
+      await route.continue();
+    }
+  });
+}
+
 /** Runs a single visit attempt and captures every signal. */
 async function runAttempt(
   market: Market,
@@ -86,8 +128,12 @@ async function runAttempt(
       viewport: { width: 1366, height: 900 },
     });
 
-    // Confirm the real exit IP and country first (same sticky session).
+    // Confirm the real exit IP and country first (this uses the API request
+    // context, which is not affected by the page route, so the secret values
+    // are never sent to the IP service).
     attempt.exit = await getExitInfo(context);
+
+    await attachMonitorOverrides(context);
 
     const page = await context.newPage();
     const response = await page.goto(url, {
@@ -205,7 +251,6 @@ function printSummary(results: MarketResult[]): void {
     console.log("");
   }
 
-  // Cross-country differentiation across the successful (200) attempts.
   const okFingerprints = results
     .map((r) => r.attempts.find((a) => a.cache?.httpStatus === 200)?.markers?.fingerprint)
     .filter((fp): fp is string => Boolean(fp));
