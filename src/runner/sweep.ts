@@ -1,13 +1,9 @@
 /**
- * PROD lane sweep runner (Phase 2, Step 2).
+ * PROD lane sweep runner (Phase 2, Step 3 -- phase complete).
  *
- * Two passes:
- *   1. Capture every active market x page through its country proxy.
- *   2. Run deterministic checks (incl. sweep-level cross-country), persist a
- *      run + its checks, and derive the run/sweep status from the checks.
- *
- * Runs are persisted independently so a crash on one market still leaves the
- * others recorded.
+ * Two passes: capture every active market x page, then run deterministic +
+ * cross-country + passive-security + non-submitting-interaction checks, persist
+ * the run and its checks, and derive run/sweep status from the checks.
  *
  * Usage: npm run sweep
  */
@@ -33,6 +29,7 @@ import {
   listPages,
 } from "../db/repository.js";
 import { resolveExpectations } from "../config/expectations.js";
+import { resolveInteractions } from "../config/interactions.js";
 import { capturePage, type CaptureResult } from "./capture.js";
 import { proxyEnvKey, resolveProxy } from "./proxy.js";
 import {
@@ -41,6 +38,8 @@ import {
   fingerprintKey,
   runDeterministicChecks,
 } from "./checks.js";
+import { interactionChecks } from "./interaction.js";
+import { runSecurityChecks } from "./security.js";
 
 const STATUS_RANK: Record<RunStatus, number> = {
   pass: 0,
@@ -49,7 +48,6 @@ const STATUS_RANK: Record<RunStatus, number> = {
   error: 3,
 };
 
-/** A captured run held in memory between pass 1 and pass 2. */
 interface CapturedRun {
   runId: number;
   country: CountryCode;
@@ -59,7 +57,6 @@ interface CapturedRun {
   expectation: ExpectationSet;
 }
 
-/** Returns the worse (higher-severity) of two run statuses. */
 function worse(a: RunStatus, b: RunStatus): RunStatus {
   return STATUS_RANK[b] > STATUS_RANK[a] ? b : a;
 }
@@ -153,6 +150,7 @@ async function main(): Promise<void> {
         country: market.countryCode,
         proxy,
         screenshotPath,
+        steps: resolveInteractions(page.pageKey),
       });
 
       captured.push({
@@ -170,7 +168,7 @@ async function main(): Promise<void> {
     }
   }
 
-  // Fingerprints from healthy captures only (don't compare against error pages).
+  // Fingerprints from healthy captures only.
   const fingerprints = new Map<string, string>();
   for (const item of captured) {
     const fp = item.capture.markers?.fingerprint;
@@ -179,9 +177,10 @@ async function main(): Promise<void> {
     }
   }
 
-  // --- Pass 2: check, persist, and derive status ---------------------------
+  // --- Pass 2: check, persist, derive status -------------------------------
   for (const item of captured) {
     const checks = runDeterministicChecks(item.capture, item.expectation);
+
     const cross = crossCountryCheck(
       item.country,
       item.pageKey,
@@ -191,6 +190,11 @@ async function main(): Promise<void> {
     if (cross) {
       checks.push(cross);
     }
+
+    checks.push(...runSecurityChecks(item.capture));
+    checks.push(
+      ...interactionChecks(item.capture.interactions, item.capture.blockedWrites),
+    );
 
     const status = aggregateRunStatus(item.capture, checks);
     const { capture } = item;

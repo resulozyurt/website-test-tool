@@ -1,12 +1,19 @@
 import { chromium, type Browser, type BrowserContext } from "playwright";
 import { env } from "../config/env.js";
 import type { ProxyConfig } from "./proxy.js";
+import type { BlockedWrite } from "./interaction.js";
 
 const MONITOR_USER_AGENT = (env.MONITOR_USER_AGENT ?? "").trim();
 const MONITOR_HEADER_NAME = (env.MONITOR_HEADER_NAME ?? "").trim();
 const MONITOR_HEADER_VALUE = (env.MONITOR_HEADER_VALUE ?? "").trim();
 
-/** Registrable host the monitor overrides are scoped to (e.g. "fieldpie.com"). */
+/** Monitor identifiers that must never appear in served content (leak canary). */
+export const MONITOR_TOKENS: string[] = [
+  MONITOR_USER_AGENT,
+  MONITOR_HEADER_VALUE,
+].filter((t) => t.length > 0);
+
+/** Registrable host the monitor overrides + guard are scoped to. */
 const TARGET_HOST_SUFFIX = hostSuffix(env.TARGET_BASE_URL);
 
 function hostSuffix(baseUrl: string): string {
@@ -17,57 +24,79 @@ function hostSuffix(baseUrl: string): string {
   }
 }
 
+function hostOf(url: string): string {
+  try {
+    return new URL(url).hostname;
+  } catch {
+    return "";
+  }
+}
+
+/**
+ * Read-only guard. When `active` is true, any non-GET/HEAD request to the
+ * target host is aborted at the network layer so no write can reach the live
+ * site. Toggled on only during the interaction phase (see capture.ts).
+ */
+export interface ReadOnlyGuard {
+  active: boolean;
+  blockedWrites: BlockedWrite[];
+}
+
 export interface LaunchedContext {
   browser: Browser;
   context: BrowserContext;
 }
 
 /**
- * Launches a Chromium browser routed through the given proxy and returns a
- * fresh context configured like a real desktop visitor. The owner allowlist
- * user-agent and/or header (which let the monitor through the Cloudflare bot
- * challenge) are attached ONLY to requests aimed at the target host, so the
- * identifying token never leaks to third parties (IP service, analytics, etc.).
+ * Launches Chromium through the given proxy and returns a fresh desktop-like
+ * context. The allowlist user-agent/header are attached only to target-host
+ * requests (the token never leaks to third parties), and the optional guard
+ * blocks writes to the target host while it is active.
  */
 export async function launchContext(
   proxy: ProxyConfig,
+  guard?: ReadOnlyGuard,
 ): Promise<LaunchedContext> {
   const browser = await chromium.launch({ proxy });
   const context = await browser.newContext({
     locale: "en-US",
     viewport: { width: 1366, height: 900 },
   });
-  await attachMonitorOverrides(context);
+  await attachRoutes(context, guard);
   return { browser, context };
 }
 
-/**
- * Adds the allowlist header and/or custom user-agent to requests aimed at the
- * target host only. No-op when neither is configured. Note: this routes page
- * requests; the APIRequestContext (used for the exit-IP probe) is intentionally
- * not affected, so the token is never sent to the IP service.
- */
-async function attachMonitorOverrides(context: BrowserContext): Promise<void> {
+async function attachRoutes(
+  context: BrowserContext,
+  guard?: ReadOnlyGuard,
+): Promise<void> {
   const hasHeader = Boolean(MONITOR_HEADER_NAME && MONITOR_HEADER_VALUE);
   const hasUserAgent = Boolean(MONITOR_USER_AGENT);
-  if (!hasHeader && !hasUserAgent) {
+  const needsOverrides = hasHeader || hasUserAgent;
+  if (!needsOverrides && !guard) {
     return;
   }
 
   await context.route("**/*", async (route) => {
     const request = route.request();
-    let host = "";
-    try {
-      host = new URL(request.url()).hostname;
-    } catch {
-      host = "";
-    }
-
+    const host = hostOf(request.url());
     const onTarget =
       TARGET_HOST_SUFFIX.length > 0 &&
       (host === TARGET_HOST_SUFFIX || host.endsWith(`.${TARGET_HOST_SUFFIX}`));
 
     if (!onTarget) {
+      await route.continue();
+      return;
+    }
+
+    const method = request.method().toUpperCase();
+    if (guard && guard.active && method !== "GET" && method !== "HEAD") {
+      guard.blockedWrites.push({ url: request.url(), method });
+      await route.abort("blockedbyclient");
+      return;
+    }
+
+    if (!needsOverrides) {
       await route.continue();
       return;
     }
