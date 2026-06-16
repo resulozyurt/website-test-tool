@@ -32,20 +32,25 @@ export const MARKETS: MarketConfig[] = [
 ];
 
 /**
- * Pages under test. Real paths are confirmed against the live site during
- * setup; disabled placeholders are enabled as we map the site.
+ * Pages under test. Paths confirmed against the live site via the WordPress
+ * manifest (Polylang structure). The Spanish (es) pricing path /es/precios/ is
+ * ready for when an es market is added.
  */
 export const PAGES: PageConfig[] = [
   {
     key: "home",
-    pathByLanguage: { en: "/", tr: "/tr/" },
+    pathByLanguage: { en: "/", tr: "/tr/", es: "/es/" },
     isActive: true,
   },
-  // {
-  //   key: "pricing",
-  //   pathByLanguage: { en: "/pricing/", tr: "/tr/fiyatlandirma/" },
-  //   isActive: false,
-  // },
+  {
+    key: "pricing",
+    pathByLanguage: {
+      en: "/pricing/",
+      tr: "/tr/fiyatlandirma/",
+      es: "/es/precios/",
+    },
+    isActive: true,
+  },
   // {
   //   key: "merchandising",
   //   pathByLanguage: { en: "/merchandising/", tr: "/tr/merchandising/" },

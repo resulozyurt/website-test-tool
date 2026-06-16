@@ -11,6 +11,9 @@ poc-output/
 # Generated runner output (screenshots)
 runner-output/
 
+# Generated manifest output
+manifest-output/
+
 # Build artifacts
 dist/
 

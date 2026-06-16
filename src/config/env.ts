@@ -26,6 +26,13 @@ const EnvSchema = z.object({
   // the target host (see src/runner/browser.ts) so the token never leaks.
   MONITOR_USER_AGENT: z.string().optional(),
 
+  // --- WordPress manifest endpoint (read-only test manifest) ---
+  // MANIFEST_SECRET must match the value saved in WP Settings -> FieldPie
+  // Monitor. MANIFEST_URL is optional; when empty it is derived from
+  // TARGET_BASE_URL + /wp-json/fieldpie-monitor/v1/manifest.
+  MANIFEST_URL: z.string().url().optional(),
+  MANIFEST_SECRET: z.string().optional(),
+
   // --- Runtime tuning ---
   SETTLE_MS: z.coerce.number().int().positive().default(4000),
   NAV_TIMEOUT_MS: z.coerce.number().int().positive().default(45000),
