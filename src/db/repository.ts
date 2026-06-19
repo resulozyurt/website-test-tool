@@ -21,6 +21,7 @@ import type {
   CountryCode,
   EnvironmentConfig,
   EnvironmentKey,
+  ExpectationSet,
   LanguageCode,
   MarketConfig,
   PageConfig,
@@ -37,6 +38,9 @@ export interface Executor {
     params?: unknown[],
   ): Promise<QueryResult<R>>;
 }
+
+/** Where an expectation row came from. Manual rows take priority over manifest. */
+export type ExpectationSource = "manifest" | "manual";
 
 /* -------------------------------------------------------------------------- */
 /* Row types (camelCase mirror of the DB tables)                              */
@@ -111,6 +115,16 @@ export interface CheckRow {
   createdAt: Date;
 }
 
+export interface ExpectationRow {
+  id: number;
+  marketId: number;
+  pageId: number;
+  source: ExpectationSource;
+  payload: ExpectationSet;
+  checksum: string | null;
+  updatedAt: Date;
+}
+
 /** The fields captured when a run (one market+page visit) finishes. */
 export interface RunResultPatch {
   exitIp?: string | null;
@@ -139,6 +153,14 @@ export interface CreateRunInput {
   marketId: number;
   pageId: number;
   proxyCountry?: string | null;
+}
+
+export interface UpsertExpectationInput {
+  marketId: number;
+  pageId: number;
+  source: ExpectationSource;
+  payload: ExpectationSet;
+  checksum: string;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -209,6 +231,9 @@ const RUN_COLS = [
 
 const CHECK_COLS =
   'id, run_id as "runId", type, severity, status, expected, actual, message, evidence, created_at as "createdAt"';
+
+const EXPECTATION_COLS =
+  'id, market_id as "marketId", page_id as "pageId", source, payload, checksum, updated_at as "updatedAt"';
 
 /* -------------------------------------------------------------------------- */
 /* Environments                                                               */
@@ -512,5 +537,61 @@ export async function listChecksByRun(
     exec,
     `select ${CHECK_COLS} from checks where run_id = $1 order by id`,
     [runId],
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/* Expectations                                                               */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Upserts the expectation for a market+page (unique key). The `source` column
+ * records the origin ('manifest' | 'manual'); callers are responsible for the
+ * priority policy (the manifest sync never overwrites a 'manual' row).
+ */
+export async function upsertExpectation(
+  input: UpsertExpectationInput,
+  exec: Executor = pool,
+): Promise<ExpectationRow> {
+  const rows = await run<ExpectationRow>(
+    exec,
+    `insert into expectations (market_id, page_id, source, payload, checksum)
+     values ($1, $2, $3, $4::jsonb, $5)
+     on conflict (market_id, page_id) do update set
+       source = excluded.source,
+       payload = excluded.payload,
+       checksum = excluded.checksum,
+       updated_at = now()
+     returning ${EXPECTATION_COLS}`,
+    [
+      input.marketId,
+      input.pageId,
+      input.source,
+      toJsonParam(input.payload),
+      input.checksum,
+    ],
+  );
+  return rows[0];
+}
+
+export async function listExpectations(
+  exec: Executor = pool,
+): Promise<ExpectationRow[]> {
+  return run<ExpectationRow>(
+    exec,
+    `select ${EXPECTATION_COLS} from expectations order by id`,
+  );
+}
+
+export async function getExpectationByMarketPage(
+  marketId: number,
+  pageId: number,
+  exec: Executor = pool,
+): Promise<ExpectationRow | null> {
+  return runOne<ExpectationRow>(
+    exec,
+    `select ${EXPECTATION_COLS} from expectations
+     where market_id = $1 and page_id = $2`,
+    [marketId, pageId],
   );
 }

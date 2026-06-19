@@ -5,6 +5,12 @@
  * cross-country + passive-security + non-submitting-interaction checks, persist
  * the run and its checks, and derive run/sweep status from the checks.
  *
+ * Expectations are loaded once from the DB (manifest/manual rows) and merged
+ * over the code baseline by resolveExpectations.
+ *
+ * Pass 1 logs per-capture progress (it is otherwise silent while the browser
+ * visits every page through the proxy, which can take a few minutes).
+ *
  * Usage: npm run sweep
  */
 
@@ -28,7 +34,7 @@ import {
   listMarkets,
   listPages,
 } from "../db/repository.js";
-import { resolveExpectations } from "../config/expectations.js";
+import { loadExpectations, resolveExpectations } from "../config/expectations.js";
 import { resolveInteractions } from "../config/interactions.js";
 import { capturePage, type CaptureResult } from "./capture.js";
 import { proxyEnvKey, resolveProxy } from "./proxy.js";
@@ -90,6 +96,10 @@ async function main(): Promise<void> {
   const markets = await listMarkets(true);
   const pages = await listPages(true);
 
+  // DB-sourced expectations (manifest/manual), merged over the baseline by
+  // resolveExpectations. Loaded once for the whole sweep.
+  const expectationStore = await loadExpectations();
+
   const sweep = await createSweep({
     environmentId: environment.id,
     trigger: "manual",
@@ -103,7 +113,17 @@ async function main(): Promise<void> {
 
   let worstRun: RunStatus = "pass";
 
+  // How many captures Pass 1 will attempt (markets x pages with a path), so the
+  // progress log can show "[n/total]".
+  const totalCaptures = markets.reduce(
+    (sum, market) =>
+      sum + pages.filter((page) => page.pathByLanguage[market.language]).length,
+    0,
+  );
+  let captureIndex = 0;
+
   // --- Pass 1: capture every market x page ---------------------------------
+  console.log(`pass 1: capturing ${totalCaptures} page(s) ...`);
   const captured: CapturedRun[] = [];
   for (const market of markets) {
     const proxy = resolveProxy(market.countryCode);
@@ -116,6 +136,9 @@ async function main(): Promise<void> {
         );
         continue;
       }
+
+      captureIndex += 1;
+      const label = `${market.countryCode}/${market.language}/${page.pageKey}`;
 
       const url = new URL(path, environment.baseUrl).toString();
       const runRow = await createRun({
@@ -136,10 +159,13 @@ async function main(): Promise<void> {
           actual: null,
           message,
         });
-        console.log(`run #${runRow.id} ${market.countryCode}/${page.pageKey} -> error (no proxy)`);
+        console.log(`  [${captureIndex}/${totalCaptures}] ${label} -> error (no proxy)`);
         worstRun = worse(worstRun, "error");
         continue;
       }
+
+      console.log(`  [${captureIndex}/${totalCaptures}] ${label} capturing ${url} ...`);
+      const startedAt = Date.now();
 
       const screenshotPath = join(
         outputDir,
@@ -153,6 +179,14 @@ async function main(): Promise<void> {
         steps: resolveInteractions(page.pageKey),
       });
 
+      const secs = ((Date.now() - startedAt) / 1000).toFixed(1);
+      const tail = capture.error ? `error=${capture.error}` : "ok";
+      console.log(
+        `  [${captureIndex}/${totalCaptures}] ${label} -> ` +
+          `http=${capture.cache?.httpStatus ?? "?"} exit=${capture.exit.country ?? "?"} ` +
+          `lang=${capture.markers?.htmlLang || "?"} (${secs}s, ${tail})`,
+      );
+
       captured.push({
         runId: runRow.id,
         country: market.countryCode,
@@ -160,8 +194,10 @@ async function main(): Promise<void> {
         pageKey: page.pageKey,
         capture,
         expectation: resolveExpectations(
+          expectationStore,
+          market.id,
+          page.id,
           market.countryCode,
-          market.language,
           page.pageKey,
         ),
       });
@@ -178,6 +214,7 @@ async function main(): Promise<void> {
   }
 
   // --- Pass 2: check, persist, derive status -------------------------------
+  console.log(`pass 2: checking ${captured.length} capture(s) ...`);
   for (const item of captured) {
     const checks = runDeterministicChecks(item.capture, item.expectation);
 

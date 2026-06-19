@@ -10,6 +10,7 @@
     "seed": "tsx src/db/seed.ts",
     "sweep": "tsx src/runner/sweep.ts",
     "manifest": "tsx src/manifest/cli.ts",
+    "manifest:sync": "tsx src/manifest/sync-cli.ts",
     "typecheck": "tsc --noEmit"
   },
   "engines": {
