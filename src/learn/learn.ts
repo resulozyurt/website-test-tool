@@ -9,6 +9,10 @@
  * Proposals are written to a JSON file for human review; nothing is saved to
  * the database here. `npm run learn:apply` writes the approved ones as
  * source='manual'.
+ *
+ * Safety: if the SITE detected a different country than the market we are
+ * testing (whereami), the proxy was not recognized correctly, so that page is
+ * NOT auto-approved (the learned values would be from the wrong experience).
  */
 
 import { join } from "node:path";
@@ -30,6 +34,7 @@ export interface ProposalEvidence {
   hasBookDemo: boolean;
   httpStatus: number | null;
   exitCountry: string | null;
+  siteCountry: string | null;
 }
 
 export interface LearnedProposal {
@@ -133,6 +138,7 @@ export async function buildProposals(outputDir: string): Promise<ProposalsFile> 
         hasBookDemo: markers?.hasBookDemo ?? false,
         httpStatus: capture.cache?.httpStatus ?? null,
         exitCountry: capture.exit.country ?? null,
+        siteCountry: capture.siteCountry ?? null,
       };
 
       // Unhealthy capture: keep manifest base, do not approve automatically.
@@ -151,6 +157,19 @@ export async function buildProposals(outputDir: string): Promise<ProposalsFile> 
           notes,
         });
         continue;
+      }
+
+      // Wrong geo: the site saw a different country, so these learned values are
+      // from the wrong experience. Capture them but do NOT auto-approve.
+      let approved = true;
+      if (
+        capture.siteCountry &&
+        capture.siteCountry.toUpperCase() !== market.country.toUpperCase()
+      ) {
+        approved = false;
+        notes.push(
+          `site detected ${capture.siteCountry}, expected ${market.country} -- fix the proxy before trusting this page (not approved)`,
+        );
       }
 
       const learned: ExpectationSet = {};
@@ -198,7 +217,7 @@ export async function buildProposals(outputDir: string): Promise<ProposalsFile> 
         country: market.country,
         language: market.language,
         pageKey: page.key,
-        approved: true,
+        approved,
         source: "manual",
         payload: merge(base, learned),
         evidence,

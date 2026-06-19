@@ -2,8 +2,8 @@
  * PROD lane sweep runner (Phase 2, Step 3 -- phase complete).
  *
  * Two passes: capture every active market x page, then run deterministic +
- * cross-country + passive-security + non-submitting-interaction checks, persist
- * the run and its checks, and derive run/sweep status from the checks.
+ * geo + cross-country + passive-security + non-submitting-interaction checks,
+ * persist the run and its checks, and derive run/sweep status from the checks.
  *
  * Expectations are loaded once from the DB (manifest/manual rows) and merged
  * over the code baseline by resolveExpectations.
@@ -42,6 +42,7 @@ import {
   aggregateRunStatus,
   crossCountryCheck,
   fingerprintKey,
+  geoCheck,
   runDeterministicChecks,
 } from "./checks.js";
 import { interactionChecks } from "./interaction.js";
@@ -184,7 +185,7 @@ async function main(): Promise<void> {
       console.log(
         `  [${captureIndex}/${totalCaptures}] ${label} -> ` +
           `http=${capture.cache?.httpStatus ?? "?"} exit=${capture.exit.country ?? "?"} ` +
-          `lang=${capture.markers?.htmlLang || "?"} (${secs}s, ${tail})`,
+          `site=${capture.siteCountry ?? "?"} lang=${capture.markers?.htmlLang || "?"} (${secs}s, ${tail})`,
       );
 
       captured.push({
@@ -217,6 +218,11 @@ async function main(): Promise<void> {
   console.log(`pass 2: checking ${captured.length} capture(s) ...`);
   for (const item of captured) {
     const checks = runDeterministicChecks(item.capture, item.expectation);
+
+    const geo = geoCheck(item.capture, item.country);
+    if (geo) {
+      checks.push(geo);
+    }
 
     const cross = crossCountryCheck(
       item.country,
@@ -275,7 +281,8 @@ async function main(): Promise<void> {
     console.log(
       `run #${item.runId} ${item.country}/${item.language}/${item.pageKey} -> ${status}` +
         ` (http=${capture.cache?.httpStatus ?? "?"}, exit=${capture.exit.country ?? "?"}, ` +
-        `lang=${capture.markers?.htmlLang || "?"}, kinsta=${capture.cache?.kinstaCache ?? "-"})${tail}`,
+        `site=${capture.siteCountry ?? "?"}, lang=${capture.markers?.htmlLang || "?"}, ` +
+        `kinsta=${capture.cache?.kinstaCache ?? "-"})${tail}`,
     );
     worstRun = worse(worstRun, status);
   }

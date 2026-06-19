@@ -84,6 +84,34 @@ function httpHealthCheck(capture: CaptureResult): DeterministicCheck {
   );
 }
 
+/**
+ * Verifies the SITE detected the same country we are testing as (whereami).
+ * This is the authoritative geo signal: if the site saw a different country,
+ * the proxy was not recognized as that country and the whole run is measuring
+ * the wrong experience. Skipped when whereami is unavailable.
+ */
+export function geoCheck(
+  capture: CaptureResult,
+  country: CountryCode,
+): DeterministicCheck | null {
+  const detected = capture.siteCountry;
+  if (!detected) {
+    return null;
+  }
+  if (detected.toUpperCase() === country.toUpperCase()) {
+    return check("geo", "critical", "pass", country, detected, `Site detected ${detected}`);
+  }
+  return check(
+    "geo",
+    "critical",
+    "fail",
+    country,
+    detected,
+    `Site detected ${detected}, expected ${country} (proxy not recognized as ${country})`,
+    { siteCountry: detected, expected: country },
+  );
+}
+
 function cacheHeaderCheck(
   capture: CaptureResult,
   exp: ExpectationSet,

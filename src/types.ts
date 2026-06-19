@@ -20,6 +20,7 @@ export type SweepTrigger = "cron" | "manual";
 /** What a single check verifies. */
 export type CheckType =
   | "http_health"
+  | "geo"
   | "cache_header"
   | "cross_country"
   | "language"

@@ -18,6 +18,7 @@ import type { ProxyConfig } from "./proxy.js";
 import {
   extractMarkers,
   getExitInfo,
+  getSiteCountry,
   looksLikeBlockPage,
   rawHeaders,
   readCacheSignals,
@@ -60,6 +61,8 @@ export interface CaptureInput {
 
 export interface CaptureResult {
   exit: ExitInfo;
+  /** Country the target site itself detected for this request (whereami), or null. */
+  siteCountry: string | null;
   cache: CacheSignals | null;
   markers: ContentMarkers | null;
   rawHeaders: Record<string, string> | null;
@@ -108,10 +111,11 @@ async function scanTokenLeak(page: Page): Promise<string[]> {
 
 /**
  * Visits one URL through the given proxy as a real user and captures every
- * signal we persist: exit IP/country, cache + locale headers, DOM markers,
- * console/network errors, cookies, security inputs, a block-page check, a
- * full-page screenshot, and any non-submitting interaction outcomes. Never
- * throws; failures are returned in `error`.
+ * signal we persist: exit IP/country, the site-detected country (whereami),
+ * cache + locale headers, DOM markers, console/network errors, cookies,
+ * security inputs, a block-page check, a full-page screenshot, and any
+ * non-submitting interaction outcomes. Never throws; failures are returned in
+ * `error`.
  */
 export async function capturePage(input: CaptureInput): Promise<CaptureResult> {
   const settleMs = input.settleMs ?? env.SETTLE_MS;
@@ -124,6 +128,7 @@ export async function capturePage(input: CaptureInput): Promise<CaptureResult> {
 
   const result: CaptureResult = {
     exit: { ip: null, country: null, error: null },
+    siteCountry: null,
     cache: null,
     markers: null,
     rawHeaders: null,
@@ -147,6 +152,16 @@ export async function capturePage(input: CaptureInput): Promise<CaptureResult> {
 
     // Confirm the real exit IP/country first (does not use the page route).
     result.exit = await getExitInfo(context);
+
+    // Ask the site which country IT detected for this proxy (authoritative).
+    const origin = new URL(input.url).origin;
+    const siteGeo = await getSiteCountry(
+      context.request,
+      origin,
+      (env.MANIFEST_SECRET ?? "").trim(),
+      (env.MONITOR_USER_AGENT ?? "").trim() || undefined,
+    );
+    result.siteCountry = siteGeo.country;
 
     const page = await context.newPage();
 

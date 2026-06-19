@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import type { BrowserContext, Page, Response } from "playwright";
+import type { APIRequestContext, BrowserContext, Page, Response } from "playwright";
 
 /** Cache and locale signals read from the main document response headers. */
 export interface CacheSignals {
@@ -10,9 +10,15 @@ export interface CacheSignals {
   server: string | null;
 }
 
-/** The IP and country the proxy actually exited from. */
+/** The IP and country the proxy actually exited from (ip-api view). */
 export interface ExitInfo {
   ip: string | null;
+  country: string | null;
+  error: string | null;
+}
+
+/** The country the target site itself detected for the request (whereami). */
+export interface SiteGeo {
   country: string | null;
   error: string | null;
 }
@@ -26,7 +32,7 @@ export interface ContentMarkers {
   hasBookDemo: boolean;
   currencySymbols: string[];
   phoneNumbers: string[];
-  /** Most prominent button/link texts, in document order. Used to learn the real CTA. */
+  /** Most prominent main-content button/link texts, in document order. */
   ctaCandidates: string[];
   /** True when Turkish-specific characters or words are detected in the body. */
   turkishDetected: boolean;
@@ -34,10 +40,25 @@ export interface ContentMarkers {
   fingerprint: string;
 }
 
+/** Currency tokens we treat as a price signal when adjacent to a digit. */
+const CURRENCY_TOKENS = ["$", "TRY", "AED", "EUR", "GBP"];
+
+/** Path of the site's whereami endpoint (server-detected country). */
+const WHEREAMI_PATH = "/wp-json/fieldpie-monitor/v1/whereami";
+
+/**
+ * A currency token counts as a real price only when it sits next to a number
+ * (e.g. "$19", "1.299 TRY"). A lone "$" used as static decoration is ignored.
+ */
+function currencyVisible(text: string, token: string): boolean {
+  const escaped = token.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return new RegExp(`(${escaped}\\s?\\d)|(\\d\\s?${escaped})`, "i").test(text);
+}
+
 /**
  * Asks an external IP service, through the same proxy context, which IP and
- * country the request exits from. Uses the APIRequestContext, which is not
- * affected by the page route, so the monitor token is never sent here.
+ * country the request exits from. This is the proxy's view, not the target
+ * site's geolocation; use getSiteCountry for the authoritative site view.
  */
 export async function getExitInfo(context: BrowserContext): Promise<ExitInfo> {
   try {
@@ -57,6 +78,45 @@ export async function getExitInfo(context: BrowserContext): Promise<ExitInfo> {
   } catch (err) {
     return {
       ip: null,
+      country: null,
+      error: err instanceof Error ? err.message : String(err),
+    };
+  }
+}
+
+/**
+ * Asks the target site, through the same proxy, which country IT detected for
+ * this request (Kinsta GeoIP via the secret-protected whereami endpoint). This
+ * is the authoritative geo signal: it is exactly what the site used to pick the
+ * cached experience. Returns country=null (with a reason) when the endpoint is
+ * not configured or unreachable, so callers can skip the geo check gracefully.
+ */
+export async function getSiteCountry(
+  request: APIRequestContext,
+  origin: string,
+  secret: string,
+  userAgent?: string,
+): Promise<SiteGeo> {
+  if (!secret) {
+    return { country: null, error: "MANIFEST_SECRET not set" };
+  }
+  try {
+    const url = new URL(WHEREAMI_PATH, origin).toString();
+    const headers: Record<string, string> = {
+      "X-Monitor-Secret": secret,
+      Accept: "application/json",
+    };
+    if (userAgent) {
+      headers["User-Agent"] = userAgent;
+    }
+    const res = await request.get(url, { headers, timeout: 20000 });
+    if (!res.ok()) {
+      return { country: null, error: `http ${res.status()}` };
+    }
+    const data = (await res.json()) as { country?: string | null };
+    return { country: data.country ?? null, error: null };
+  } catch (err) {
+    return {
       country: null,
       error: err instanceof Error ? err.message : String(err),
     };
@@ -112,31 +172,51 @@ export async function extractMarkers(page: Page): Promise<ContentMarkers> {
     const firstHeading =
       document.querySelector("h1")?.textContent?.trim() ?? "";
 
-    // Detect call-to-action buttons by their visible text.
-    const elements = Array.from(document.querySelectorAll("a, button"));
-    const buttonText = elements
+    // Main content root, excluding global chrome (header/nav/footer) and the
+    // cookie-consent dialog, so persistent header CTAs and consent buttons do
+    // not pollute CTA detection.
+    const EXCLUDE = [
+      "header",
+      "footer",
+      "nav",
+      "[role='banner']",
+      "[role='navigation']",
+      "[role='contentinfo']",
+      "[id*='cmplz']",
+      "[class*='cmplz']",
+      "[id*='cookie']",
+      "[class*='cookie']",
+      "[aria-label*='onsent']",
+    ].join(", ");
+    const root = document.querySelector("main") ?? document.body;
+    const inExcluded = (el: Element): boolean => el.closest(EXCLUDE) != null;
+
+    const ctaEls = Array.from(root.querySelectorAll("a, button")).filter(
+      (el) => !inExcluded(el),
+    );
+    const buttonText = ctaEls
       .map((el) => (el.textContent ?? "").trim().toLowerCase())
       .join(" | ");
-
-    // Candidate CTA texts (original case), short and non-empty, for learning.
-    const ctaTexts = elements
+    const ctaTexts = ctaEls
       .map((el) => (el.textContent ?? "").replace(/\s+/g, " ").trim())
       .filter((t) => t.length > 1 && t.length <= 40);
 
-    // Collect candidate phone numbers from tel: links and the body text.
+    // Main-content text only, for currency/price detection.
+    const mainText = (root as HTMLElement).innerText ?? bodyText;
+
     const telLinks = Array.from(
       document.querySelectorAll('a[href^="tel:"]'),
     ).map((el) => el.getAttribute("href")?.replace("tel:", "") ?? "");
 
-    return { bodyText, htmlLang, firstHeading, buttonText, ctaTexts, telLinks };
+    return { bodyText, mainText, htmlLang, firstHeading, buttonText, ctaTexts, telLinks };
   });
 
   const hasStartFreeTrial = raw.buttonText.includes("start free trial");
   const hasBookDemo = raw.buttonText.includes("book a demo");
 
-  // Currency symbols that distinguish market pricing.
-  const currencySymbols = ["$", "TRY", "AED", "EUR", "GBP"].filter((sym) =>
-    raw.bodyText.includes(sym),
+  // Currency symbols that are actually next to a number (a real price).
+  const currencySymbols = CURRENCY_TOKENS.filter((token) =>
+    currencyVisible(raw.mainText, token),
   );
 
   // Loose phone pattern; combined with explicit tel: links.
@@ -145,7 +225,7 @@ export async function extractMarkers(page: Page): Promise<ContentMarkers> {
     new Set([...raw.telLinks, ...phoneMatches].map((p) => p.trim())),
   ).slice(0, 10);
 
-  // Distinct CTA candidates in document order (header/hero come first).
+  // Distinct main-content CTA candidates in document order.
   const ctaCandidates = Array.from(new Set(raw.ctaTexts)).slice(0, 15);
 
   // Turkish-specific characters and a few common Turkish words.
