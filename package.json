@@ -11,6 +11,8 @@
     "sweep": "tsx src/runner/sweep.ts",
     "manifest": "tsx src/manifest/cli.ts",
     "manifest:sync": "tsx src/manifest/sync-cli.ts",
+    "learn": "tsx src/learn/learn-cli.ts",
+    "learn:apply": "tsx src/learn/apply-cli.ts",
     "typecheck": "tsc --noEmit"
   },
   "engines": {

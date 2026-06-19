@@ -26,6 +26,8 @@ export interface ContentMarkers {
   hasBookDemo: boolean;
   currencySymbols: string[];
   phoneNumbers: string[];
+  /** Most prominent button/link texts, in document order. Used to learn the real CTA. */
+  ctaCandidates: string[];
   /** True when Turkish-specific characters or words are detected in the body. */
   turkishDetected: boolean;
   /** Stable hash of the locale-relevant content, used for cross-country diffing. */
@@ -111,16 +113,22 @@ export async function extractMarkers(page: Page): Promise<ContentMarkers> {
       document.querySelector("h1")?.textContent?.trim() ?? "";
 
     // Detect call-to-action buttons by their visible text.
-    const buttonText = Array.from(document.querySelectorAll("a, button"))
+    const elements = Array.from(document.querySelectorAll("a, button"));
+    const buttonText = elements
       .map((el) => (el.textContent ?? "").trim().toLowerCase())
       .join(" | ");
+
+    // Candidate CTA texts (original case), short and non-empty, for learning.
+    const ctaTexts = elements
+      .map((el) => (el.textContent ?? "").replace(/\s+/g, " ").trim())
+      .filter((t) => t.length > 1 && t.length <= 40);
 
     // Collect candidate phone numbers from tel: links and the body text.
     const telLinks = Array.from(
       document.querySelectorAll('a[href^="tel:"]'),
     ).map((el) => el.getAttribute("href")?.replace("tel:", "") ?? "");
 
-    return { bodyText, htmlLang, firstHeading, buttonText, telLinks };
+    return { bodyText, htmlLang, firstHeading, buttonText, ctaTexts, telLinks };
   });
 
   const hasStartFreeTrial = raw.buttonText.includes("start free trial");
@@ -136,6 +144,9 @@ export async function extractMarkers(page: Page): Promise<ContentMarkers> {
   const phoneNumbers = Array.from(
     new Set([...raw.telLinks, ...phoneMatches].map((p) => p.trim())),
   ).slice(0, 10);
+
+  // Distinct CTA candidates in document order (header/hero come first).
+  const ctaCandidates = Array.from(new Set(raw.ctaTexts)).slice(0, 15);
 
   // Turkish-specific characters and a few common Turkish words.
   const turkishDetected =
@@ -163,6 +174,7 @@ export async function extractMarkers(page: Page): Promise<ContentMarkers> {
     hasBookDemo,
     currencySymbols,
     phoneNumbers,
+    ctaCandidates,
     turkishDetected,
     fingerprint,
   };
