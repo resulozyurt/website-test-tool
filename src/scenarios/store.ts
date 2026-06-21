@@ -141,3 +141,66 @@ export async function replacePageScenarios(
 
   return { created, updated, deactivated: del.rowCount ?? 0 };
 }
+
+/* -------------------------------------------------------------------------- */
+/* Read helpers for reconciliation and the runner                             */
+/* -------------------------------------------------------------------------- */
+
+export interface ScenarioPageRow {
+  pagePostId: number;
+  pageUrl: string;
+  language: string;
+  pageSlug: string | null;
+}
+
+/** Distinct pages that currently have at least one active scenario. */
+export async function listScenarioPages(
+  exec: Executor = pool,
+): Promise<ScenarioPageRow[]> {
+  const res = await exec.query<ScenarioPageRow>(
+    `select distinct
+       page_post_id as "pagePostId",
+       page_url     as "pageUrl",
+       language,
+       page_slug    as "pageSlug"
+     from scenarios
+     where active = true
+     order by page_url`,
+  );
+  return res.rows;
+}
+
+export interface ScenarioRow {
+  country: string;
+  pageUrl: string;
+  elementId: string;
+  selector: string;
+  kind: string;
+  label: string | null;
+  expectation: string; // 'present' | 'absent'
+  rule: string;
+  isMoneyCritical: boolean;
+  gating: boolean;
+}
+
+/** All active scenarios, for the runner to verify in the live DOM. */
+export async function listActiveScenarios(
+  exec: Executor = pool,
+): Promise<ScenarioRow[]> {
+  const res = await exec.query<ScenarioRow>(
+    `select
+       country,
+       page_url          as "pageUrl",
+       element_id        as "elementId",
+       selector,
+       kind,
+       label,
+       expectation,
+       rule,
+       is_money_critical as "isMoneyCritical",
+       gating
+     from scenarios
+     where active = true`,
+  );
+  return res.rows;
+}

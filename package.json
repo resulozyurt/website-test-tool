@@ -11,6 +11,7 @@
     "discover": "tsx src/discovery/discover-cli.ts",
     "inventory": "tsx src/manifest/inventory-cli.ts",
     "scenarios:gen": "tsx src/scenarios/generate-all-cli.ts",
+    "pages:reconcile": "tsx src/scenarios/reconcile-cli.ts",
     "sweep": "tsx src/runner/sweep.ts",
     "manifest": "tsx src/manifest/cli.ts",
     "manifest:sync": "tsx src/manifest/sync-cli.ts",
