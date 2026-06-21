@@ -1,0 +1,5802 @@
+{
+  "generatedAt": "2026-06-21T19:14:24.251Z",
+  "sitemap": "https://www.fieldpie.com/sitemap_index.xml",
+  "pages": [
+    {
+      "url": "https://www.fieldpie.com/blog/retail-merchandising/",
+      "path": "/blog/retail-merchandising/",
+      "language": "en",
+      "slug": "retail-merchandising",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/construction-defect-management/",
+      "path": "/blog/construction-defect-management/",
+      "language": "en",
+      "slug": "construction-defect-management",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/audit-remediation-management/",
+      "path": "/blog/audit-remediation-management/",
+      "language": "en",
+      "slug": "audit-remediation-management",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/image-recognition-in-retail/",
+      "path": "/blog/image-recognition-in-retail/",
+      "language": "en",
+      "slug": "image-recognition-in-retail",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/advantages-of-a-retail-execution-platform/",
+      "path": "/blog/advantages-of-a-retail-execution-platform/",
+      "language": "en",
+      "slug": "advantages-of-a-retail-execution-platform",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/field-service-customer-experience/",
+      "path": "/blog/field-service-customer-experience/",
+      "language": "en",
+      "slug": "field-service-customer-experience",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/find-hire-home-services-employees-2026/",
+      "path": "/blog/find-hire-home-services-employees-2026/",
+      "language": "en",
+      "slug": "find-hire-home-services-employees-2026",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/enhancing-customer-satisfaction/",
+      "path": "/blog/enhancing-customer-satisfaction/",
+      "language": "en",
+      "slug": "enhancing-customer-satisfaction",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/how-to-run-a-franchise/",
+      "path": "/blog/how-to-run-a-franchise/",
+      "language": "en",
+      "slug": "how-to-run-a-franchise",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/crm-for-retail-execution/",
+      "path": "/blog/crm-for-retail-execution/",
+      "language": "en",
+      "slug": "crm-for-retail-execution",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/safety-audit-2/",
+      "path": "/blog/safety-audit-2/",
+      "language": "en",
+      "slug": "safety-audit-2",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/planogram-optimization/",
+      "path": "/blog/planogram-optimization/",
+      "language": "en",
+      "slug": "planogram-optimization",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/franchise-site-visit-management/",
+      "path": "/blog/franchise-site-visit-management/",
+      "language": "en",
+      "slug": "franchise-site-visit-management",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/2025te-mukemmel-bir-saha-hizmeti-musteri-deneyimi-nasil-sunulur/",
+      "path": "/tr/blog/2025te-mukemmel-bir-saha-hizmeti-musteri-deneyimi-nasil-sunulur/",
+      "language": "tr",
+      "slug": "2025te-mukemmel-bir-saha-hizmeti-musteri-deneyimi-nasil-sunulur",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/field-data-collection-in-construction/",
+      "path": "/blog/field-data-collection-in-construction/",
+      "language": "en",
+      "slug": "field-data-collection-in-construction",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/fmcg-magaza-denetimi/",
+      "path": "/tr/blog/fmcg-magaza-denetimi/",
+      "language": "tr",
+      "slug": "fmcg-magaza-denetimi",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/shelf-space-management/",
+      "path": "/blog/shelf-space-management/",
+      "language": "en",
+      "slug": "shelf-space-management",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/saha-is-takibi/",
+      "path": "/tr/blog/saha-is-takibi/",
+      "language": "tr",
+      "slug": "saha-is-takibi",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/restaurant-brand-standards-audits/",
+      "path": "/blog/restaurant-brand-standards-audits/",
+      "language": "en",
+      "slug": "restaurant-brand-standards-audits",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/customer-experience-mystery-shopping-audit-guide/",
+      "path": "/blog/customer-experience-mystery-shopping-audit-guide/",
+      "language": "en",
+      "slug": "customer-experience-mystery-shopping-audit-guide",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/satis-bolge-tasarimi/",
+      "path": "/tr/blog/satis-bolge-tasarimi/",
+      "language": "tr",
+      "slug": "satis-bolge-tasarimi",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/gizli-musteri-denetimi/",
+      "path": "/tr/blog/gizli-musteri-denetimi/",
+      "language": "tr",
+      "slug": "gizli-musteri-denetimi",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/layered-process-audit-nedir/",
+      "path": "/tr/blog/layered-process-audit-nedir/",
+      "language": "tr",
+      "slug": "layered-process-audit-nedir",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/rapor-hazirlama-rehberi-rapor-turleri-ve-teknikleri/",
+      "path": "/tr/blog/rapor-hazirlama-rehberi-rapor-turleri-ve-teknikleri/",
+      "language": "tr",
+      "slug": "rapor-hazirlama-rehberi-rapor-turleri-ve-teknikleri",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/magaza-denetimi-rehberi/",
+      "path": "/tr/blog/magaza-denetimi-rehberi/",
+      "language": "tr",
+      "slug": "magaza-denetimi-rehberi",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/30-gunden-3e-denetim-cozum-suresini-nasil-hizlandirirsiniz/",
+      "path": "/tr/blog/30-gunden-3e-denetim-cozum-suresini-nasil-hizlandirirsiniz/",
+      "language": "tr",
+      "slug": "30-gunden-3e-denetim-cozum-suresini-nasil-hizlandirirsiniz",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/market-zincirinde-satis-artisi/",
+      "path": "/tr/blog/market-zincirinde-satis-artisi/",
+      "language": "tr",
+      "slug": "market-zincirinde-satis-artisi",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/crm-nedir-ne-ise-yarar/",
+      "path": "/tr/blog/crm-nedir-ne-ise-yarar/",
+      "language": "tr",
+      "slug": "crm-nedir-ne-ise-yarar",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/en-iyi-4-merchandising-stratejisi/",
+      "path": "/tr/blog/en-iyi-4-merchandising-stratejisi/",
+      "language": "tr",
+      "slug": "en-iyi-4-merchandising-stratejisi",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/etkili-bir-denetim-icin-7-ozel-strateji/",
+      "path": "/tr/blog/etkili-bir-denetim-icin-7-ozel-strateji/",
+      "language": "tr",
+      "slug": "etkili-bir-denetim-icin-7-ozel-strateji",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/kpi-takibi/",
+      "path": "/tr/blog/kpi-takibi/",
+      "language": "tr",
+      "slug": "kpi-takibi",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/planogram-ve-perakende-basarisi/",
+      "path": "/tr/blog/planogram-ve-perakende-basarisi/",
+      "language": "tr",
+      "slug": "planogram-ve-perakende-basarisi",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/planogram-nedir-nasil-uygulanir/",
+      "path": "/tr/blog/planogram-nedir-nasil-uygulanir/",
+      "language": "tr",
+      "slug": "planogram-nedir-nasil-uygulanir",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/saha-verisi-analitigi/",
+      "path": "/tr/blog/saha-verisi-analitigi/",
+      "language": "tr",
+      "slug": "saha-verisi-analitigi",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/saha-satis-ekibi-nasil-yonetilmeli/",
+      "path": "/tr/blog/saha-satis-ekibi-nasil-yonetilmeli/",
+      "language": "tr",
+      "slug": "saha-satis-ekibi-nasil-yonetilmeli",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/rut-plani-nedir-nasil-hazirlanir/",
+      "path": "/tr/blog/rut-plani-nedir-nasil-hazirlanir/",
+      "language": "tr",
+      "slug": "rut-plani-nedir-nasil-hazirlanir",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/dogru-merchandising-yazilimi/",
+      "path": "/tr/blog/dogru-merchandising-yazilimi/",
+      "language": "tr",
+      "slug": "dogru-merchandising-yazilimi",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/satista-hizli-buyume-stratejileri/",
+      "path": "/tr/blog/satista-hizli-buyume-stratejileri/",
+      "language": "tr",
+      "slug": "satista-hizli-buyume-stratejileri",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/web-site-trafiginiz-cok-satis-yok-mu/",
+      "path": "/tr/blog/web-site-trafiginiz-cok-satis-yok-mu/",
+      "language": "tr",
+      "slug": "web-site-trafiginiz-cok-satis-yok-mu",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/dijital-raf-yonetimi-perakende-satislarini-nasil-artirir/",
+      "path": "/tr/blog/dijital-raf-yonetimi-perakende-satislarini-nasil-artirir/",
+      "language": "tr",
+      "slug": "dijital-raf-yonetimi-perakende-satislarini-nasil-artirir",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/akilli-saha-satis-stratejileri/",
+      "path": "/tr/blog/akilli-saha-satis-stratejileri/",
+      "language": "tr",
+      "slug": "akilli-saha-satis-stratejileri",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/yapay-zeka-ile-satis-rehberi/",
+      "path": "/tr/blog/yapay-zeka-ile-satis-rehberi/",
+      "language": "tr",
+      "slug": "yapay-zeka-ile-satis-rehberi",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/yapay-zeka-ile-satislari-artirmak/",
+      "path": "/tr/blog/yapay-zeka-ile-satislari-artirmak/",
+      "language": "tr",
+      "slug": "yapay-zeka-ile-satislari-artirmak",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/satis-ekibi-performansini-artirmak/",
+      "path": "/tr/blog/satis-ekibi-performansini-artirmak/",
+      "language": "tr",
+      "slug": "satis-ekibi-performansini-artirmak",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/perakende-satislarini-dusuren-hatalar/",
+      "path": "/tr/blog/perakende-satislarini-dusuren-hatalar/",
+      "language": "tr",
+      "slug": "perakende-satislarini-dusuren-hatalar",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/gida-disi-urunler-icin-merchandising/",
+      "path": "/tr/blog/gida-disi-urunler-icin-merchandising/",
+      "language": "tr",
+      "slug": "gida-disi-urunler-icin-merchandising",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/denetim-gorev-yonetimi-icin-7-strateji/",
+      "path": "/tr/blog/denetim-gorev-yonetimi-icin-7-strateji/",
+      "language": "tr",
+      "slug": "denetim-gorev-yonetimi-icin-7-strateji",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/franchise-sahiplerinin-bilmesi-gerekenler/",
+      "path": "/tr/blog/franchise-sahiplerinin-bilmesi-gerekenler/",
+      "language": "tr",
+      "slug": "franchise-sahiplerinin-bilmesi-gerekenler",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/magaza-ici-teshir-standlari/",
+      "path": "/tr/blog/magaza-ici-teshir-standlari/",
+      "language": "tr",
+      "slug": "magaza-ici-teshir-standlari",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/urun-pazar-konumlandirma/",
+      "path": "/tr/blog/urun-pazar-konumlandirma/",
+      "language": "tr",
+      "slug": "urun-pazar-konumlandirma",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/yapay-zeka-cpg-raf-gorunurlugu/",
+      "path": "/tr/blog/yapay-zeka-cpg-raf-gorunurlugu/",
+      "language": "tr",
+      "slug": "yapay-zeka-cpg-raf-gorunurlugu",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/restoran-denetimi/",
+      "path": "/tr/blog/restoran-denetimi/",
+      "language": "tr",
+      "slug": "restoran-denetimi",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/saha-satis-uygulamalari/",
+      "path": "/tr/blog/saha-satis-uygulamalari/",
+      "language": "tr",
+      "slug": "saha-satis-uygulamalari",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/zincir-magaza-yonetimi/",
+      "path": "/tr/blog/zincir-magaza-yonetimi/",
+      "language": "tr",
+      "slug": "zincir-magaza-yonetimi",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/tanzim-teshir/",
+      "path": "/tr/blog/tanzim-teshir/",
+      "language": "tr",
+      "slug": "tanzim-teshir",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/restoran-yonetimi/",
+      "path": "/tr/blog/restoran-yonetimi/",
+      "language": "tr",
+      "slug": "restoran-yonetimi",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/perakendede-urun-yerlesimi/",
+      "path": "/tr/blog/perakendede-urun-yerlesimi/",
+      "language": "tr",
+      "slug": "perakendede-urun-yerlesimi",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/restoran-temizlik-denetimleri/",
+      "path": "/tr/blog/restoran-temizlik-denetimleri/",
+      "language": "tr",
+      "slug": "restoran-temizlik-denetimleri",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/mukemmel-magaza-nedir/",
+      "path": "/tr/blog/mukemmel-magaza-nedir/",
+      "language": "tr",
+      "slug": "mukemmel-magaza-nedir",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/reyon-duzeni/",
+      "path": "/tr/blog/reyon-duzeni/",
+      "language": "tr",
+      "slug": "reyon-duzeni",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/urun-bulunurlugu-nasil-artirilir/",
+      "path": "/tr/blog/urun-bulunurlugu-nasil-artirilir/",
+      "language": "tr",
+      "slug": "urun-bulunurlugu-nasil-artirilir",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/magaza-gorsel-duzenleme/",
+      "path": "/tr/blog/magaza-gorsel-duzenleme/",
+      "language": "tr",
+      "slug": "magaza-gorsel-duzenleme",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/visual-merchandising/",
+      "path": "/tr/blog/visual-merchandising/",
+      "language": "tr",
+      "slug": "visual-merchandising",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/saha-denetim-sistemi/",
+      "path": "/tr/blog/saha-denetim-sistemi/",
+      "language": "tr",
+      "slug": "saha-denetim-sistemi",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/perakende-yonetimi/",
+      "path": "/tr/blog/perakende-yonetimi/",
+      "language": "tr",
+      "slug": "perakende-yonetimi",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/kategori-yonetimi/",
+      "path": "/tr/blog/kategori-yonetimi/",
+      "language": "tr",
+      "slug": "kategori-yonetimi",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/merchandising-nedir/",
+      "path": "/tr/blog/merchandising-nedir/",
+      "language": "tr",
+      "slug": "merchandising-nedir",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/otel-denetimi/",
+      "path": "/tr/blog/otel-denetimi/",
+      "language": "tr",
+      "slug": "otel-denetimi",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/raf-stratejisi/",
+      "path": "/tr/blog/raf-stratejisi/",
+      "language": "tr",
+      "slug": "raf-stratejisi",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/sicak-satis-yontemleri/",
+      "path": "/tr/blog/sicak-satis-yontemleri/",
+      "language": "tr",
+      "slug": "sicak-satis-yontemleri",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/sicak-satis/",
+      "path": "/tr/blog/sicak-satis/",
+      "language": "tr",
+      "slug": "sicak-satis",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/rota-planlama/",
+      "path": "/tr/blog/rota-planlama/",
+      "language": "tr",
+      "slug": "rota-planlama",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/rut-plani-2026-kapsamli-rehber/",
+      "path": "/tr/blog/rut-plani-2026-kapsamli-rehber/",
+      "language": "tr",
+      "slug": "rut-plani-2026-kapsamli-rehber",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/stratejik-satis/",
+      "path": "/tr/blog/stratejik-satis/",
+      "language": "tr",
+      "slug": "stratejik-satis",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/saha-ekibi/",
+      "path": "/tr/blog/saha-ekibi/",
+      "language": "tr",
+      "slug": "saha-ekibi",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/saha-denetim-raporu/",
+      "path": "/tr/blog/saha-denetim-raporu/",
+      "language": "tr",
+      "slug": "saha-denetim-raporu",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/fmcg-satis/",
+      "path": "/tr/blog/fmcg-satis/",
+      "language": "tr",
+      "slug": "fmcg-satis",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/saha-ekibi-takip-yazilimi/",
+      "path": "/tr/blog/saha-ekibi-takip-yazilimi/",
+      "language": "tr",
+      "slug": "saha-ekibi-takip-yazilimi",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/visual-merchandising-nedir/",
+      "path": "/tr/blog/visual-merchandising-nedir/",
+      "language": "tr",
+      "slug": "visual-merchandising-nedir",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/kpi/",
+      "path": "/tr/blog/kpi/",
+      "language": "tr",
+      "slug": "kpi",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/saha-satis-teknikleri/",
+      "path": "/tr/blog/saha-satis-teknikleri/",
+      "language": "tr",
+      "slug": "saha-satis-teknikleri",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/saha-satis/",
+      "path": "/tr/blog/saha-satis/",
+      "language": "tr",
+      "slug": "saha-satis",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/saha-yonetimi/",
+      "path": "/tr/blog/saha-yonetimi/",
+      "language": "tr",
+      "slug": "saha-yonetimi",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/franchise-denetimi/",
+      "path": "/tr/blog/franchise-denetimi/",
+      "language": "tr",
+      "slug": "franchise-denetimi",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/perakende-raf-duzeni-yonetimi-2026/",
+      "path": "/tr/blog/perakende-raf-duzeni-yonetimi-2026/",
+      "language": "tr",
+      "slug": "perakende-raf-duzeni-yonetimi-2026",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/rota-optimizasyonu/",
+      "path": "/tr/blog/rota-optimizasyonu/",
+      "language": "tr",
+      "slug": "rota-optimizasyonu",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/saha-satis-performans-yonetimi/",
+      "path": "/tr/blog/saha-satis-performans-yonetimi/",
+      "language": "tr",
+      "slug": "saha-satis-performans-yonetimi",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/saha-satis-yonetimi/",
+      "path": "/tr/blog/saha-satis-yonetimi/",
+      "language": "tr",
+      "slug": "saha-satis-yonetimi",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/customer-experience-audits/",
+      "path": "/blog/customer-experience-audits/",
+      "language": "en",
+      "slug": "customer-experience-audits",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/sku-recognition-for-retail-execution/",
+      "path": "/blog/sku-recognition-for-retail-execution/",
+      "language": "en",
+      "slug": "sku-recognition-for-retail-execution",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/pre-occupancy-inspection/",
+      "path": "/blog/pre-occupancy-inspection/",
+      "language": "en",
+      "slug": "pre-occupancy-inspection",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/franchise-performance-evaluation/",
+      "path": "/blog/franchise-performance-evaluation/",
+      "language": "en",
+      "slug": "franchise-performance-evaluation",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/restaurant-compliance/",
+      "path": "/blog/restaurant-compliance/",
+      "language": "en",
+      "slug": "restaurant-compliance",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/home-builder-quality-control/",
+      "path": "/blog/home-builder-quality-control/",
+      "language": "en",
+      "slug": "home-builder-quality-control",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/corrective-action-management-in-construction/",
+      "path": "/blog/corrective-action-management-in-construction/",
+      "language": "en",
+      "slug": "corrective-action-management-in-construction",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/hse-audit-a-practical-guide-to-compliance/",
+      "path": "/blog/hse-audit-a-practical-guide-to-compliance/",
+      "language": "en",
+      "slug": "hse-audit-a-practical-guide-to-compliance",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/product-recognition-in-retail/",
+      "path": "/blog/product-recognition-in-retail/",
+      "language": "en",
+      "slug": "product-recognition-in-retail",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/store-task-management/",
+      "path": "/blog/store-task-management/",
+      "language": "en",
+      "slug": "store-task-management",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/construction-governance/",
+      "path": "/blog/construction-governance/",
+      "language": "en",
+      "slug": "construction-governance",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/ai-shelf-monitoring/",
+      "path": "/blog/ai-shelf-monitoring/",
+      "language": "en",
+      "slug": "ai-shelf-monitoring",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/workplace-safety-inspection/",
+      "path": "/blog/workplace-safety-inspection/",
+      "language": "en",
+      "slug": "workplace-safety-inspection",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/subcontractor-compliance-construction/",
+      "path": "/blog/subcontractor-compliance-construction/",
+      "language": "en",
+      "slug": "subcontractor-compliance-construction",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/retail-compliance-management/",
+      "path": "/blog/retail-compliance-management/",
+      "language": "en",
+      "slug": "retail-compliance-management",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/retail-shelf-audit/",
+      "path": "/blog/retail-shelf-audit/",
+      "language": "en",
+      "slug": "retail-shelf-audit",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/chain-store-management/",
+      "path": "/blog/chain-store-management/",
+      "language": "en",
+      "slug": "chain-store-management",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/construction-risk-assessment/",
+      "path": "/blog/construction-risk-assessment/",
+      "language": "en",
+      "slug": "construction-risk-assessment",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/construction-site-inspection/",
+      "path": "/blog/construction-site-inspection/",
+      "language": "en",
+      "slug": "construction-site-inspection",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/retail-shrinkage-reduction/",
+      "path": "/blog/retail-shrinkage-reduction/",
+      "language": "en",
+      "slug": "retail-shrinkage-reduction",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/quality-inspection-process/",
+      "path": "/blog/quality-inspection-process/",
+      "language": "en",
+      "slug": "quality-inspection-process",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/cpg-retail-execution/",
+      "path": "/blog/cpg-retail-execution/",
+      "language": "en",
+      "slug": "cpg-retail-execution",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/how-to-conduct-a-field-audit/",
+      "path": "/blog/how-to-conduct-a-field-audit/",
+      "language": "en",
+      "slug": "how-to-conduct-a-field-audit",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/mystery-shopping-reports/",
+      "path": "/blog/mystery-shopping-reports/",
+      "language": "en",
+      "slug": "mystery-shopping-reports",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/restaurant-health-inspection-audit/",
+      "path": "/blog/restaurant-health-inspection-audit/",
+      "language": "en",
+      "slug": "restaurant-health-inspection-audit",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/mystery-shopping-vs-retail-audit/",
+      "path": "/blog/mystery-shopping-vs-retail-audit/",
+      "language": "en",
+      "slug": "mystery-shopping-vs-retail-audit",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/grocery-store-merchandising/",
+      "path": "/blog/grocery-store-merchandising/",
+      "language": "en",
+      "slug": "grocery-store-merchandising",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/restaurant-fire-safety-audit/",
+      "path": "/blog/restaurant-fire-safety-audit/",
+      "language": "en",
+      "slug": "restaurant-fire-safety-audit",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/shelf-execution-best-practices/",
+      "path": "/blog/shelf-execution-best-practices/",
+      "language": "en",
+      "slug": "shelf-execution-best-practices",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/field-audit-best-practices/",
+      "path": "/blog/field-audit-best-practices/",
+      "language": "en",
+      "slug": "field-audit-best-practices",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/mystery-shopping-software/",
+      "path": "/blog/mystery-shopping-software/",
+      "language": "en",
+      "slug": "mystery-shopping-software",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/best-franchise-management-software/",
+      "path": "/blog/best-franchise-management-software/",
+      "language": "en",
+      "slug": "best-franchise-management-software",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/top-construction-inspection-software/",
+      "path": "/blog/top-construction-inspection-software/",
+      "language": "en",
+      "slug": "top-construction-inspection-software",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/merchandising-solutions/",
+      "path": "/blog/merchandising-solutions/",
+      "language": "en",
+      "slug": "merchandising-solutions",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/retail-shelf-availability-tracking/",
+      "path": "/blog/retail-shelf-availability-tracking/",
+      "language": "en",
+      "slug": "retail-shelf-availability-tracking",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/internal-safety-audit/",
+      "path": "/blog/internal-safety-audit/",
+      "language": "en",
+      "slug": "internal-safety-audit",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/construction-daily-report/",
+      "path": "/blog/construction-daily-report/",
+      "language": "en",
+      "slug": "construction-daily-report",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/franchise-training-management/",
+      "path": "/blog/franchise-training-management/",
+      "language": "en",
+      "slug": "franchise-training-management",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/building-safety-inspection/",
+      "path": "/blog/building-safety-inspection/",
+      "language": "en",
+      "slug": "building-safety-inspection",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/retail-health-and-safety-compliance/",
+      "path": "/blog/retail-health-and-safety-compliance/",
+      "language": "en",
+      "slug": "retail-health-and-safety-compliance",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/environmental-compliance-construction/",
+      "path": "/blog/environmental-compliance-construction/",
+      "language": "en",
+      "slug": "environmental-compliance-construction",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/planogram-solutions/",
+      "path": "/blog/planogram-solutions/",
+      "language": "en",
+      "slug": "planogram-solutions",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/construction-progress-report/",
+      "path": "/blog/construction-progress-report/",
+      "language": "en",
+      "slug": "construction-progress-report",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/retail-on-shelf-availability/",
+      "path": "/blog/retail-on-shelf-availability/",
+      "language": "en",
+      "slug": "retail-on-shelf-availability",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/franchise-compliance-management/",
+      "path": "/blog/franchise-compliance-management/",
+      "language": "en",
+      "slug": "franchise-compliance-management",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/product-merchandising-strategies/",
+      "path": "/blog/product-merchandising-strategies/",
+      "language": "en",
+      "slug": "product-merchandising-strategies",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/safety-audit-process/",
+      "path": "/blog/safety-audit-process/",
+      "language": "en",
+      "slug": "safety-audit-process",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/franchise-vs-independent-business/",
+      "path": "/blog/franchise-vs-independent-business/",
+      "language": "en",
+      "slug": "franchise-vs-independent-business",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/quality-inspection-in-manufacturing/",
+      "path": "/blog/quality-inspection-in-manufacturing/",
+      "language": "en",
+      "slug": "quality-inspection-in-manufacturing",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/how-to-start-a-franchise/",
+      "path": "/blog/how-to-start-a-franchise/",
+      "language": "en",
+      "slug": "how-to-start-a-franchise",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/image-recognition-customer-behavior-retail/",
+      "path": "/blog/image-recognition-customer-behavior-retail/",
+      "language": "en",
+      "slug": "image-recognition-customer-behavior-retail",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/planogram/",
+      "path": "/blog/planogram/",
+      "language": "en",
+      "slug": "planogram",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/quality-inspection-vs-quality-control/",
+      "path": "/blog/quality-inspection-vs-quality-control/",
+      "language": "en",
+      "slug": "quality-inspection-vs-quality-control",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/retail-store-performance-metrics/",
+      "path": "/blog/retail-store-performance-metrics/",
+      "language": "en",
+      "slug": "retail-store-performance-metrics",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/mystery-shopping-audit/",
+      "path": "/blog/mystery-shopping-audit/",
+      "language": "en",
+      "slug": "mystery-shopping-audit",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/osha-compliance-audit/",
+      "path": "/blog/osha-compliance-audit/",
+      "language": "en",
+      "slug": "osha-compliance-audit",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/construction-equipment-management/",
+      "path": "/blog/construction-equipment-management/",
+      "language": "en",
+      "slug": "construction-equipment-management",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/structural-inspection-in-construction/",
+      "path": "/blog/structural-inspection-in-construction/",
+      "language": "en",
+      "slug": "structural-inspection-in-construction",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/on-shelf-availability/",
+      "path": "/blog/on-shelf-availability/",
+      "language": "en",
+      "slug": "on-shelf-availability",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/digital-construction-inspection/",
+      "path": "/blog/digital-construction-inspection/",
+      "language": "en",
+      "slug": "digital-construction-inspection",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/retail-space-optimization/",
+      "path": "/blog/retail-space-optimization/",
+      "language": "en",
+      "slug": "retail-space-optimization",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/importance-of-mystery-shopping/",
+      "path": "/blog/importance-of-mystery-shopping/",
+      "language": "en",
+      "slug": "importance-of-mystery-shopping",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/4-ps-of-franchising/",
+      "path": "/blog/4-ps-of-franchising/",
+      "language": "en",
+      "slug": "4-ps-of-franchising",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/inspection-and-test-plan-construction/",
+      "path": "/blog/inspection-and-test-plan-construction/",
+      "language": "en",
+      "slug": "inspection-and-test-plan-construction",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/retail-loss-prevention/",
+      "path": "/blog/retail-loss-prevention/",
+      "language": "en",
+      "slug": "retail-loss-prevention",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/how-to-improve-retail-loss-prevention/",
+      "path": "/blog/how-to-improve-retail-loss-prevention/",
+      "language": "en",
+      "slug": "how-to-improve-retail-loss-prevention",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/real-time-construction-reporting/",
+      "path": "/blog/real-time-construction-reporting/",
+      "language": "en",
+      "slug": "real-time-construction-reporting",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/how-to-measure-on-shelf-availability/",
+      "path": "/blog/how-to-measure-on-shelf-availability/",
+      "language": "en",
+      "slug": "how-to-measure-on-shelf-availability",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/franchise-audit-and-compliance/",
+      "path": "/blog/franchise-audit-and-compliance/",
+      "language": "en",
+      "slug": "franchise-audit-and-compliance",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/operational-excellence-in-retail/",
+      "path": "/blog/operational-excellence-in-retail/",
+      "language": "en",
+      "slug": "operational-excellence-in-retail",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/franchise-mystery-shopping/",
+      "path": "/blog/franchise-mystery-shopping/",
+      "language": "en",
+      "slug": "franchise-mystery-shopping",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/retail-portfolio-visibility/",
+      "path": "/blog/retail-portfolio-visibility/",
+      "language": "en",
+      "slug": "retail-portfolio-visibility",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/safety-audit/",
+      "path": "/blog/safety-audit/",
+      "language": "en",
+      "slug": "safety-audit",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/construction-meetings/",
+      "path": "/blog/construction-meetings/",
+      "language": "en",
+      "slug": "construction-meetings",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/ai-image-recognition-for-planogram/",
+      "path": "/blog/ai-image-recognition-for-planogram/",
+      "language": "en",
+      "slug": "ai-image-recognition-for-planogram",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/retail-store-operation-management/",
+      "path": "/blog/retail-store-operation-management/",
+      "language": "en",
+      "slug": "retail-store-operation-management",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/audit-workflow-automation/",
+      "path": "/blog/audit-workflow-automation/",
+      "language": "en",
+      "slug": "audit-workflow-automation",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/construction-cost-control/",
+      "path": "/blog/construction-cost-control/",
+      "language": "en",
+      "slug": "construction-cost-control",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/quality-management-system/",
+      "path": "/blog/quality-management-system/",
+      "language": "en",
+      "slug": "quality-management-system",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/retail-store-standard-operating-procedures/",
+      "path": "/blog/retail-store-standard-operating-procedures/",
+      "language": "en",
+      "slug": "retail-store-standard-operating-procedures",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/construction-safety/",
+      "path": "/blog/construction-safety/",
+      "language": "en",
+      "slug": "construction-safety",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/cross-merchandising/",
+      "path": "/blog/cross-merchandising/",
+      "language": "en",
+      "slug": "cross-merchandising",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/food-and-beverage-audit/",
+      "path": "/blog/food-and-beverage-audit/",
+      "language": "en",
+      "slug": "food-and-beverage-audit",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/prepare-for-a-safety-audit/",
+      "path": "/blog/prepare-for-a-safety-audit/",
+      "language": "en",
+      "slug": "prepare-for-a-safety-audit",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/what-is-merchandising-a-complete-2026-guide/",
+      "path": "/blog/what-is-merchandising-a-complete-2026-guide/",
+      "language": "en",
+      "slug": "what-is-merchandising-a-complete-2026-guide",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/construction-inspection-checklist/",
+      "path": "/blog/construction-inspection-checklist/",
+      "language": "en",
+      "slug": "construction-inspection-checklist",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/crowdsourcing-in-retail/",
+      "path": "/blog/crowdsourcing-in-retail/",
+      "language": "en",
+      "slug": "crowdsourcing-in-retail",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/field-audit-software/",
+      "path": "/blog/field-audit-software/",
+      "language": "en",
+      "slug": "field-audit-software",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/best-field-sales-software/",
+      "path": "/blog/best-field-sales-software/",
+      "language": "en",
+      "slug": "best-field-sales-software",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/best-handyman-software/",
+      "path": "/blog/best-handyman-software/",
+      "language": "en",
+      "slug": "best-handyman-software",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/visual-merchandising-software/",
+      "path": "/blog/visual-merchandising-software/",
+      "language": "en",
+      "slug": "visual-merchandising-software",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/safety-audit-software/",
+      "path": "/blog/safety-audit-software/",
+      "language": "en",
+      "slug": "safety-audit-software",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/best-retail-audit-software/",
+      "path": "/blog/best-retail-audit-software/",
+      "language": "en",
+      "slug": "best-retail-audit-software",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/top-retail-compliance-software-in-2026/",
+      "path": "/blog/top-retail-compliance-software-in-2026/",
+      "language": "en",
+      "slug": "top-retail-compliance-software-in-2026",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/best-hotel-and-restaurant-software/",
+      "path": "/blog/best-hotel-and-restaurant-software/",
+      "language": "en",
+      "slug": "best-hotel-and-restaurant-software",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/best-retail-execution-monitoring-software/",
+      "path": "/blog/best-retail-execution-monitoring-software/",
+      "language": "en",
+      "slug": "best-retail-execution-monitoring-software",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/best-pest-control-software-2026/",
+      "path": "/blog/best-pest-control-software-2026/",
+      "language": "en",
+      "slug": "best-pest-control-software-2026",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/best-merchandising-software/",
+      "path": "/blog/best-merchandising-software/",
+      "language": "en",
+      "slug": "best-merchandising-software",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/best-hvac-software-compared-for-2026/",
+      "path": "/blog/best-hvac-software-compared-for-2026/",
+      "language": "en",
+      "slug": "best-hvac-software-compared-for-2026",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/best-field-team-management-software/",
+      "path": "/blog/best-field-team-management-software/",
+      "language": "en",
+      "slug": "best-field-team-management-software",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/best-plumbing-software/",
+      "path": "/blog/best-plumbing-software/",
+      "language": "en",
+      "slug": "best-plumbing-software",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/best-restaurant-auditing-software/",
+      "path": "/blog/best-restaurant-auditing-software/",
+      "language": "en",
+      "slug": "best-restaurant-auditing-software",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/best-irrigation-service-software/",
+      "path": "/blog/best-irrigation-service-software/",
+      "language": "en",
+      "slug": "best-irrigation-service-software",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/best-in-store-execution-software/",
+      "path": "/blog/best-in-store-execution-software/",
+      "language": "en",
+      "slug": "best-in-store-execution-software",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/thumbtack-for-contractors/",
+      "path": "/blog/thumbtack-for-contractors/",
+      "language": "en",
+      "slug": "thumbtack-for-contractors",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/shelf-intelligence/",
+      "path": "/blog/shelf-intelligence/",
+      "language": "en",
+      "slug": "shelf-intelligence",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/automating-franchise-operations/",
+      "path": "/blog/automating-franchise-operations/",
+      "language": "en",
+      "slug": "automating-franchise-operations",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/retail-statistics-2026/",
+      "path": "/blog/retail-statistics-2026/",
+      "language": "en",
+      "slug": "retail-statistics-2026",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/category-management-in-retail/",
+      "path": "/blog/category-management-in-retail/",
+      "language": "en",
+      "slug": "category-management-in-retail",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/construction-safety-inspection/",
+      "path": "/blog/construction-safety-inspection/",
+      "language": "en",
+      "slug": "construction-safety-inspection",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/franchisor-franchisee-relationship/",
+      "path": "/blog/franchisor-franchisee-relationship/",
+      "language": "en",
+      "slug": "franchisor-franchisee-relationship",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/best-landscape-management-software-2026/",
+      "path": "/blog/best-landscape-management-software-2026/",
+      "language": "en",
+      "slug": "best-landscape-management-software-2026",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/retail-store-operations/",
+      "path": "/blog/retail-store-operations/",
+      "language": "en",
+      "slug": "retail-store-operations",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/hotel-mystery-audits-guide/",
+      "path": "/blog/hotel-mystery-audits-guide/",
+      "language": "en",
+      "slug": "hotel-mystery-audits-guide",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/essential-merchandiser-reports/",
+      "path": "/blog/essential-merchandiser-reports/",
+      "language": "en",
+      "slug": "essential-merchandiser-reports",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/door-to-door-sales-guide/",
+      "path": "/blog/door-to-door-sales-guide/",
+      "language": "en",
+      "slug": "door-to-door-sales-guide",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/food-quality-and-control/",
+      "path": "/blog/food-quality-and-control/",
+      "language": "en",
+      "slug": "food-quality-and-control",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/retail-product-placement-psychology/",
+      "path": "/blog/retail-product-placement-psychology/",
+      "language": "en",
+      "slug": "retail-product-placement-psychology",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/best-irrigation-tools-for-contractors/",
+      "path": "/blog/best-irrigation-tools-for-contractors/",
+      "language": "en",
+      "slug": "best-irrigation-tools-for-contractors",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/merchandising-strategy/",
+      "path": "/blog/merchandising-strategy/",
+      "language": "en",
+      "slug": "merchandising-strategy",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/on-shelf-availability-osa-retail/",
+      "path": "/blog/on-shelf-availability-osa-retail/",
+      "language": "en",
+      "slug": "on-shelf-availability-osa-retail",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/restaurant-cleanliness-standards/",
+      "path": "/blog/restaurant-cleanliness-standards/",
+      "language": "en",
+      "slug": "restaurant-cleanliness-standards",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/perfect-store-guide/",
+      "path": "/blog/perfect-store-guide/",
+      "language": "en",
+      "slug": "perfect-store-guide",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/hvac-advertising/",
+      "path": "/blog/hvac-advertising/",
+      "language": "en",
+      "slug": "hvac-advertising",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/trade-promotions-examples/",
+      "path": "/blog/trade-promotions-examples/",
+      "language": "en",
+      "slug": "trade-promotions-examples",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/beauty-merchandising/",
+      "path": "/blog/beauty-merchandising/",
+      "language": "en",
+      "slug": "beauty-merchandising",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/hvac-technician-gifts/",
+      "path": "/blog/hvac-technician-gifts/",
+      "language": "en",
+      "slug": "hvac-technician-gifts",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/landscaper-salary-2026/",
+      "path": "/blog/landscaper-salary-2026/",
+      "language": "en",
+      "slug": "landscaper-salary-2026",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/image-recognition-for-retail/",
+      "path": "/blog/image-recognition-for-retail/",
+      "language": "en",
+      "slug": "image-recognition-for-retail",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/plumbing-qualifications-2026/",
+      "path": "/blog/plumbing-qualifications-2026/",
+      "language": "en",
+      "slug": "plumbing-qualifications-2026",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/point-of-purchase-displays/",
+      "path": "/blog/point-of-purchase-displays/",
+      "language": "en",
+      "slug": "point-of-purchase-displays",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/shelf-insights/",
+      "path": "/blog/shelf-insights/",
+      "language": "en",
+      "slug": "shelf-insights",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/how-to-write-qc-reports/",
+      "path": "/blog/how-to-write-qc-reports/",
+      "language": "en",
+      "slug": "how-to-write-qc-reports",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/franchise-tools/",
+      "path": "/blog/franchise-tools/",
+      "language": "en",
+      "slug": "franchise-tools",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/best-hvac-apps/",
+      "path": "/blog/best-hvac-apps/",
+      "language": "en",
+      "slug": "best-hvac-apps",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/retail-sales-ideas/",
+      "path": "/blog/retail-sales-ideas/",
+      "language": "en",
+      "slug": "retail-sales-ideas",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/retail-audit-checklist/",
+      "path": "/blog/retail-audit-checklist/",
+      "language": "en",
+      "slug": "retail-audit-checklist",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/product-inspection-complete-guide/",
+      "path": "/blog/product-inspection-complete-guide/",
+      "language": "en",
+      "slug": "product-inspection-complete-guide",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/store-success/",
+      "path": "/blog/store-success/",
+      "language": "en",
+      "slug": "store-success",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/plumber-advertising-examples/",
+      "path": "/blog/plumber-advertising-examples/",
+      "language": "en",
+      "slug": "plumber-advertising-examples",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/image-recognition-in-cpg-market/",
+      "path": "/blog/image-recognition-in-cpg-market/",
+      "language": "en",
+      "slug": "image-recognition-in-cpg-market",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/customer-engagement-retail-store/",
+      "path": "/blog/customer-engagement-retail-store/",
+      "language": "en",
+      "slug": "customer-engagement-retail-store",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/restaurant-exterior-inspection/",
+      "path": "/blog/restaurant-exterior-inspection/",
+      "language": "en",
+      "slug": "restaurant-exterior-inspection",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/mobile-retail-execution-solution/",
+      "path": "/blog/mobile-retail-execution-solution/",
+      "language": "en",
+      "slug": "mobile-retail-execution-solution",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/hvac-contract/",
+      "path": "/blog/hvac-contract/",
+      "language": "en",
+      "slug": "hvac-contract",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/restaurant-quality/",
+      "path": "/blog/restaurant-quality/",
+      "language": "en",
+      "slug": "restaurant-quality",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/retail-execution-strategy/",
+      "path": "/blog/retail-execution-strategy/",
+      "language": "en",
+      "slug": "retail-execution-strategy",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/store-schedule/",
+      "path": "/blog/store-schedule/",
+      "language": "en",
+      "slug": "store-schedule",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/rental-property-inspections/",
+      "path": "/blog/rental-property-inspections/",
+      "language": "en",
+      "slug": "rental-property-inspections",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/retail-shelf-strategy-guide/",
+      "path": "/blog/retail-shelf-strategy-guide/",
+      "language": "en",
+      "slug": "retail-shelf-strategy-guide",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/plumbing-business-marketing/",
+      "path": "/blog/plumbing-business-marketing/",
+      "language": "en",
+      "slug": "plumbing-business-marketing",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/retail-store-marketing-strategy/",
+      "path": "/blog/retail-store-marketing-strategy/",
+      "language": "en",
+      "slug": "retail-store-marketing-strategy",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/restaurant-standards/",
+      "path": "/blog/restaurant-standards/",
+      "language": "en",
+      "slug": "restaurant-standards",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/kpis-for-retail-industry/",
+      "path": "/blog/kpis-for-retail-industry/",
+      "language": "en",
+      "slug": "kpis-for-retail-industry",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/increasing-retail-sales/",
+      "path": "/blog/increasing-retail-sales/",
+      "language": "en",
+      "slug": "increasing-retail-sales",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/strategic-sales/",
+      "path": "/blog/strategic-sales/",
+      "language": "en",
+      "slug": "strategic-sales",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/share-of-shelf/",
+      "path": "/blog/share-of-shelf/",
+      "language": "en",
+      "slug": "share-of-shelf",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/health-and-safety-in-retail-stores/",
+      "path": "/blog/health-and-safety-in-retail-stores/",
+      "language": "en",
+      "slug": "health-and-safety-in-retail-stores",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/action-plan-for-sales/",
+      "path": "/blog/action-plan-for-sales/",
+      "language": "en",
+      "slug": "action-plan-for-sales",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/business-plan-for-pest-control/",
+      "path": "/blog/business-plan-for-pest-control/",
+      "language": "en",
+      "slug": "business-plan-for-pest-control",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/30-60-90-day-sales-plan/",
+      "path": "/blog/30-60-90-day-sales-plan/",
+      "language": "en",
+      "slug": "30-60-90-day-sales-plan",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/field-report-example-for-inspection/",
+      "path": "/blog/field-report-example-for-inspection/",
+      "language": "en",
+      "slug": "field-report-example-for-inspection",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/sales-territory/",
+      "path": "/blog/sales-territory/",
+      "language": "en",
+      "slug": "sales-territory",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/different-types-of-plumbing/",
+      "path": "/blog/different-types-of-plumbing/",
+      "language": "en",
+      "slug": "different-types-of-plumbing",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/sales-in-fmcg/",
+      "path": "/blog/sales-in-fmcg/",
+      "language": "en",
+      "slug": "sales-in-fmcg",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/retail-execution/",
+      "path": "/blog/retail-execution/",
+      "language": "en",
+      "slug": "retail-execution",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/sales-team-management/",
+      "path": "/blog/sales-team-management/",
+      "language": "en",
+      "slug": "sales-team-management",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/restaurant-standard-operating-procedures/",
+      "path": "/blog/restaurant-standard-operating-procedures/",
+      "language": "en",
+      "slug": "restaurant-standard-operating-procedures",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/plumbing-certificate-requirements/",
+      "path": "/blog/plumbing-certificate-requirements/",
+      "language": "en",
+      "slug": "plumbing-certificate-requirements",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/field-team/",
+      "path": "/blog/field-team/",
+      "language": "en",
+      "slug": "field-team",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/retail-management-solution/",
+      "path": "/blog/retail-management-solution/",
+      "language": "en",
+      "slug": "retail-management-solution",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/field-sales-solutions/",
+      "path": "/blog/field-sales-solutions/",
+      "language": "en",
+      "slug": "field-sales-solutions",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/warm-sales/",
+      "path": "/blog/warm-sales/",
+      "language": "en",
+      "slug": "warm-sales",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/restaurant-quality-control/",
+      "path": "/blog/restaurant-quality-control/",
+      "language": "en",
+      "slug": "restaurant-quality-control",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/planogram-compliance/",
+      "path": "/blog/planogram-compliance/",
+      "language": "en",
+      "slug": "planogram-compliance",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/sales-motivation/",
+      "path": "/blog/sales-motivation/",
+      "language": "en",
+      "slug": "sales-motivation",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/quality-control-in-construction/",
+      "path": "/blog/quality-control-in-construction/",
+      "language": "en",
+      "slug": "quality-control-in-construction",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/open-ended-questions-for-sales/",
+      "path": "/blog/open-ended-questions-for-sales/",
+      "language": "en",
+      "slug": "open-ended-questions-for-sales",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/oac-meeting-in-construction/",
+      "path": "/blog/oac-meeting-in-construction/",
+      "language": "en",
+      "slug": "oac-meeting-in-construction",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/retail-marketing/",
+      "path": "/blog/retail-marketing/",
+      "language": "en",
+      "slug": "retail-marketing",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/construction-punch-list/",
+      "path": "/blog/construction-punch-list/",
+      "language": "en",
+      "slug": "construction-punch-list",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/pre-construction-inspection/",
+      "path": "/blog/pre-construction-inspection/",
+      "language": "en",
+      "slug": "pre-construction-inspection",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/successful-franchise/",
+      "path": "/blog/successful-franchise/",
+      "language": "en",
+      "slug": "successful-franchise",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/post-construction-inspection/",
+      "path": "/blog/post-construction-inspection/",
+      "language": "en",
+      "slug": "post-construction-inspection",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/osa-kpi/",
+      "path": "/blog/osa-kpi/",
+      "language": "en",
+      "slug": "osa-kpi",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/how-does-mystery-shopping-work/",
+      "path": "/blog/how-does-mystery-shopping-work/",
+      "language": "en",
+      "slug": "how-does-mystery-shopping-work",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/how-to-conduct-a-safety-audit-and-improve-workplace-safety/",
+      "path": "/blog/how-to-conduct-a-safety-audit-and-improve-workplace-safety/",
+      "language": "en",
+      "slug": "how-to-conduct-a-safety-audit-and-improve-workplace-safety",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/quality-inspections-reduce-defects-improve-quality/",
+      "path": "/blog/quality-inspections-reduce-defects-improve-quality/",
+      "language": "en",
+      "slug": "quality-inspections-reduce-defects-improve-quality",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/ncr-in-construction/",
+      "path": "/blog/ncr-in-construction/",
+      "language": "en",
+      "slug": "ncr-in-construction",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/retail-compliance/",
+      "path": "/blog/retail-compliance/",
+      "language": "en",
+      "slug": "retail-compliance",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/types-of-quality-inspection/",
+      "path": "/blog/types-of-quality-inspection/",
+      "language": "en",
+      "slug": "types-of-quality-inspection",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/construction-compliance/",
+      "path": "/blog/construction-compliance/",
+      "language": "en",
+      "slug": "construction-compliance",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/qa-and-qc-in-construction/",
+      "path": "/blog/qa-and-qc-in-construction/",
+      "language": "en",
+      "slug": "qa-and-qc-in-construction",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/retail-standards/",
+      "path": "/blog/retail-standards/",
+      "language": "en",
+      "slug": "retail-standards",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/supplier-quality-management/",
+      "path": "/blog/supplier-quality-management/",
+      "language": "en",
+      "slug": "supplier-quality-management",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/restaurant-audit/",
+      "path": "/blog/restaurant-audit/",
+      "language": "en",
+      "slug": "restaurant-audit",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/franchise-management/",
+      "path": "/blog/franchise-management/",
+      "language": "en",
+      "slug": "franchise-management",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/emr-construction-safety/",
+      "path": "/blog/emr-construction-safety/",
+      "language": "en",
+      "slug": "emr-construction-safety",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/lost-sales-due-to-stockouts/",
+      "path": "/blog/lost-sales-due-to-stockouts/",
+      "language": "en",
+      "slug": "lost-sales-due-to-stockouts",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/the-7-principles-of-retail/",
+      "path": "/blog/the-7-principles-of-retail/",
+      "language": "en",
+      "slug": "the-7-principles-of-retail",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/mep-inspection-in-construction/",
+      "path": "/blog/mep-inspection-in-construction/",
+      "language": "en",
+      "slug": "mep-inspection-in-construction",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/visual-merchandising-strategies/",
+      "path": "/blog/visual-merchandising-strategies/",
+      "language": "en",
+      "slug": "visual-merchandising-strategies",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/construction-snag-list/",
+      "path": "/blog/construction-snag-list/",
+      "language": "en",
+      "slug": "construction-snag-list",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/retail-replenishment/",
+      "path": "/blog/retail-replenishment/",
+      "language": "en",
+      "slug": "retail-replenishment",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/restaurant-mystery-shopping/",
+      "path": "/blog/restaurant-mystery-shopping/",
+      "language": "en",
+      "slug": "restaurant-mystery-shopping",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/inspection-and-test-plans-itps-the-2026-comprehensive-guide/",
+      "path": "/blog/inspection-and-test-plans-itps-the-2026-comprehensive-guide/",
+      "language": "en",
+      "slug": "inspection-and-test-plans-itps-the-2026-comprehensive-guide",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/blog/retail-audit/",
+      "path": "/blog/retail-audit/",
+      "language": "en",
+      "slug": "retail-audit",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/",
+      "path": "/",
+      "language": "en",
+      "slug": null,
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/servicio-a-domicilio/servicios-de-riego/",
+      "path": "/es/servicio-a-domicilio/servicios-de-riego/",
+      "language": "es",
+      "slug": "servicios-de-riego",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/servicio-a-domicilio/servicios-de-deshollinado/",
+      "path": "/es/servicio-a-domicilio/servicios-de-deshollinado/",
+      "language": "es",
+      "slug": "servicios-de-deshollinado",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/servicio-a-domicilio/servicio-de-instalacion/",
+      "path": "/es/servicio-a-domicilio/servicio-de-instalacion/",
+      "language": "es",
+      "slug": "servicio-de-instalacion",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/servicio-a-domicilio/reparacion-de-electrodomesticos/",
+      "path": "/es/servicio-a-domicilio/reparacion-de-electrodomesticos/",
+      "language": "es",
+      "slug": "reparacion-de-electrodomesticos",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/servicio-a-domicilio/pruebas-de-reflujo/",
+      "path": "/es/servicio-a-domicilio/pruebas-de-reflujo/",
+      "language": "es",
+      "slug": "pruebas-de-reflujo",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/servicio-a-domicilio/mantenimiento-de-inmuebles/",
+      "path": "/es/servicio-a-domicilio/mantenimiento-de-inmuebles/",
+      "language": "es",
+      "slug": "mantenimiento-de-inmuebles",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/servicio-a-domicilio/limpieza-de-alfombras/",
+      "path": "/es/servicio-a-domicilio/limpieza-de-alfombras/",
+      "language": "es",
+      "slug": "limpieza-de-alfombras",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/servicio-a-domicilio/instalacion-de-alarma/",
+      "path": "/es/servicio-a-domicilio/instalacion-de-alarma/",
+      "language": "es",
+      "slug": "instalacion-de-alarma",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/servicio-a-domicilio/domotica/",
+      "path": "/es/servicio-a-domicilio/domotica/",
+      "language": "es",
+      "slug": "domotica",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/servicio-a-domicilio/control-de-plagas/",
+      "path": "/es/servicio-a-domicilio/control-de-plagas/",
+      "language": "es",
+      "slug": "control-de-plagas",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/servicio-a-domicilio/servicios-para-puertas-de-garaje/",
+      "path": "/es/servicio-a-domicilio/servicios-para-puertas-de-garaje/",
+      "language": "es",
+      "slug": "servicios-para-puertas-de-garaje",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/servicio-a-domicilio/servicios-de-placas-de-yeso/",
+      "path": "/es/servicio-a-domicilio/servicios-de-placas-de-yeso/",
+      "language": "es",
+      "slug": "servicios-de-placas-de-yeso",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/servicio-a-domicilio/servicios-de-cerrajeria/",
+      "path": "/es/servicio-a-domicilio/servicios-de-cerrajeria/",
+      "language": "es",
+      "slug": "servicios-de-cerrajeria",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/servicio-a-domicilio/servicio-de-ascensores/",
+      "path": "/es/servicio-a-domicilio/servicio-de-ascensores/",
+      "language": "es",
+      "slug": "servicio-de-ascensores",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/servicio-a-domicilio/renovaciones-del-hogar/",
+      "path": "/es/servicio-a-domicilio/renovaciones-del-hogar/",
+      "language": "es",
+      "slug": "renovaciones-del-hogar",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/servicio-a-domicilio/pintura/",
+      "path": "/es/servicio-a-domicilio/pintura/",
+      "language": "es",
+      "slug": "pintura",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/servicio-a-domicilio/manitas/",
+      "path": "/es/servicio-a-domicilio/manitas/",
+      "language": "es",
+      "slug": "manitas",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/servicio-a-domicilio/limpieza-comercial/",
+      "path": "/es/servicio-a-domicilio/limpieza-comercial/",
+      "language": "es",
+      "slug": "limpieza-comercial",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/servicio-a-domicilio/inspeccion-de-obras/",
+      "path": "/es/servicio-a-domicilio/inspeccion-de-obras/",
+      "language": "es",
+      "slug": "inspeccion-de-obras",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/servicio-a-domicilio/cuidado-del-cesped/",
+      "path": "/es/servicio-a-domicilio/cuidado-del-cesped/",
+      "language": "es",
+      "slug": "cuidado-del-cesped",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/servicio-a-domicilio/contratacion-general/",
+      "path": "/es/servicio-a-domicilio/contratacion-general/",
+      "language": "es",
+      "slug": "contratacion-general",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/servicio-a-domicilio/servicios-para-piscinas-y-spas/",
+      "path": "/es/servicio-a-domicilio/servicios-para-piscinas-y-spas/",
+      "language": "es",
+      "slug": "servicios-para-piscinas-y-spas",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/servicio-a-domicilio/servicios-de-pisos/",
+      "path": "/es/servicio-a-domicilio/servicios-de-pisos/",
+      "language": "es",
+      "slug": "servicios-de-pisos",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/servicio-a-domicilio/servicios-de-cercas/",
+      "path": "/es/servicio-a-domicilio/servicios-de-cercas/",
+      "language": "es",
+      "slug": "servicios-de-cercas",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/servicio-a-domicilio/retirada-de-nieve/",
+      "path": "/es/servicio-a-domicilio/retirada-de-nieve/",
+      "language": "es",
+      "slug": "retirada-de-nieve",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/servicio-a-domicilio/recubrimientos-protectores/",
+      "path": "/es/servicio-a-domicilio/recubrimientos-protectores/",
+      "language": "es",
+      "slug": "recubrimientos-protectores",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/servicio-a-domicilio/paseo-de-perros/",
+      "path": "/es/servicio-a-domicilio/paseo-de-perros/",
+      "language": "es",
+      "slug": "paseo-de-perros",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/servicio-a-domicilio/limpieza-del-hogar/",
+      "path": "/es/servicio-a-domicilio/limpieza-del-hogar/",
+      "language": "es",
+      "slug": "limpieza-del-hogar",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/servicio-a-domicilio/lavado-a-presion/",
+      "path": "/es/servicio-a-domicilio/lavado-a-presion/",
+      "language": "es",
+      "slug": "lavado-a-presion",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/servicio-a-domicilio/fosico/",
+      "path": "/es/servicio-a-domicilio/fosico/",
+      "language": "es",
+      "slug": "fosico",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/servicio-a-domicilio/cuidado-de-los-arboles/",
+      "path": "/es/servicio-a-domicilio/cuidado-de-los-arboles/",
+      "language": "es",
+      "slug": "cuidado-de-los-arboles",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/servicio-a-domicilio/contratacion-electricas/",
+      "path": "/es/servicio-a-domicilio/contratacion-electricas/",
+      "language": "es",
+      "slug": "contratacion-electricas",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/servicio-a-domicilio/servicios-mecanicos/",
+      "path": "/es/servicio-a-domicilio/servicios-mecanicos/",
+      "language": "es",
+      "slug": "servicios-mecanicos",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/servicio-a-domicilio/servicios-de-limpieza/",
+      "path": "/es/servicio-a-domicilio/servicios-de-limpieza/",
+      "language": "es",
+      "slug": "servicios-de-limpieza",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/servicio-a-domicilio/servicios-de-agua-de-pozo/",
+      "path": "/es/servicio-a-domicilio/servicios-de-agua-de-pozo/",
+      "language": "es",
+      "slug": "servicios-de-agua-de-pozo",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/servicio-a-domicilio/restauracion/",
+      "path": "/es/servicio-a-domicilio/restauracion/",
+      "language": "es",
+      "slug": "restauracion",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/servicio-a-domicilio/recogida-de-trastos/",
+      "path": "/es/servicio-a-domicilio/recogida-de-trastos/",
+      "language": "es",
+      "slug": "recogida-de-trastos",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/servicio-a-domicilio/paisajismo/",
+      "path": "/es/servicio-a-domicilio/paisajismo/",
+      "language": "es",
+      "slug": "paisajismo",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/servicio-a-domicilio/limpieza-de-ventanas/",
+      "path": "/es/servicio-a-domicilio/limpieza-de-ventanas/",
+      "language": "es",
+      "slug": "limpieza-de-ventanas",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/servicio-a-domicilio/instalacion-de-sistemas-de-seguridad/",
+      "path": "/es/servicio-a-domicilio/instalacion-de-sistemas-de-seguridad/",
+      "language": "es",
+      "slug": "instalacion-de-sistemas-de-seguridad",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/servicio-a-domicilio/fontaneria/",
+      "path": "/es/servicio-a-domicilio/fontaneria/",
+      "language": "es",
+      "slug": "fontaneria",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/servicio-a-domicilio/cubiertas/",
+      "path": "/es/servicio-a-domicilio/cubiertas/",
+      "language": "es",
+      "slug": "cubiertas",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/servicio-a-domicilio/climatizacion/",
+      "path": "/es/servicio-a-domicilio/climatizacion/",
+      "language": "es",
+      "slug": "climatizacion",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/industrias/belleza-y-bienestar/",
+      "path": "/es/industrias/belleza-y-bienestar/",
+      "language": "es",
+      "slug": "belleza-y-bienestar",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/industrias/electronica-de-consumo/",
+      "path": "/es/industrias/electronica-de-consumo/",
+      "language": "es",
+      "slug": "electronica-de-consumo",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/industrias/agencias-de-comercializacion-y-ejecucion-en-minorista/",
+      "path": "/es/industrias/agencias-de-comercializacion-y-ejecucion-en-minorista/",
+      "language": "es",
+      "slug": "agencias-de-comercializacion-y-ejecucion-en-minorista",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/industrias/administracion-de-propiedades/",
+      "path": "/es/industrias/administracion-de-propiedades/",
+      "language": "es",
+      "slug": "administracion-de-propiedades",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/industrias/seguros/",
+      "path": "/es/industrias/seguros/",
+      "language": "es",
+      "slug": "seguros",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/industrias/concesionario-automotriz/",
+      "path": "/es/industrias/concesionario-automotriz/",
+      "language": "es",
+      "slug": "concesionario-automotriz",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/industrias/banca-ventas-y-crm/",
+      "path": "/es/industrias/banca-ventas-y-crm/",
+      "language": "es",
+      "slug": "banca-ventas-y-crm",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/industrias/inspeccion-de-manufactura/",
+      "path": "/es/industrias/inspeccion-de-manufactura/",
+      "language": "es",
+      "slug": "inspeccion-de-manufactura",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/industrias/servicios-de-logistica-e-inspeccion/",
+      "path": "/es/industrias/servicios-de-logistica-e-inspeccion/",
+      "language": "es",
+      "slug": "servicios-de-logistica-e-inspeccion",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/industrias/salud-y-seguridad/",
+      "path": "/es/industrias/salud-y-seguridad/",
+      "language": "es",
+      "slug": "salud-y-seguridad",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/industrias/servicio-tecnico/",
+      "path": "/es/industrias/servicio-tecnico/",
+      "language": "es",
+      "slug": "servicio-tecnico",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/industrias/cumplimiento-en-salud/",
+      "path": "/es/industrias/cumplimiento-en-salud/",
+      "language": "es",
+      "slug": "cumplimiento-en-salud",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/industrias/auditoria-de-franquicias/",
+      "path": "/es/industrias/auditoria-de-franquicias/",
+      "language": "es",
+      "slug": "auditoria-de-franquicias",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/industrias/bienes-raices-y-construccion/",
+      "path": "/es/industrias/bienes-raices-y-construccion/",
+      "language": "es",
+      "slug": "bienes-raices-y-construccion",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/industrias/inspeccion-de-instalaciones/",
+      "path": "/es/industrias/inspeccion-de-instalaciones/",
+      "language": "es",
+      "slug": "inspeccion-de-instalaciones",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/industrias/energia-y-servicios-publicos/",
+      "path": "/es/industrias/energia-y-servicios-publicos/",
+      "language": "es",
+      "slug": "energia-y-servicios-publicos",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/industrias/ventas-y-servicios-de-telecom/",
+      "path": "/es/industrias/ventas-y-servicios-de-telecom/",
+      "language": "es",
+      "slug": "ventas-y-servicios-de-telecom",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/industrias/inspeccion-hotelera/",
+      "path": "/es/industrias/inspeccion-hotelera/",
+      "language": "es",
+      "slug": "inspeccion-hotelera",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/industrias/gestion-de-alimentos-y-bebidas/",
+      "path": "/es/industrias/gestion-de-alimentos-y-bebidas/",
+      "language": "es",
+      "slug": "gestion-de-alimentos-y-bebidas",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/industrias/comercio-minorista/",
+      "path": "/es/industrias/comercio-minorista/",
+      "language": "es",
+      "slug": "comercio-minorista",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/industrias/productos-de-gran-consumo/",
+      "path": "/es/industrias/productos-de-gran-consumo/",
+      "language": "es",
+      "slug": "productos-de-gran-consumo",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/estudio-ia/",
+      "path": "/es/estudio-ia/",
+      "language": "es",
+      "slug": "estudio-ia",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/soluciones/gestion-de-equipos-en-campo/",
+      "path": "/es/soluciones/gestion-de-equipos-en-campo/",
+      "language": "es",
+      "slug": "gestion-de-equipos-en-campo",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/soluciones/servicio-de-campo/",
+      "path": "/es/soluciones/servicio-de-campo/",
+      "language": "es",
+      "slug": "servicio-de-campo",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/soluciones/ventas-de-campo/",
+      "path": "/es/soluciones/ventas-de-campo/",
+      "language": "es",
+      "slug": "ventas-de-campo",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/soluciones/auditoria-de-campo/",
+      "path": "/es/soluciones/auditoria-de-campo/",
+      "language": "es",
+      "slug": "auditoria-de-campo",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/soluciones/optimizacion-de-rutas/",
+      "path": "/es/soluciones/optimizacion-de-rutas/",
+      "language": "es",
+      "slug": "optimizacion-de-rutas",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/soluciones/reconocimiento-de-imagenes/",
+      "path": "/es/soluciones/reconocimiento-de-imagenes/",
+      "language": "es",
+      "slug": "reconocimiento-de-imagenes",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/soluciones/ejecucion-en-tienda/",
+      "path": "/es/soluciones/ejecucion-en-tienda/",
+      "language": "es",
+      "slug": "ejecucion-en-tienda",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/soluciones/comercializacion/",
+      "path": "/es/soluciones/comercializacion/",
+      "language": "es",
+      "slug": "comercializacion",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/sektorler/merch-ve-perakende-acenteleri/",
+      "path": "/tr/sektorler/merch-ve-perakende-acenteleri/",
+      "language": "tr",
+      "slug": "merch-ve-perakende-acenteleri",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/sektorler/guzellik-ve-saglik/",
+      "path": "/tr/sektorler/guzellik-ve-saglik/",
+      "language": "tr",
+      "slug": "guzellik-ve-saglik",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/sektorler/tuketici-elektronigi/",
+      "path": "/tr/sektorler/tuketici-elektronigi/",
+      "language": "tr",
+      "slug": "tuketici-elektronigi",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/sektorler/gayrimenkul/",
+      "path": "/tr/sektorler/gayrimenkul/",
+      "language": "tr",
+      "slug": "gayrimenkul",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/sektorler/sigortacilik/",
+      "path": "/tr/sektorler/sigortacilik/",
+      "language": "tr",
+      "slug": "sigortacilik",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/sektorler/otomotiv-yonetimi/",
+      "path": "/tr/sektorler/otomotiv-yonetimi/",
+      "language": "tr",
+      "slug": "otomotiv-yonetimi",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/sektorler/bankacilik-ve-crm/",
+      "path": "/tr/sektorler/bankacilik-ve-crm/",
+      "language": "tr",
+      "slug": "bankacilik-ve-crm",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/sektorler/uretim-denetimi/",
+      "path": "/tr/sektorler/uretim-denetimi/",
+      "language": "tr",
+      "slug": "uretim-denetimi",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/sektorler/lojistik/",
+      "path": "/tr/sektorler/lojistik/",
+      "language": "tr",
+      "slug": "lojistik",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/sektorler/saglik-guvenlik/",
+      "path": "/tr/sektorler/saglik-guvenlik/",
+      "language": "tr",
+      "slug": "saglik-guvenlik",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/sektorler/teknik-servis/",
+      "path": "/tr/sektorler/teknik-servis/",
+      "language": "tr",
+      "slug": "teknik-servis",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/sektorler/saglik-denetimi/",
+      "path": "/tr/sektorler/saglik-denetimi/",
+      "language": "tr",
+      "slug": "saglik-denetimi",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/sektorler/restoran-ve-franchise-zincirleri/",
+      "path": "/tr/sektorler/restoran-ve-franchise-zincirleri/",
+      "language": "tr",
+      "slug": "restoran-ve-franchise-zincirleri",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/sektorler/gayrimenkul-ve-insaat/",
+      "path": "/tr/sektorler/gayrimenkul-ve-insaat/",
+      "language": "tr",
+      "slug": "gayrimenkul-ve-insaat",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/sektorler/tesis-denetimi/",
+      "path": "/tr/sektorler/tesis-denetimi/",
+      "language": "tr",
+      "slug": "tesis-denetimi",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/sektorler/enerji-ve-altyapi/",
+      "path": "/tr/sektorler/enerji-ve-altyapi/",
+      "language": "tr",
+      "slug": "enerji-ve-altyapi",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/sektorler/telekom/",
+      "path": "/tr/sektorler/telekom/",
+      "language": "tr",
+      "slug": "telekom",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/sektorler/konaklama-denetimi/",
+      "path": "/tr/sektorler/konaklama-denetimi/",
+      "language": "tr",
+      "slug": "konaklama-denetimi",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/sektorler/yiyecek-ve-icecek/",
+      "path": "/tr/sektorler/yiyecek-ve-icecek/",
+      "language": "tr",
+      "slug": "yiyecek-ve-icecek",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/sektorler/perakende/",
+      "path": "/tr/sektorler/perakende/",
+      "language": "tr",
+      "slug": "perakende",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/sektorler/cpg/",
+      "path": "/tr/sektorler/cpg/",
+      "language": "tr",
+      "slug": "cpg",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/yapay-zeka/",
+      "path": "/tr/yapay-zeka/",
+      "language": "tr",
+      "slug": "yapay-zeka",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/cozumler/saha-ekibi-yonetimi/",
+      "path": "/tr/cozumler/saha-ekibi-yonetimi/",
+      "language": "tr",
+      "slug": "saha-ekibi-yonetimi",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/cozumler/saha-servis/",
+      "path": "/tr/cozumler/saha-servis/",
+      "language": "tr",
+      "slug": "saha-servis",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/cozumler/saha-satis/",
+      "path": "/tr/cozumler/saha-satis/",
+      "language": "tr",
+      "slug": "saha-satis",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/cozumler/saha-denetimi/",
+      "path": "/tr/cozumler/saha-denetimi/",
+      "language": "tr",
+      "slug": "saha-denetimi",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/cozumler/rota-optimizasyonu/",
+      "path": "/tr/cozumler/rota-optimizasyonu/",
+      "language": "tr",
+      "slug": "rota-optimizasyonu",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/cozumler/goruntu-tanima/",
+      "path": "/tr/cozumler/goruntu-tanima/",
+      "language": "tr",
+      "slug": "goruntu-tanima",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/cozumler/magaza-ici-denetim/",
+      "path": "/tr/cozumler/magaza-ici-denetim/",
+      "language": "tr",
+      "slug": "magaza-ici-denetim",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/cozumler/merchandising/",
+      "path": "/tr/cozumler/merchandising/",
+      "language": "tr",
+      "slug": "merchandising",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/ai-field-operations-software/",
+      "path": "/ai-field-operations-software/",
+      "language": "en",
+      "slug": "ai-field-operations-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/home-service/snow-removal-software/",
+      "path": "/home-service/snow-removal-software/",
+      "language": "en",
+      "slug": "snow-removal-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/home-service/restoration-software/",
+      "path": "/home-service/restoration-software/",
+      "language": "en",
+      "slug": "restoration-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/home-service/pool-spa-services-software/",
+      "path": "/home-service/pool-spa-services-software/",
+      "language": "en",
+      "slug": "pool-spa-services-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/home-service/mechanical-services-software/",
+      "path": "/home-service/mechanical-services-software/",
+      "language": "en",
+      "slug": "mechanical-services-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/home-service/junk-removal-software/",
+      "path": "/home-service/junk-removal-software/",
+      "language": "en",
+      "slug": "junk-removal-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/home-service/hvac-software/",
+      "path": "/home-service/hvac-software/",
+      "language": "en",
+      "slug": "hvac-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/home-service/handyman-software/",
+      "path": "/home-service/handyman-software/",
+      "language": "en",
+      "slug": "handyman-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/home-service/dog-walking-software/",
+      "path": "/home-service/dog-walking-software/",
+      "language": "en",
+      "slug": "dog-walking-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/home-service/fence-services-software/",
+      "path": "/home-service/fence-services-software/",
+      "language": "en",
+      "slug": "fence-services-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/home-service/carpet-cleaning-software/",
+      "path": "/home-service/carpet-cleaning-software/",
+      "language": "en",
+      "slug": "carpet-cleaning-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/home-service/window-cleaning-software/",
+      "path": "/home-service/window-cleaning-software/",
+      "language": "en",
+      "slug": "window-cleaning-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/home-service/septic-software/",
+      "path": "/home-service/septic-software/",
+      "language": "en",
+      "slug": "septic-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/home-service/protective-coatings-software/",
+      "path": "/home-service/protective-coatings-software/",
+      "language": "en",
+      "slug": "protective-coatings-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/home-service/plumbing-software/",
+      "path": "/home-service/plumbing-software/",
+      "language": "en",
+      "slug": "plumbing-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/home-service/locksmith-services-software/",
+      "path": "/home-service/locksmith-services-software/",
+      "language": "en",
+      "slug": "locksmith-services-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/home-service/janitorial-services-software/",
+      "path": "/home-service/janitorial-services-software/",
+      "language": "en",
+      "slug": "janitorial-services-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/home-service/home-renovations-software/",
+      "path": "/home-service/home-renovations-software/",
+      "language": "en",
+      "slug": "home-renovations-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/home-service/general-contracting-software/",
+      "path": "/home-service/general-contracting-software/",
+      "language": "en",
+      "slug": "general-contracting-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/home-service/elevator-service-software/",
+      "path": "/home-service/elevator-service-software/",
+      "language": "en",
+      "slug": "elevator-service-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/home-service/construction-inspection/",
+      "path": "/home-service/construction-inspection/",
+      "language": "en",
+      "slug": "construction-inspection",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/home-service/backflow-testing-software/",
+      "path": "/home-service/backflow-testing-software/",
+      "language": "en",
+      "slug": "backflow-testing-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/home-service/well-water-services/",
+      "path": "/home-service/well-water-services/",
+      "language": "en",
+      "slug": "well-water-services",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/home-service/security-installation/",
+      "path": "/home-service/security-installation/",
+      "language": "en",
+      "slug": "security-installation",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/home-service/property-maintenance/",
+      "path": "/home-service/property-maintenance/",
+      "language": "en",
+      "slug": "property-maintenance",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/home-service/pest-control-software/",
+      "path": "/home-service/pest-control-software/",
+      "language": "en",
+      "slug": "pest-control-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/home-service/lawn-care-software/",
+      "path": "/home-service/lawn-care-software/",
+      "language": "en",
+      "slug": "lawn-care-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/home-service/irrigation-services-software/",
+      "path": "/home-service/irrigation-services-software/",
+      "language": "en",
+      "slug": "irrigation-services-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/home-service/home-cleaning-software/",
+      "path": "/home-service/home-cleaning-software/",
+      "language": "en",
+      "slug": "home-cleaning-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/home-service/garage-door-services-software/",
+      "path": "/home-service/garage-door-services-software/",
+      "language": "en",
+      "slug": "garage-door-services-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/home-service/electrical-contracting-software/",
+      "path": "/home-service/electrical-contracting-software/",
+      "language": "en",
+      "slug": "electrical-contracting-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/home-service/commercial-cleaning-software/",
+      "path": "/home-service/commercial-cleaning-software/",
+      "language": "en",
+      "slug": "commercial-cleaning-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/home-service/appliance-repair-software/",
+      "path": "/home-service/appliance-repair-software/",
+      "language": "en",
+      "slug": "appliance-repair-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/home-service/tree-care-software/",
+      "path": "/home-service/tree-care-software/",
+      "language": "en",
+      "slug": "tree-care-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/home-service/roofing-software/",
+      "path": "/home-service/roofing-software/",
+      "language": "en",
+      "slug": "roofing-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/home-service/pressure-washing-software/",
+      "path": "/home-service/pressure-washing-software/",
+      "language": "en",
+      "slug": "pressure-washing-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/home-service/painting-software/",
+      "path": "/home-service/painting-software/",
+      "language": "en",
+      "slug": "painting-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/home-service/landscaping-software/",
+      "path": "/home-service/landscaping-software/",
+      "language": "en",
+      "slug": "landscaping-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/home-service/installation-service-software/",
+      "path": "/home-service/installation-service-software/",
+      "language": "en",
+      "slug": "installation-service-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/home-service/home-automation-software/",
+      "path": "/home-service/home-automation-software/",
+      "language": "en",
+      "slug": "home-automation-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/home-service/flooring-services-software/",
+      "path": "/home-service/flooring-services-software/",
+      "language": "en",
+      "slug": "flooring-services-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/home-service/drywall-services-software/",
+      "path": "/home-service/drywall-services-software/",
+      "language": "en",
+      "slug": "drywall-services-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/home-service/chimney-sweep-services-software/",
+      "path": "/home-service/chimney-sweep-services-software/",
+      "language": "en",
+      "slug": "chimney-sweep-services-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/home-service/alarm-installation-software/",
+      "path": "/home-service/alarm-installation-software/",
+      "language": "en",
+      "slug": "alarm-installation-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/industries/consumer-electronics/",
+      "path": "/industries/consumer-electronics/",
+      "language": "en",
+      "slug": "consumer-electronics",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/industries/beauty-wellness/",
+      "path": "/industries/beauty-wellness/",
+      "language": "en",
+      "slug": "beauty-wellness",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/industries/merchandising-retail-execution-agencies/",
+      "path": "/industries/merchandising-retail-execution-agencies/",
+      "language": "en",
+      "slug": "merchandising-retail-execution-agencies",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/industries/property-management/",
+      "path": "/industries/property-management/",
+      "language": "en",
+      "slug": "property-management",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/industries/insurance-field-inspection-software/",
+      "path": "/industries/insurance-field-inspection-software/",
+      "language": "en",
+      "slug": "insurance-field-inspection-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/industries/automotive-dealer/",
+      "path": "/industries/automotive-dealer/",
+      "language": "en",
+      "slug": "automotive-dealer",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/industries/banking-sales-crm/",
+      "path": "/industries/banking-sales-crm/",
+      "language": "en",
+      "slug": "banking-sales-crm",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/industries/manufacturing-inspection/",
+      "path": "/industries/manufacturing-inspection/",
+      "language": "en",
+      "slug": "manufacturing-inspection",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/industries/logistics-service-inspection/",
+      "path": "/industries/logistics-service-inspection/",
+      "language": "en",
+      "slug": "logistics-service-inspection",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/industries/health-and-safety-management-software/",
+      "path": "/industries/health-and-safety-management-software/",
+      "language": "en",
+      "slug": "health-and-safety-management-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/industries/technical-service-management-software/",
+      "path": "/industries/technical-service-management-software/",
+      "language": "en",
+      "slug": "technical-service-management-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/industries/healthcare-compliance/",
+      "path": "/industries/healthcare-compliance/",
+      "language": "en",
+      "slug": "healthcare-compliance",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/industries/franchise-audit-software/",
+      "path": "/industries/franchise-audit-software/",
+      "language": "en",
+      "slug": "franchise-audit-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/industries/mystery-shopping/",
+      "path": "/industries/mystery-shopping/",
+      "language": "en",
+      "slug": "mystery-shopping",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/industries/construction-management-software/",
+      "path": "/industries/construction-management-software/",
+      "language": "en",
+      "slug": "construction-management-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/industries/facility-inspection/",
+      "path": "/industries/facility-inspection/",
+      "language": "en",
+      "slug": "facility-inspection",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/industries/energy-utilities-field-service-software/",
+      "path": "/industries/energy-utilities-field-service-software/",
+      "language": "en",
+      "slug": "energy-utilities-field-service-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/industries/telecom-sales-service/",
+      "path": "/industries/telecom-sales-service/",
+      "language": "en",
+      "slug": "telecom-sales-service",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/industries/hospitality-inspection/",
+      "path": "/industries/hospitality-inspection/",
+      "language": "en",
+      "slug": "hospitality-inspection",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/industries/food-beverage-management/",
+      "path": "/industries/food-beverage-management/",
+      "language": "en",
+      "slug": "food-beverage-management",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/industries/cpg-software/",
+      "path": "/industries/cpg-software/",
+      "language": "en",
+      "slug": "cpg-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/industries/retail-management-software/",
+      "path": "/industries/retail-management-software/",
+      "language": "en",
+      "slug": "retail-management-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/solutions/field-team-management-software/",
+      "path": "/solutions/field-team-management-software/",
+      "language": "en",
+      "slug": "field-team-management-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/solutions/ai-field-service-software/",
+      "path": "/solutions/ai-field-service-software/",
+      "language": "en",
+      "slug": "ai-field-service-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/solutions/ai-field-sales-software/",
+      "path": "/solutions/ai-field-sales-software/",
+      "language": "en",
+      "slug": "ai-field-sales-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/solutions/ai-field-audit-software/",
+      "path": "/solutions/ai-field-audit-software/",
+      "language": "en",
+      "slug": "ai-field-audit-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/solutions/ai-image-recognition-software/",
+      "path": "/solutions/ai-image-recognition-software/",
+      "language": "en",
+      "slug": "ai-image-recognition-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/solutions/ai-route-optimization-software/",
+      "path": "/solutions/ai-route-optimization-software/",
+      "language": "en",
+      "slug": "ai-route-optimization-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/solutions/ai-in-store-execution-software/",
+      "path": "/solutions/ai-in-store-execution-software/",
+      "language": "en",
+      "slug": "ai-in-store-execution-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/solutions/ai-merchandising-software/",
+      "path": "/solutions/ai-merchandising-software/",
+      "language": "en",
+      "slug": "ai-merchandising-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/fiyatlandirma/",
+      "path": "/tr/fiyatlandirma/",
+      "language": "tr",
+      "slug": "fiyatlandirma",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/pricing/",
+      "path": "/pricing/",
+      "language": "en",
+      "slug": "pricing",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/get-demo/",
+      "path": "/get-demo/",
+      "language": "en",
+      "slug": "get-demo",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/demo-talebi/",
+      "path": "/tr/demo-talebi/",
+      "language": "tr",
+      "slug": "demo-talebi",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/precios/",
+      "path": "/es/precios/",
+      "language": "es",
+      "slug": "precios",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/",
+      "path": "/es/",
+      "language": "es",
+      "slug": null,
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/agenda-una-demo/",
+      "path": "/es/agenda-una-demo/",
+      "language": "es",
+      "slug": "agenda-una-demo",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/quienes-somos/",
+      "path": "/es/quienes-somos/",
+      "language": "es",
+      "slug": "quienes-somos",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/servicio-a-domicilio/",
+      "path": "/es/servicio-a-domicilio/",
+      "language": "es",
+      "slug": "servicio-a-domicilio",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/home-service/",
+      "path": "/home-service/",
+      "language": "en",
+      "slug": "home-service",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/herramientas-gratis/",
+      "path": "/es/herramientas-gratis/",
+      "language": "es",
+      "slug": "herramientas-gratis",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/preguntas-frecuentes/",
+      "path": "/es/preguntas-frecuentes/",
+      "language": "es",
+      "slug": "preguntas-frecuentes",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/servicio-a-domicilio/todas-las-industrias-de-servicios-para-el-hogar/",
+      "path": "/es/servicio-a-domicilio/todas-las-industrias-de-servicios-para-el-hogar/",
+      "language": "es",
+      "slug": "todas-las-industrias-de-servicios-para-el-hogar",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/industrias/educacion-y-formacion/",
+      "path": "/es/industrias/educacion-y-formacion/",
+      "language": "es",
+      "slug": "educacion-y-formacion",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/",
+      "path": "/tr/",
+      "language": "tr",
+      "slug": null,
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/blog/",
+      "path": "/es/blog/",
+      "language": "es",
+      "slug": "blog",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/es/ebooks-gratis/",
+      "path": "/es/ebooks-gratis/",
+      "language": "es",
+      "slug": "ebooks-gratis",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/caracteristicas/",
+      "path": "/es/caracteristicas/",
+      "language": "es",
+      "slug": "caracteristicas",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/industrias/",
+      "path": "/es/industrias/",
+      "language": "es",
+      "slug": "industrias",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/soluciones/gestion-de-distribucion/",
+      "path": "/es/soluciones/gestion-de-distribucion/",
+      "language": "es",
+      "slug": "gestion-de-distribucion",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/soluciones/",
+      "path": "/es/soluciones/",
+      "language": "es",
+      "slug": "soluciones",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/hakkimizda/",
+      "path": "/tr/hakkimizda/",
+      "language": "tr",
+      "slug": "hakkimizda",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/frequently-asked-questions/",
+      "path": "/frequently-asked-questions/",
+      "language": "en",
+      "slug": "frequently-asked-questions",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/about-us/",
+      "path": "/about-us/",
+      "language": "en",
+      "slug": "about-us",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ozellikler/",
+      "path": "/tr/ozellikler/",
+      "language": "tr",
+      "slug": "ozellikler",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/features/",
+      "path": "/features/",
+      "language": "en",
+      "slug": "features",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ucretsiz-araclar/",
+      "path": "/tr/ucretsiz-araclar/",
+      "language": "tr",
+      "slug": "ucretsiz-araclar",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/blog/",
+      "path": "/tr/blog/",
+      "language": "tr",
+      "slug": "blog",
+      "source": "sitemap",
+      "isExcluded": true,
+      "excludeReason": "blog"
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ev-hizmetleri/tum-ev-hizmetleri-sektorleri/",
+      "path": "/tr/ev-hizmetleri/tum-ev-hizmetleri-sektorleri/",
+      "language": "tr",
+      "slug": "tum-ev-hizmetleri-sektorleri",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ev-hizmetleri/",
+      "path": "/tr/ev-hizmetleri/",
+      "language": "tr",
+      "slug": "ev-hizmetleri",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ev-hizmetleri/mekanik-hizmetler/",
+      "path": "/tr/ev-hizmetleri/mekanik-hizmetler/",
+      "language": "tr",
+      "slug": "mekanik-hizmetler",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/cozumler/dagitim-yonetimi/",
+      "path": "/tr/cozumler/dagitim-yonetimi/",
+      "language": "tr",
+      "slug": "dagitim-yonetimi",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/sartlar-ve-kosullar/",
+      "path": "/tr/sartlar-ve-kosullar/",
+      "language": "tr",
+      "slug": "sartlar-ve-kosullar",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/fieldpie-mobil-uygulamasi-gizlilik-politikasi/",
+      "path": "/tr/fieldpie-mobil-uygulamasi-gizlilik-politikasi/",
+      "language": "tr",
+      "slug": "fieldpie-mobil-uygulamasi-gizlilik-politikasi",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/gizlilik-politikasi/",
+      "path": "/tr/gizlilik-politikasi/",
+      "language": "tr",
+      "slug": "gizlilik-politikasi",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ucretsiz-e-kitaplar/",
+      "path": "/tr/ucretsiz-e-kitaplar/",
+      "language": "tr",
+      "slug": "ucretsiz-e-kitaplar",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/sikca-sorulan-sorular/",
+      "path": "/tr/sikca-sorulan-sorular/",
+      "language": "tr",
+      "slug": "sikca-sorulan-sorular",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ev-hizmetleri/pencere-temizligi/",
+      "path": "/tr/ev-hizmetleri/pencere-temizligi/",
+      "language": "tr",
+      "slug": "pencere-temizligi",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ev-hizmetleri/kuyu-suyu-hizmetleri/",
+      "path": "/tr/ev-hizmetleri/kuyu-suyu-hizmetleri/",
+      "language": "tr",
+      "slug": "kuyu-suyu-hizmetleri",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ev-hizmetleri/agac-bakimi/",
+      "path": "/tr/ev-hizmetleri/agac-bakimi/",
+      "language": "tr",
+      "slug": "agac-bakimi",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ev-hizmetleri/kar-temizleme/",
+      "path": "/tr/ev-hizmetleri/kar-temizleme/",
+      "language": "tr",
+      "slug": "kar-temizleme",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ev-hizmetleri/septik/",
+      "path": "/tr/ev-hizmetleri/septik/",
+      "language": "tr",
+      "slug": "septik",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ev-hizmetleri/guvenlik-kurulumu/",
+      "path": "/tr/ev-hizmetleri/guvenlik-kurulumu/",
+      "language": "tr",
+      "slug": "guvenlik-kurulumu",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ev-hizmetleri/cati-kaplama/",
+      "path": "/tr/ev-hizmetleri/cati-kaplama/",
+      "language": "tr",
+      "slug": "cati-kaplama",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ev-hizmetleri/restorasyon/",
+      "path": "/tr/ev-hizmetleri/restorasyon/",
+      "language": "tr",
+      "slug": "restorasyon",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ev-hizmetleri/koruyucu-kaplamalar/",
+      "path": "/tr/ev-hizmetleri/koruyucu-kaplamalar/",
+      "language": "tr",
+      "slug": "koruyucu-kaplamalar",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ev-hizmetleri/mulk-bakimi/",
+      "path": "/tr/ev-hizmetleri/mulk-bakimi/",
+      "language": "tr",
+      "slug": "mulk-bakimi",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ev-hizmetleri/basincli-yikama/",
+      "path": "/tr/ev-hizmetleri/basincli-yikama/",
+      "language": "tr",
+      "slug": "basincli-yikama",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ev-hizmetleri/havuz-ve-spa-hizmetleri/",
+      "path": "/tr/ev-hizmetleri/havuz-ve-spa-hizmetleri/",
+      "language": "tr",
+      "slug": "havuz-ve-spa-hizmetleri",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ev-hizmetleri/sihhi-tesisat/",
+      "path": "/tr/ev-hizmetleri/sihhi-tesisat/",
+      "language": "tr",
+      "slug": "sihhi-tesisat",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ev-hizmetleri/hasere-kontrolu/",
+      "path": "/tr/ev-hizmetleri/hasere-kontrolu/",
+      "language": "tr",
+      "slug": "hasere-kontrolu",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ev-hizmetleri/boyacilik/",
+      "path": "/tr/ev-hizmetleri/boyacilik/",
+      "language": "tr",
+      "slug": "boyacilik",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ev-hizmetleri/cilingir-hizmetleri/",
+      "path": "/tr/ev-hizmetleri/cilingir-hizmetleri/",
+      "language": "tr",
+      "slug": "cilingir-hizmetleri",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ev-hizmetleri/cim-bakimi/",
+      "path": "/tr/ev-hizmetleri/cim-bakimi/",
+      "language": "tr",
+      "slug": "cim-bakimi",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ev-hizmetleri/peyzaj/",
+      "path": "/tr/ev-hizmetleri/peyzaj/",
+      "language": "tr",
+      "slug": "peyzaj",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ev-hizmetleri/cop-toplama/",
+      "path": "/tr/ev-hizmetleri/cop-toplama/",
+      "language": "tr",
+      "slug": "cop-toplama",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ev-hizmetleri/temizlik-hizmetleri/",
+      "path": "/tr/ev-hizmetleri/temizlik-hizmetleri/",
+      "language": "tr",
+      "slug": "temizlik-hizmetleri",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ev-hizmetleri/sulama-hizmetleri/",
+      "path": "/tr/ev-hizmetleri/sulama-hizmetleri/",
+      "language": "tr",
+      "slug": "sulama-hizmetleri",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ev-hizmetleri/kurulum-hizmeti/",
+      "path": "/tr/ev-hizmetleri/kurulum-hizmeti/",
+      "language": "tr",
+      "slug": "kurulum-hizmeti",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ev-hizmetleri/hvac/",
+      "path": "/tr/ev-hizmetleri/hvac/",
+      "language": "tr",
+      "slug": "hvac",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ev-hizmetleri/ev-tadilatlari/",
+      "path": "/tr/ev-hizmetleri/ev-tadilatlari/",
+      "language": "tr",
+      "slug": "ev-tadilatlari",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ev-hizmetleri/ev-temizligi/",
+      "path": "/tr/ev-hizmetleri/ev-temizligi/",
+      "language": "tr",
+      "slug": "ev-temizligi",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ev-hizmetleri/ev-otomasyonu/",
+      "path": "/tr/ev-hizmetleri/ev-otomasyonu/",
+      "language": "tr",
+      "slug": "ev-otomasyonu",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ev-hizmetleri/tamirci/",
+      "path": "/tr/ev-hizmetleri/tamirci/",
+      "language": "tr",
+      "slug": "tamirci",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ev-hizmetleri/genel-muteahhitlik/",
+      "path": "/tr/ev-hizmetleri/genel-muteahhitlik/",
+      "language": "tr",
+      "slug": "genel-muteahhitlik",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ev-hizmetleri/garaj-kapisi-hizmetleri/",
+      "path": "/tr/ev-hizmetleri/garaj-kapisi-hizmetleri/",
+      "language": "tr",
+      "slug": "garaj-kapisi-hizmetleri",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ev-hizmetleri/doseme-hizmetleri/",
+      "path": "/tr/ev-hizmetleri/doseme-hizmetleri/",
+      "language": "tr",
+      "slug": "doseme-hizmetleri",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ev-hizmetleri/cit-hizmetleri/",
+      "path": "/tr/ev-hizmetleri/cit-hizmetleri/",
+      "language": "tr",
+      "slug": "cit-hizmetleri",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ev-hizmetleri/asansor-servisi/",
+      "path": "/tr/ev-hizmetleri/asansor-servisi/",
+      "language": "tr",
+      "slug": "asansor-servisi",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ev-hizmetleri/elektrik-muteahhitligi/",
+      "path": "/tr/ev-hizmetleri/elektrik-muteahhitligi/",
+      "language": "tr",
+      "slug": "elektrik-muteahhitligi",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ev-hizmetleri/alcipan-hizmetleri/",
+      "path": "/tr/ev-hizmetleri/alcipan-hizmetleri/",
+      "language": "tr",
+      "slug": "alcipan-hizmetleri",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ev-hizmetleri/kopek-gezdirme/",
+      "path": "/tr/ev-hizmetleri/kopek-gezdirme/",
+      "language": "tr",
+      "slug": "kopek-gezdirme",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ev-hizmetleri/insaat/",
+      "path": "/tr/ev-hizmetleri/insaat/",
+      "language": "tr",
+      "slug": "insaat",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ev-hizmetleri/ticari-temizlik/",
+      "path": "/tr/ev-hizmetleri/ticari-temizlik/",
+      "language": "tr",
+      "slug": "ticari-temizlik",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ev-hizmetleri/baca-temizleme-hizmetleri/",
+      "path": "/tr/ev-hizmetleri/baca-temizleme-hizmetleri/",
+      "language": "tr",
+      "slug": "baca-temizleme-hizmetleri",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ev-hizmetleri/hali-temizleme/",
+      "path": "/tr/ev-hizmetleri/hali-temizleme/",
+      "language": "tr",
+      "slug": "hali-temizleme",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ev-hizmetleri/geri-akis-testi/",
+      "path": "/tr/ev-hizmetleri/geri-akis-testi/",
+      "language": "tr",
+      "slug": "geri-akis-testi",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ev-hizmetleri/elektronik-esya-onarimi/",
+      "path": "/tr/ev-hizmetleri/elektronik-esya-onarimi/",
+      "language": "tr",
+      "slug": "elektronik-esya-onarimi",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ev-hizmetleri/alarm-kurulumu/",
+      "path": "/tr/ev-hizmetleri/alarm-kurulumu/",
+      "language": "tr",
+      "slug": "alarm-kurulumu",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/sektorler/",
+      "path": "/tr/sektorler/",
+      "language": "tr",
+      "slug": "sektorler",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/element-deposu/",
+      "path": "/tr/element-deposu/",
+      "language": "tr",
+      "slug": "element-deposu",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/cozumler/",
+      "path": "/tr/cozumler/",
+      "language": "tr",
+      "slug": "cozumler",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/fieldpie-free-tools/",
+      "path": "/fieldpie-free-tools/",
+      "language": "en",
+      "slug": "fieldpie-free-tools",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/fieldpie-blog/",
+      "path": "/fieldpie-blog/",
+      "language": "en",
+      "slug": "fieldpie-blog",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/solutions/",
+      "path": "/solutions/",
+      "language": "en",
+      "slug": "solutions",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/industries/",
+      "path": "/industries/",
+      "language": "en",
+      "slug": "industries",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/feature/real-time-reporting-software/",
+      "path": "/feature/real-time-reporting-software/",
+      "language": "en",
+      "slug": "real-time-reporting-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/caracteristica/citando/",
+      "path": "/es/caracteristica/citando/",
+      "language": "es",
+      "slug": "citando",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/caracteristica/reconocimiento-de-imagenes/",
+      "path": "/es/caracteristica/reconocimiento-de-imagenes/",
+      "language": "es",
+      "slug": "reconocimiento-de-imagenes",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/caracteristica/reportes-y-analitica-en-tiempo-real/",
+      "path": "/es/caracteristica/reportes-y-analitica-en-tiempo-real/",
+      "language": "es",
+      "slug": "reportes-y-analitica-en-tiempo-real",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/caracteristica/automatizacion-del-flujo-de-trabajo/",
+      "path": "/es/caracteristica/automatizacion-del-flujo-de-trabajo/",
+      "language": "es",
+      "slug": "automatizacion-del-flujo-de-trabajo",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/caracteristica/formularios-personalizados/",
+      "path": "/es/caracteristica/formularios-personalizados/",
+      "language": "es",
+      "slug": "formularios-personalizados",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/caracteristica/reserva-en-linea/",
+      "path": "/es/caracteristica/reserva-en-linea/",
+      "language": "es",
+      "slug": "reserva-en-linea",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/caracteristica/geoetiquetado/",
+      "path": "/es/caracteristica/geoetiquetado/",
+      "language": "es",
+      "slug": "geoetiquetado",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/caracteristica/optimizacion-de-rutas/",
+      "path": "/es/caracteristica/optimizacion-de-rutas/",
+      "language": "es",
+      "slug": "optimizacion-de-rutas",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/caracteristica/gestion-de-trabajos-y-tareas/",
+      "path": "/es/caracteristica/gestion-de-trabajos-y-tareas/",
+      "language": "es",
+      "slug": "gestion-de-trabajos-y-tareas",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/caracteristica/programacion/",
+      "path": "/es/caracteristica/programacion/",
+      "language": "es",
+      "slug": "programacion",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/caracteristica/facturas/",
+      "path": "/es/caracteristica/facturas/",
+      "language": "es",
+      "slug": "facturas",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/caracteristica/pagos/",
+      "path": "/es/caracteristica/pagos/",
+      "language": "es",
+      "slug": "pagos",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/caracteristica/gestion-de-clientes/",
+      "path": "/es/caracteristica/gestion-de-clientes/",
+      "language": "es",
+      "slug": "gestion-de-clientes",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/caracteristica/gestion-de-usuarios-y-roles/",
+      "path": "/es/caracteristica/gestion-de-usuarios-y-roles/",
+      "language": "es",
+      "slug": "gestion-de-usuarios-y-roles",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/caracteristica/gestion-de-equipos-y-seguimiento/",
+      "path": "/es/caracteristica/gestion-de-equipos-y-seguimiento/",
+      "language": "es",
+      "slug": "gestion-de-equipos-y-seguimiento",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/caracteristica/productos-y-servicios/",
+      "path": "/es/caracteristica/productos-y-servicios/",
+      "language": "es",
+      "slug": "productos-y-servicios",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/caracteristica/comunicacion/",
+      "path": "/es/caracteristica/comunicacion/",
+      "language": "es",
+      "slug": "comunicacion",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/caracteristica/notificacion/",
+      "path": "/es/caracteristica/notificacion/",
+      "language": "es",
+      "slug": "notificacion",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/caracteristica/visitas/",
+      "path": "/es/caracteristica/visitas/",
+      "language": "es",
+      "slug": "visitas",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/caracteristica/kpi-y-seguimiento-de-metas/",
+      "path": "/es/caracteristica/kpi-y-seguimiento-de-metas/",
+      "language": "es",
+      "slug": "kpi-y-seguimiento-de-metas",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/caracteristica/integraciones/",
+      "path": "/es/caracteristica/integraciones/",
+      "language": "es",
+      "slug": "integraciones",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/caracteristica/gestion-de-documentos/",
+      "path": "/es/caracteristica/gestion-de-documentos/",
+      "language": "es",
+      "slug": "gestion-de-documentos",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/caracteristica/gestion-de-inventario/",
+      "path": "/es/caracteristica/gestion-de-inventario/",
+      "language": "es",
+      "slug": "gestion-de-inventario",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/es/caracteristica/actividad/",
+      "path": "/es/caracteristica/actividad/",
+      "language": "es",
+      "slug": "actividad",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ozellik/is-akisi-otomasyonu/",
+      "path": "/tr/ozellik/is-akisi-otomasyonu/",
+      "language": "tr",
+      "slug": "is-akisi-otomasyonu",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ozellik/planlama/",
+      "path": "/tr/ozellik/planlama/",
+      "language": "tr",
+      "slug": "planlama",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ozellik/etkinlik/",
+      "path": "/tr/ozellik/etkinlik/",
+      "language": "tr",
+      "slug": "etkinlik",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ozellik/envanter-yonetimi/",
+      "path": "/tr/ozellik/envanter-yonetimi/",
+      "language": "tr",
+      "slug": "envanter-yonetimi",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ozellik/belge-yonetimi/",
+      "path": "/tr/ozellik/belge-yonetimi/",
+      "language": "tr",
+      "slug": "belge-yonetimi",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ozellik/online-rezervasyon/",
+      "path": "/tr/ozellik/online-rezervasyon/",
+      "language": "tr",
+      "slug": "online-rezervasyon",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ozellik/kpi-ve-hedef-takibi/",
+      "path": "/tr/ozellik/kpi-ve-hedef-takibi/",
+      "language": "tr",
+      "slug": "kpi-ve-hedef-takibi",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ozellik/ziyaretler/",
+      "path": "/tr/ozellik/ziyaretler/",
+      "language": "tr",
+      "slug": "ziyaretler",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ozellik/iletisim/",
+      "path": "/tr/ozellik/iletisim/",
+      "language": "tr",
+      "slug": "iletisim",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ozellik/urunler-ve-hizmetler/",
+      "path": "/tr/ozellik/urunler-ve-hizmetler/",
+      "language": "tr",
+      "slug": "urunler-ve-hizmetler",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ozellik/ekip-yonetimi-ve-takibi/",
+      "path": "/tr/ozellik/ekip-yonetimi-ve-takibi/",
+      "language": "tr",
+      "slug": "ekip-yonetimi-ve-takibi",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ozellik/kullanici-ve-rol-yonetimi/",
+      "path": "/tr/ozellik/kullanici-ve-rol-yonetimi/",
+      "language": "tr",
+      "slug": "kullanici-ve-rol-yonetimi",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ozellik/musteri-yonetimi/",
+      "path": "/tr/ozellik/musteri-yonetimi/",
+      "language": "tr",
+      "slug": "musteri-yonetimi",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ozellik/odemeler/",
+      "path": "/tr/ozellik/odemeler/",
+      "language": "tr",
+      "slug": "odemeler",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ozellik/cografi-etiketleme/",
+      "path": "/tr/ozellik/cografi-etiketleme/",
+      "language": "tr",
+      "slug": "cografi-etiketleme",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ozellik/rota-optimizasyonu/",
+      "path": "/tr/ozellik/rota-optimizasyonu/",
+      "language": "tr",
+      "slug": "rota-optimizasyonu",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ozellik/gercek-zamanli-raporlama-ve-analitik/",
+      "path": "/tr/ozellik/gercek-zamanli-raporlama-ve-analitik/",
+      "language": "tr",
+      "slug": "gercek-zamanli-raporlama-ve-analitik",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ozellik/ozellestirilebilir-formlar/",
+      "path": "/tr/ozellik/ozellestirilebilir-formlar/",
+      "language": "tr",
+      "slug": "ozellestirilebilir-formlar",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ozellik/entegrasyonlar/",
+      "path": "/tr/ozellik/entegrasyonlar/",
+      "language": "tr",
+      "slug": "entegrasyonlar",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ozellik/is-ve-gorev-yonetimi/",
+      "path": "/tr/ozellik/is-ve-gorev-yonetimi/",
+      "language": "tr",
+      "slug": "is-ve-gorev-yonetimi",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ozellik/goruntu-tanima/",
+      "path": "/tr/ozellik/goruntu-tanima/",
+      "language": "tr",
+      "slug": "goruntu-tanima",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ozellik/bildirim/",
+      "path": "/tr/ozellik/bildirim/",
+      "language": "tr",
+      "slug": "bildirim",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ozellik/faturalar/",
+      "path": "/tr/ozellik/faturalar/",
+      "language": "tr",
+      "slug": "faturalar",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ozellik/fiyat-teklifi/",
+      "path": "/tr/ozellik/fiyat-teklifi/",
+      "language": "tr",
+      "slug": "fiyat-teklifi",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/feature/smart-scheduling-dispatch-software/",
+      "path": "/feature/smart-scheduling-dispatch-software/",
+      "language": "en",
+      "slug": "smart-scheduling-dispatch-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/feature/customer-management-software/",
+      "path": "/feature/customer-management-software/",
+      "language": "en",
+      "slug": "customer-management-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/feature/activity-tracking-software/",
+      "path": "/feature/activity-tracking-software/",
+      "language": "en",
+      "slug": "activity-tracking-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/feature/inventory-management/",
+      "path": "/feature/inventory-management/",
+      "language": "en",
+      "slug": "inventory-management",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/feature/document-management-software/",
+      "path": "/feature/document-management-software/",
+      "language": "en",
+      "slug": "document-management-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/feature/app-integrations-software/",
+      "path": "/feature/app-integrations-software/",
+      "language": "en",
+      "slug": "app-integrations-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/feature/performance-targets-software/",
+      "path": "/feature/performance-targets-software/",
+      "language": "en",
+      "slug": "performance-targets-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/feature/visit-management-software/",
+      "path": "/feature/visit-management-software/",
+      "language": "en",
+      "slug": "visit-management-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/feature/notification-alert-software/",
+      "path": "/feature/notification-alert-software/",
+      "language": "en",
+      "slug": "notification-alert-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/feature/team-communication-software/",
+      "path": "/feature/team-communication-software/",
+      "language": "en",
+      "slug": "team-communication-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/feature/product-management-software/",
+      "path": "/feature/product-management-software/",
+      "language": "en",
+      "slug": "product-management-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/feature/team-management-software/",
+      "path": "/feature/team-management-software/",
+      "language": "en",
+      "slug": "team-management-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/feature/user-role-management-software/",
+      "path": "/feature/user-role-management-software/",
+      "language": "en",
+      "slug": "user-role-management-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/feature/payment-and-billing-software/",
+      "path": "/feature/payment-and-billing-software/",
+      "language": "en",
+      "slug": "payment-and-billing-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/feature/invoicing-software/",
+      "path": "/feature/invoicing-software/",
+      "language": "en",
+      "slug": "invoicing-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/feature/quoting-software/",
+      "path": "/feature/quoting-software/",
+      "language": "en",
+      "slug": "quoting-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/feature/online-booking-software/",
+      "path": "/feature/online-booking-software/",
+      "language": "en",
+      "slug": "online-booking-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/feature/geotagging-software/",
+      "path": "/feature/geotagging-software/",
+      "language": "en",
+      "slug": "geotagging-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/feature/route-planning-software/",
+      "path": "/feature/route-planning-software/",
+      "language": "en",
+      "slug": "route-planning-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/feature/ai-image-recognition-software/",
+      "path": "/feature/ai-image-recognition-software/",
+      "language": "en",
+      "slug": "ai-image-recognition-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/feature/work-order-management-software/",
+      "path": "/feature/work-order-management-software/",
+      "language": "en",
+      "slug": "work-order-management-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/feature/workflow-automation-software/",
+      "path": "/feature/workflow-automation-software/",
+      "language": "en",
+      "slug": "workflow-automation-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/feature/custom-form-builder-software/",
+      "path": "/feature/custom-form-builder-software/",
+      "language": "en",
+      "slug": "custom-form-builder-software",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tool/",
+      "path": "/tool/",
+      "language": "en",
+      "slug": "tool",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/ara%C3%A7/fatura-olusturucu/",
+      "path": "/tr/ara%C3%A7/fatura-olusturucu/",
+      "language": "tr",
+      "slug": "fatura-olusturucu",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tool/invoice-generator/",
+      "path": "/tool/invoice-generator/",
+      "language": "en",
+      "slug": "invoice-generator",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/ebook/",
+      "path": "/ebook/",
+      "language": "en",
+      "slug": "ebook",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/ebook/stay-ahead-in-home-repairs-with-the-handyman-business-guide/",
+      "path": "/ebook/stay-ahead-in-home-repairs-with-the-handyman-business-guide/",
+      "language": "en",
+      "slug": "stay-ahead-in-home-repairs-with-the-handyman-business-guide",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/ebook/year-end-merchandising-report-2025/",
+      "path": "/ebook/year-end-merchandising-report-2025/",
+      "language": "en",
+      "slug": "year-end-merchandising-report-2025",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/ebook/retail-execution-in-2026/",
+      "path": "/ebook/retail-execution-in-2026/",
+      "language": "en",
+      "slug": "retail-execution-in-2026",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/ebook/construction-audit-best-practices-for-field-teams/",
+      "path": "/ebook/construction-audit-best-practices-for-field-teams/",
+      "language": "en",
+      "slug": "construction-audit-best-practices-for-field-teams",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/ebook/field-audit-trends-2026/",
+      "path": "/ebook/field-audit-trends-2026/",
+      "language": "en",
+      "slug": "field-audit-trends-2026",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/ebook/stay-ahead-in-hvac-with-the-hvac-business-guide-2025/",
+      "path": "/ebook/stay-ahead-in-hvac-with-the-hvac-business-guide-2025/",
+      "language": "en",
+      "slug": "stay-ahead-in-hvac-with-the-hvac-business-guide-2025",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/tr/e-kitap/2025-merchandising-ve-saha-uygulamalari-yil-sonu-raporu/",
+      "path": "/tr/e-kitap/2025-merchandising-ve-saha-uygulamalari-yil-sonu-raporu/",
+      "language": "tr",
+      "slug": "2025-merchandising-ve-saha-uygulamalari-yil-sonu-raporu",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/ebook/master-pest-control-in-2025-with-proven-strategies/",
+      "path": "/ebook/master-pest-control-in-2025-with-proven-strategies/",
+      "language": "en",
+      "slug": "master-pest-control-in-2025-with-proven-strategies",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    },
+    {
+      "url": "https://www.fieldpie.com/ebook/pricing-kpis-operations-for-plumbing-pros/",
+      "path": "/ebook/pricing-kpis-operations-for-plumbing-pros/",
+      "language": "en",
+      "slug": "pricing-kpis-operations-for-plumbing-pros",
+      "source": "sitemap",
+      "isExcluded": false,
+      "excludeReason": null
+    }
+  ]
+}
