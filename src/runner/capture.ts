@@ -14,7 +14,11 @@ import {
   type InteractionOutcome,
   type InteractionStep,
 } from "./interaction.js";
-import type { ProxyConfig } from "./proxy.js";
+import {
+  closeProxyRelay,
+  openProxyRelay,
+  type ProxyConfig,
+} from "./proxy.js";
 import {
   extractMarkers,
   getExitInfo,
@@ -53,6 +57,8 @@ export interface CaptureInput {
   proxy: ProxyConfig;
   /** Local file path to write the full-page screenshot to. */
   screenshotPath: string;
+  /** Optional path for a smaller top-of-page screenshot used by AI verification. */
+  aiScreenshotPath?: string;
   /** Non-submitting interaction steps to run after load (optional). */
   steps?: InteractionStep[];
   settleMs?: number;
@@ -116,6 +122,13 @@ async function scanTokenLeak(page: Page): Promise<string[]> {
  * security inputs, a block-page check, a full-page screenshot, and any
  * non-submitting interaction outcomes. Never throws; failures are returned in
  * `error`.
+ *
+ * When the proxy needs authentication, the browser is pointed at a local
+ * proxy-chain relay instead of the upstream directly. This avoids Chromium's
+ * net::ERR_PROXY_AUTH_UNSUPPORTED on authenticated proxies; the relay adds the
+ * upstream credentials on the Node side. The whole context (page + the
+ * getExitInfo/getSiteCountry API requests) shares this relay, so all signals
+ * come from the same exit IP. The relay is always closed in `finally`.
  */
 export async function capturePage(input: CaptureInput): Promise<CaptureResult> {
   const settleMs = input.settleMs ?? env.SETTLE_MS;
@@ -146,8 +159,17 @@ export async function capturePage(input: CaptureInput): Promise<CaptureResult> {
   };
 
   let launched: LaunchedContext | null = null;
+  let relayUrl: string | null = null;
   try {
-    launched = await launchContext(input.proxy, guard);
+    // Authenticated proxies are routed through a local relay (see proxy.ts);
+    // no-auth proxies are passed straight to Chromium.
+    let launchProxy = input.proxy;
+    if (input.proxy.username) {
+      relayUrl = await openProxyRelay(input.proxy);
+      launchProxy = { server: relayUrl };
+    }
+
+    launched = await launchContext(launchProxy, guard);
     const { context } = launched;
 
     // Confirm the real exit IP/country first (does not use the page route).
@@ -222,11 +244,31 @@ export async function capturePage(input: CaptureInput): Promise<CaptureResult> {
     await mkdir(dirname(input.screenshotPath), { recursive: true });
     await page.screenshot({ path: input.screenshotPath, fullPage: true });
     result.screenshotPath = input.screenshotPath;
+
+    // Smaller top-of-page screenshot for AI verification. A tall full-page shot
+    // can exceed the API's image-size limit, so we cap the viewport instead.
+    if (input.aiScreenshotPath) {
+      try {
+        await page.setViewportSize({ width: 1280, height: 2000 });
+        await page.screenshot({ path: input.aiScreenshotPath });
+      } catch {
+        // Best-effort: a failed AI screenshot must not fail the capture.
+      }
+    }
   } catch (err) {
     result.error = err instanceof Error ? err.message : String(err);
   } finally {
     if (launched) {
       await launched.browser.close();
+    }
+    // Close the relay after the browser, so its connections are gone first. A
+    // relay-close failure must not mask the capture result.
+    if (relayUrl) {
+      try {
+        await closeProxyRelay(relayUrl);
+      } catch {
+        // best-effort
+      }
     }
   }
 

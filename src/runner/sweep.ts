@@ -1,15 +1,13 @@
 /**
- * PROD lane sweep runner (Phase 2, Step 3 -- phase complete).
+ * PROD lane sweep runner.
  *
- * Two passes: capture every active market x page, then run deterministic +
- * geo + cross-country + passive-security + non-submitting-interaction checks,
- * persist the run and its checks, and derive run/sweep status from the checks.
+ * Two passes: capture every active market x page, then run deterministic + geo
+ * + cross-country + passive-security + non-submitting-interaction checks,
+ * persist the run and its checks, optionally add an advisory AI visual verdict,
+ * and derive run/sweep status from the deterministic checks (AI never gates).
  *
  * Expectations are loaded once from the DB (manifest/manual rows) and merged
  * over the code baseline by resolveExpectations.
- *
- * Pass 1 logs per-capture progress (it is otherwise silent while the browser
- * visits every page through the proxy, which can take a few minutes).
  *
  * Usage: npm run sweep
  */
@@ -30,12 +28,14 @@ import {
   finishRun,
   finishSweep,
   getEnvironmentByKey,
+  insertAiVerdict,
   insertCheck,
   listMarkets,
   listPages,
 } from "../db/repository.js";
 import { loadExpectations, resolveExpectations } from "../config/expectations.js";
 import { resolveInteractions } from "../config/interactions.js";
+import { verifyExperience } from "../ai/verify.js";
 import { capturePage, type CaptureResult } from "./capture.js";
 import { proxyEnvKey, resolveProxy } from "./proxy.js";
 import {
@@ -62,6 +62,7 @@ interface CapturedRun {
   pageKey: string;
   capture: CaptureResult;
   expectation: ExpectationSet;
+  aiScreenshotPath: string;
 }
 
 function worse(a: RunStatus, b: RunStatus): RunStatus {
@@ -113,9 +114,9 @@ async function main(): Promise<void> {
   await mkdir(outputDir, { recursive: true });
 
   let worstRun: RunStatus = "pass";
+  let aiCostUsd = 0;
 
-  // How many captures Pass 1 will attempt (markets x pages with a path), so the
-  // progress log can show "[n/total]".
+  // How many captures Pass 1 will attempt (markets x pages with a path).
   const totalCaptures = markets.reduce(
     (sum, market) =>
       sum + pages.filter((page) => page.pathByLanguage[market.language]).length,
@@ -149,6 +150,10 @@ async function main(): Promise<void> {
         proxyCountry: market.countryCode,
       });
 
+      const base = `${market.countryCode}-${market.language}-${page.pageKey}`;
+      const screenshotPath = join(outputDir, `${base}.png`);
+      const aiScreenshotPath = join(outputDir, `${base}-ai.png`);
+
       if (!proxy) {
         const message = `No proxy configured (set ${proxyEnvKey(market.countryCode)}).`;
         await finishRun(runRow.id, { status: "error", error: message });
@@ -168,15 +173,12 @@ async function main(): Promise<void> {
       console.log(`  [${captureIndex}/${totalCaptures}] ${label} capturing ${url} ...`);
       const startedAt = Date.now();
 
-      const screenshotPath = join(
-        outputDir,
-        `${market.countryCode}-${market.language}-${page.pageKey}.png`,
-      );
       const capture = await capturePage({
         url,
         country: market.countryCode,
         proxy,
         screenshotPath,
+        aiScreenshotPath,
         steps: resolveInteractions(page.pageKey),
       });
 
@@ -194,6 +196,7 @@ async function main(): Promise<void> {
         language: market.language,
         pageKey: page.pageKey,
         capture,
+        aiScreenshotPath,
         expectation: resolveExpectations(
           expectationStore,
           market.id,
@@ -285,11 +288,44 @@ async function main(): Promise<void> {
         `kinsta=${capture.cache?.kinstaCache ?? "-"})${tail}`,
     );
     worstRun = worse(worstRun, status);
+
+    // Advisory AI visual verdict (does NOT change run status). Skipped when no
+    // API key is set or the capture was not healthy.
+    if (isHealthy(capture)) {
+      const ai = await verifyExperience({
+        screenshotPath: item.aiScreenshotPath,
+        country: item.country,
+        language: item.language,
+        pageKey: item.pageKey,
+        expectation: item.expectation,
+      });
+      if (ai) {
+        await insertAiVerdict({
+          runId: item.runId,
+          model: ai.model,
+          verdict: ai.verdict,
+          confidence: ai.confidence,
+          findings: ai.error ? { error: ai.error } : ai.findings,
+          inputTokens: ai.inputTokens,
+          outputTokens: ai.outputTokens,
+          costUsd: ai.costUsd,
+        });
+        if (ai.costUsd) {
+          aiCostUsd += ai.costUsd;
+        }
+        const conf = ai.confidence != null ? ` ${Math.round(ai.confidence * 100)}%` : "";
+        const cost = ai.costUsd != null ? ` $${ai.costUsd.toFixed(5)}` : "";
+        console.log(`  ai ${item.country}/${item.pageKey} -> ${ai.verdict}${conf}${cost}`);
+      }
+    }
   }
 
   const sweepStatus = rollUp(worstRun);
   await finishSweep(sweep.id, sweepStatus);
   console.log(`sweep #${sweep.id} finished -> ${sweepStatus}`);
+  if (aiCostUsd > 0) {
+    console.log(`ai cost this sweep: $${aiCostUsd.toFixed(5)}`);
+  }
   console.log(`screenshots: ${outputDir}`);
 }
 

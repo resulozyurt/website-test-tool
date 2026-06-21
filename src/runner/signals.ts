@@ -52,7 +52,9 @@ const WHEREAMI_PATH = "/wp-json/fieldpie-monitor/v1/whereami";
  */
 function currencyVisible(text: string, token: string): boolean {
   const escaped = token.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  return new RegExp(`(${escaped}\\s?\\d)|(\\d\\s?${escaped})`, "i").test(text);
+  // \s* (not \s?) so "$" and the number can be separated by whitespace/newlines
+  // from sibling DOM nodes; a lone "$" followed by text (no digit) still fails.
+  return new RegExp(`(${escaped}\\s*\\d)|(\\d\\s*${escaped})`, "i").test(text);
 }
 
 /**
@@ -164,7 +166,15 @@ export function rawHeaders(
   return response ? response.headers() : null;
 }
 
-/** Extracts locale-relevant markers from the page DOM. */
+/**
+ * Extracts locale-relevant markers from the page DOM.
+ *
+ * Note: the page.evaluate() body must contain NO named function/arrow
+ * declarations. tsx/esbuild ("keepNames") rewrites named functions with a
+ * __name(...) helper that does not exist in the browser, which throws
+ * "ReferenceError: __name is not defined" when the body is serialized and run
+ * in the page. Keep all callbacks anonymous and inline.
+ */
 export async function extractMarkers(page: Page): Promise<ContentMarkers> {
   const raw = await page.evaluate(() => {
     const bodyText = document.body?.innerText ?? "";
@@ -189,10 +199,10 @@ export async function extractMarkers(page: Page): Promise<ContentMarkers> {
       "[aria-label*='onsent']",
     ].join(", ");
     const root = document.querySelector("main") ?? document.body;
-    const inExcluded = (el: Element): boolean => el.closest(EXCLUDE) != null;
 
+    // inline closest() filter (no named function -- see note above)
     const ctaEls = Array.from(root.querySelectorAll("a, button")).filter(
-      (el) => !inExcluded(el),
+      (el) => el.closest(EXCLUDE) == null,
     );
     const buttonText = ctaEls
       .map((el) => (el.textContent ?? "").trim().toLowerCase())

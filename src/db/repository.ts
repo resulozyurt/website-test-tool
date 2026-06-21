@@ -125,6 +125,20 @@ export interface ExpectationRow {
   updatedAt: Date;
 }
 
+export interface AiVerdictRow {
+  id: number;
+  runId: number;
+  model: string;
+  verdict: string;
+  confidence: number | null;
+  findings: unknown | null;
+  inputTokens: number | null;
+  outputTokens: number | null;
+  // pg returns numeric columns as strings.
+  costUsd: string | null;
+  createdAt: Date;
+}
+
 /** The fields captured when a run (one market+page visit) finishes. */
 export interface RunResultPatch {
   exitIp?: string | null;
@@ -161,6 +175,17 @@ export interface UpsertExpectationInput {
   source: ExpectationSource;
   payload: ExpectationSet;
   checksum: string;
+}
+
+export interface InsertAiVerdictInput {
+  runId: number;
+  model: string;
+  verdict: string;
+  confidence: number | null;
+  findings: unknown;
+  inputTokens: number | null;
+  outputTokens: number | null;
+  costUsd: number | null;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -234,6 +259,9 @@ const CHECK_COLS =
 
 const EXPECTATION_COLS =
   'id, market_id as "marketId", page_id as "pageId", source, payload, checksum, updated_at as "updatedAt"';
+
+const AI_VERDICT_COLS =
+  'id, run_id as "runId", model, verdict, confidence, findings, input_tokens as "inputTokens", output_tokens as "outputTokens", cost_usd as "costUsd", created_at as "createdAt"';
 
 /* -------------------------------------------------------------------------- */
 /* Environments                                                               */
@@ -594,4 +622,33 @@ export async function getExpectationByMarketPage(
      where market_id = $1 and page_id = $2`,
     [marketId, pageId],
   );
+}
+
+/* -------------------------------------------------------------------------- */
+/* AI verdicts (advisory)                                                     */
+/* -------------------------------------------------------------------------- */
+
+/** Persists one AI visual verdict for a run. Advisory; never gates run status. */
+export async function insertAiVerdict(
+  input: InsertAiVerdictInput,
+  exec: Executor = pool,
+): Promise<AiVerdictRow> {
+  const rows = await run<AiVerdictRow>(
+    exec,
+    `insert into ai_verdicts
+       (run_id, model, verdict, confidence, findings, input_tokens, output_tokens, cost_usd)
+     values ($1, $2, $3, $4, $5::jsonb, $6, $7, $8)
+     returning ${AI_VERDICT_COLS}`,
+    [
+      input.runId,
+      input.model,
+      input.verdict,
+      input.confidence,
+      toJsonParam(input.findings),
+      input.inputTokens,
+      input.outputTokens,
+      input.costUsd,
+    ],
+  );
+  return rows[0];
 }

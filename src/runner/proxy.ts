@@ -1,3 +1,4 @@
+import { anonymizeProxy, closeAnonymizedProxy } from "proxy-chain";
 import type { CountryCode } from "../types.js";
 
 /** Playwright-compatible proxy configuration. */
@@ -54,4 +55,44 @@ export function withFreshSession(proxy: ProxyConfig): ProxyConfig {
     ? proxy.username.replace(/;sessid\.[^;]+/, `;sessid.${token}`)
     : `${proxy.username};sessid.${token}`;
   return { ...proxy, username };
+}
+
+/**
+ * Rebuilds the full upstream proxy URL (with credentials) from a ProxyConfig.
+ * resolveProxy stores the username/password already decoded, so we re-encode
+ * each component once; proxy-chain decodes them back when it authenticates to
+ * the upstream. Building the string by hand avoids the URL setter's broader
+ * userinfo encode set and keeps the round-trip unambiguous.
+ */
+function toUpstreamUrl(proxy: ProxyConfig): string {
+  const base = new URL(proxy.server);
+  if (!proxy.username) {
+    return base.toString();
+  }
+  const user = encodeURIComponent(proxy.username);
+  const pass = encodeURIComponent(proxy.password ?? "");
+  return `${base.protocol}//${user}:${pass}@${base.host}`;
+}
+
+/**
+ * Starts a local, unauthenticated forwarding proxy (proxy-chain) that points at
+ * the authenticated upstream, and returns its local URL (http://127.0.0.1:PORT).
+ *
+ * Why: recent Chromium builds fail authenticated proxy navigation with
+ * net::ERR_PROXY_AUTH_UNSUPPORTED -- the browser cannot complete the proxy auth
+ * handshake even though Node's HTTP client can. Pointing Chromium at a local
+ * proxy with no auth removes the handshake entirely; proxy-chain adds the
+ * upstream credentials on the Node side (which works). The sticky session is
+ * preserved because the upstream username (including ";sessid.<id>") is passed
+ * through unchanged for the relay's lifetime.
+ *
+ * One relay is opened per page visit and must be closed with closeProxyRelay.
+ */
+export async function openProxyRelay(proxy: ProxyConfig): Promise<string> {
+  return anonymizeProxy(toUpstreamUrl(proxy));
+}
+
+/** Stops a relay started by openProxyRelay and frees its local port. */
+export async function closeProxyRelay(localUrl: string): Promise<void> {
+  await closeAnonymizedProxy(localUrl, true);
 }
