@@ -23,17 +23,34 @@ export interface EligiblePage {
   slug: string | null;
 }
 
-/** Active, non-blog discovered pages, ordered for stable progress output. */
+/**
+ * Active, non-blog discovered pages that are not already known to lack Bricks
+ * content (has_inventory IS NOT false). Ordered for stable progress output.
+ */
 export async function listEligibleDiscoveredPages(
   exec: Executor = pool,
 ): Promise<EligiblePage[]> {
   const res = await exec.query<EligiblePage>(
     `select url, language, slug
        from discovered_pages
-      where is_active = true and is_excluded = false
+      where is_active = true
+        and is_excluded = false
+        and has_inventory is distinct from false
       order by language, url`,
   );
   return res.rows;
+}
+
+/** Records whether a discovered page has its own Bricks content. */
+export async function markInventoryStatus(
+  url: string,
+  hasInventory: boolean,
+  exec: Executor = pool,
+): Promise<void> {
+  await exec.query(
+    `update discovered_pages set has_inventory = $2 where url = $1`,
+    [url, hasInventory],
+  );
 }
 
 export interface PageMeta {

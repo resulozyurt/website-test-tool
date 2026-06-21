@@ -16,6 +16,7 @@ import { fetchInventory } from "../manifest/inventory.js";
 import { countriesForLanguage, generateScenarios } from "./generate.js";
 import {
   listEligibleDiscoveredPages,
+  markInventoryStatus,
   replacePageScenarios,
   type EligiblePage,
 } from "./store.js";
@@ -25,6 +26,7 @@ const CONCURRENCY = 4;
 interface Totals {
   processed: number;
   skipped: number;
+  noBricks: number;
   failed: number;
   created: number;
   updated: number;
@@ -63,6 +65,16 @@ async function processPage(page: EligiblePage, totals: Totals): Promise<void> {
   try {
     inventory = await fetchInventory({ url: page.url, fresh: false });
   } catch (err) {
+    if (
+      err instanceof ManifestError &&
+      (err.status === 400 || err.status === 404 || err.status === 422)
+    ) {
+      // No per-post Bricks content (template-driven CPT or not a single post).
+      // Mark it so future runs skip it automatically.
+      await markInventoryStatus(page.url, false);
+      totals.noBricks += 1;
+      return;
+    }
     totals.failed += 1;
     totals.errors.push(
       `${page.url}: ${err instanceof ManifestError ? err.message : String(err)}`,
@@ -85,6 +97,7 @@ async function processPage(page: EligiblePage, totals: Totals): Promise<void> {
       scenarios,
       client,
     );
+    await markInventoryStatus(page.url, true, client);
     await client.query("commit");
     totals.created += counts.created;
     totals.updated += counts.updated;
@@ -113,6 +126,7 @@ async function main(): Promise<void> {
   const totals: Totals = {
     processed: 0,
     skipped: 0,
+    noBricks: 0,
     failed: 0,
     created: 0,
     updated: 0,
@@ -123,7 +137,8 @@ async function main(): Promise<void> {
   await mapLimit(pages, CONCURRENCY, (p) => processPage(p, totals));
 
   console.log(
-    `\nprocessed=${totals.processed} skipped(no market)=${totals.skipped} failed=${totals.failed}`,
+    `\nprocessed=${totals.processed} skipped(no market)=${totals.skipped} ` +
+      `no-bricks=${totals.noBricks} failed=${totals.failed}`,
   );
   console.log(
     `scenarios: created=${totals.created} updated=${totals.updated} deactivated=${totals.deactivated}`,
