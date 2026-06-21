@@ -5,6 +5,12 @@
  * rows, plus the sweep-level cross-country comparison and the run-status
  * aggregation. Deterministic and authoritative; the AI layer (Phase 4) only
  * advises and never overrides these.
+ *
+ * CTA correctness is intentionally NOT checked here (Phase 4c decision). The
+ * differentiating CTAs ("Start Free Trial", "Book a Demo", etc.) live in the
+ * global header, which DOM extraction excludes, so main-content CTA detection
+ * is unreliable. CTA/experience correctness is left to the advisory AI verdict;
+ * the money-critical rule is still caught deterministically by the price check.
  */
 
 import type {
@@ -17,7 +23,6 @@ import type {
   Severity,
 } from "../types.js";
 import type { CaptureResult } from "./capture.js";
-import type { ContentMarkers } from "./signals.js";
 
 /** A CheckResult plus optional structured evidence persisted to checks.evidence. */
 export interface DeterministicCheck extends CheckResult {
@@ -38,18 +43,6 @@ function check(
 
 function onlyDigits(value: string): string {
   return value.replace(/\D/g, "");
-}
-
-/** Returns presence of a known CTA, or null when the CTA cannot be verified. */
-function ctaPresent(markers: ContentMarkers, label: string): boolean | null {
-  const l = label.trim().toLowerCase();
-  if (l === "start free trial") {
-    return markers.hasStartFreeTrial;
-  }
-  if (l === "book a demo") {
-    return markers.hasBookDemo;
-  }
-  return null;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -190,49 +183,6 @@ function languageCheck(
   return null;
 }
 
-function ctaCheck(
-  capture: CaptureResult,
-  exp: ExpectationSet,
-): DeterministicCheck | null {
-  const markers = capture.markers;
-  if (!markers || !exp.cta) {
-    return null;
-  }
-  const evidence = {
-    hasStartFreeTrial: markers.hasStartFreeTrial,
-    hasBookDemo: markers.hasBookDemo,
-  };
-
-  if (exp.cta.primary) {
-    const has = ctaPresent(markers, exp.cta.primary);
-    if (has === false) {
-      return check(
-        "cta",
-        "major",
-        "fail",
-        exp.cta.primary,
-        "(absent)",
-        `Expected CTA "${exp.cta.primary}" not found`,
-        evidence,
-      );
-    }
-  }
-  for (const bad of exp.cta.mustNotContain ?? []) {
-    if (ctaPresent(markers, bad) === true) {
-      return check(
-        "cta",
-        "major",
-        "fail",
-        `without "${bad}"`,
-        bad,
-        `Unexpected CTA "${bad}" present`,
-        evidence,
-      );
-    }
-  }
-  return check("cta", "major", "pass", exp.cta.primary ?? null, "ok", "CTA expectations met", evidence);
-}
-
 function phoneCheck(
   capture: CaptureResult,
   exp: ExpectationSet,
@@ -323,7 +273,12 @@ function headingCheck(
       );
 }
 
-/** Runs every applicable per-run check. http_health always runs. */
+/**
+ * Runs every applicable per-run check. http_health always runs.
+ *
+ * Note: there is no deterministic CTA check (Phase 4c). See the file header --
+ * CTA correctness is handled by the advisory AI verdict, not here.
+ */
 export function runDeterministicChecks(
   capture: CaptureResult,
   expectation: ExpectationSet,
@@ -332,7 +287,6 @@ export function runDeterministicChecks(
   const optional = [
     cacheHeaderCheck(capture, expectation),
     languageCheck(capture, expectation),
-    ctaCheck(capture, expectation),
     phoneCheck(capture, expectation),
     priceCheck(capture, expectation),
     headingCheck(capture, expectation),
@@ -406,7 +360,16 @@ export function crossCountryCheck(
 /* Aggregation                                                                */
 /* -------------------------------------------------------------------------- */
 
-/** Derives the overall run status from its checks. */
+/**
+ * Derives the overall run status from its checks.
+ *
+ * Severity-aware: only `critical` and `major` checks gate the run. `minor`
+ * checks (security-header hygiene, cookie flags, info-disclosure headers, cache
+ * warming) are informational -- they are still persisted and visible, but they
+ * never push a run to warn/fail. The dangerous failure modes are all
+ * critical/major (http, geo, language, price, cross_country, HTTPS,
+ * token-leak, heading, phone, interaction), so a clean run stays `pass`.
+ */
 export function aggregateRunStatus(
   capture: CaptureResult,
   checks: DeterministicCheck[],
@@ -416,12 +379,13 @@ export function aggregateRunStatus(
   }
   let status: RunStatus = "pass";
   for (const c of checks) {
+    if (c.severity === "minor") {
+      continue; // informational only
+    }
     if (c.status === "fail") {
-      if (c.severity === "critical" || c.severity === "major") {
-        return "fail";
-      }
-      status = "warn"; // minor failure
-    } else if (c.status === "warn" && status === "pass") {
+      return "fail";
+    }
+    if (c.status === "warn") {
       status = "warn";
     }
   }
