@@ -1,0 +1,298 @@
+{
+  "page": {
+    "post_id": 32,
+    "slug": "pricing",
+    "language": "en",
+    "url": "https://www.fieldpie.com/pricing/",
+    "title": "Pricing",
+    "heading": "Choose Your Focus, See Your Plan"
+  },
+  "scenarios": [
+    {
+      "country": "US",
+      "elementId": "rlnxyk",
+      "selector": ".brxe-rlnxyk",
+      "kind": "text",
+      "label": "{mb_page_page_banner_big_title}",
+      "expectation": "present",
+      "rule": "!= TR",
+      "inherited": false,
+      "moneyCritical": false
+    },
+    {
+      "country": "AE",
+      "elementId": "rlnxyk",
+      "selector": ".brxe-rlnxyk",
+      "kind": "text",
+      "label": "{mb_page_page_banner_big_title}",
+      "expectation": "present",
+      "rule": "!= TR",
+      "inherited": false,
+      "moneyCritical": false
+    },
+    {
+      "country": "US",
+      "elementId": "sgvlsu",
+      "selector": ".brxe-sgvlsu",
+      "kind": "text",
+      "label": "{mb_page_page_banner_description}",
+      "expectation": "present",
+      "rule": "!= TR",
+      "inherited": false,
+      "moneyCritical": false
+    },
+    {
+      "country": "AE",
+      "elementId": "sgvlsu",
+      "selector": ".brxe-sgvlsu",
+      "kind": "text",
+      "label": "{mb_page_page_banner_description}",
+      "expectation": "present",
+      "rule": "!= TR",
+      "inherited": false,
+      "moneyCritical": false
+    },
+    {
+      "country": "US",
+      "elementId": "txafme",
+      "selector": ".brxe-txafme",
+      "kind": "ripplebutton",
+      "label": "link -> post 1354",
+      "expectation": "present",
+      "rule": "!= TR",
+      "inherited": false,
+      "moneyCritical": false
+    },
+    {
+      "country": "AE",
+      "elementId": "txafme",
+      "selector": ".brxe-txafme",
+      "kind": "ripplebutton",
+      "label": "link -> post 1354",
+      "expectation": "present",
+      "rule": "!= TR",
+      "inherited": false,
+      "moneyCritical": false
+    },
+    {
+      "country": "US",
+      "elementId": "kavegd",
+      "selector": ".brxe-kavegd",
+      "kind": "button",
+      "label": "Book a Demo",
+      "expectation": "absent",
+      "rule": "== TR",
+      "inherited": false,
+      "moneyCritical": false
+    },
+    {
+      "country": "AE",
+      "elementId": "kavegd",
+      "selector": ".brxe-kavegd",
+      "kind": "button",
+      "label": "Book a Demo",
+      "expectation": "absent",
+      "rule": "== TR",
+      "inherited": false,
+      "moneyCritical": false
+    },
+    {
+      "country": "US",
+      "elementId": "litarx",
+      "selector": ".brxe-litarx",
+      "kind": "text",
+      "label": "FieldPie Pricing",
+      "expectation": "absent",
+      "rule": "== TR",
+      "inherited": false,
+      "moneyCritical": true
+    },
+    {
+      "country": "AE",
+      "elementId": "litarx",
+      "selector": ".brxe-litarx",
+      "kind": "text",
+      "label": "FieldPie Pricing",
+      "expectation": "absent",
+      "rule": "== TR",
+      "inherited": false,
+      "moneyCritical": true
+    },
+    {
+      "country": "US",
+      "elementId": "vvnszx",
+      "selector": ".brxe-vvnszx",
+      "kind": "button",
+      "label": "Book a Demo",
+      "expectation": "absent",
+      "rule": "== TR",
+      "inherited": false,
+      "moneyCritical": false
+    },
+    {
+      "country": "AE",
+      "elementId": "vvnszx",
+      "selector": ".brxe-vvnszx",
+      "kind": "button",
+      "label": "Book a Demo",
+      "expectation": "absent",
+      "rule": "== TR",
+      "inherited": false,
+      "moneyCritical": false
+    },
+    {
+      "country": "US",
+      "elementId": "vljamp",
+      "selector": ".brxe-vljamp",
+      "kind": "button",
+      "label": "Book a Demo",
+      "expectation": "absent",
+      "rule": "== TR",
+      "inherited": false,
+      "moneyCritical": false
+    },
+    {
+      "country": "AE",
+      "elementId": "vljamp",
+      "selector": ".brxe-vljamp",
+      "kind": "button",
+      "label": "Book a Demo",
+      "expectation": "absent",
+      "rule": "== TR",
+      "inherited": false,
+      "moneyCritical": false
+    },
+    {
+      "country": "US",
+      "elementId": "epwjhz",
+      "selector": ".brxe-epwjhz",
+      "kind": "button",
+      "label": "Book a Demo",
+      "expectation": "absent",
+      "rule": "== TR",
+      "inherited": false,
+      "moneyCritical": false
+    },
+    {
+      "country": "AE",
+      "elementId": "epwjhz",
+      "selector": ".brxe-epwjhz",
+      "kind": "button",
+      "label": "Book a Demo",
+      "expectation": "absent",
+      "rule": "== TR",
+      "inherited": false,
+      "moneyCritical": false
+    },
+    {
+      "country": "AE",
+      "elementId": "mfzktn",
+      "selector": ".brxe-mfzktn",
+      "kind": "text",
+      "label": "Billed annually",
+      "expectation": "absent",
+      "rule": "== US",
+      "inherited": false,
+      "moneyCritical": true
+    },
+    {
+      "country": "AE",
+      "elementId": "fznejr",
+      "selector": ".brxe-fznejr",
+      "kind": "text",
+      "label": "Billed monthly",
+      "expectation": "absent",
+      "rule": "== US",
+      "inherited": false,
+      "moneyCritical": true
+    },
+    {
+      "country": "US",
+      "elementId": "oxlcww",
+      "selector": ".brxe-oxlcww",
+      "kind": "text",
+      "label": "Request Pricing",
+      "expectation": "absent",
+      "rule": "!= US",
+      "inherited": false,
+      "moneyCritical": true
+    },
+    {
+      "country": "AE",
+      "elementId": "ipfydw",
+      "selector": ".brxe-ipfydw",
+      "kind": "text",
+      "label": "$",
+      "expectation": "absent",
+      "rule": "== US",
+      "inherited": true,
+      "moneyCritical": true
+    },
+    {
+      "country": "AE",
+      "elementId": "irkloa",
+      "selector": ".brxe-irkloa",
+      "kind": "text",
+      "label": "{mb_pricing-plan_price_yearly}",
+      "expectation": "absent",
+      "rule": "== US",
+      "inherited": true,
+      "moneyCritical": true
+    },
+    {
+      "country": "AE",
+      "elementId": "ejiglw",
+      "selector": ".brxe-ejiglw",
+      "kind": "text",
+      "label": "{mb_pricing-plan_price_monthly}",
+      "expectation": "absent",
+      "rule": "== US",
+      "inherited": true,
+      "moneyCritical": true
+    },
+    {
+      "country": "AE",
+      "elementId": "ansaft",
+      "selector": ".brxe-ansaft",
+      "kind": "text",
+      "label": "{mb_pricing-plan_price_after_text_group_after_text_item}",
+      "expectation": "absent",
+      "rule": "== US",
+      "inherited": true,
+      "moneyCritical": true
+    },
+    {
+      "country": "US",
+      "elementId": "boujab",
+      "selector": ".brxe-boujab",
+      "kind": "text",
+      "label": "Request Pricing",
+      "expectation": "absent",
+      "rule": "!= US",
+      "inherited": false,
+      "moneyCritical": true
+    },
+    {
+      "country": "US",
+      "elementId": "xlnzhi",
+      "selector": ".brxe-xlnzhi",
+      "kind": "button",
+      "label": "Book a Meeting",
+      "expectation": "absent",
+      "rule": "!= US",
+      "inherited": false,
+      "moneyCritical": false
+    },
+    {
+      "country": "AE",
+      "elementId": "evtquh",
+      "selector": ".brxe-evtquh",
+      "kind": "button",
+      "label": "{mb_pricing-plan_button_text}",
+      "expectation": "absent",
+      "rule": "== US",
+      "inherited": false,
+      "moneyCritical": true
+    }
+  ]
+}
