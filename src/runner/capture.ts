@@ -51,6 +51,18 @@ export interface CookieInfo {
   sameSite: string;
 }
 
+/**
+ * Result of probing one Bricks element selector (".brxe-<id>") in the live DOM.
+ * `matched` is how many elements the selector matched; `present` is true when at
+ * least one of them is actually rendered and visible. Geo conditions remove an
+ * element server-side, so a geo-hidden element yields matched=0, present=false.
+ */
+export interface ScenarioObservation {
+  selector: string;
+  matched: number;
+  present: boolean;
+}
+
 export interface CaptureInput {
   url: string;
   country: CountryCode;
@@ -61,6 +73,12 @@ export interface CaptureInput {
   aiScreenshotPath?: string;
   /** Non-submitting interaction steps to run after load (optional). */
   steps?: InteractionStep[];
+  /**
+   * Bricks element selectors (".brxe-<id>") to probe for presence/visibility in
+   * the live DOM, for scenario verification. Only pages that have scenarios pass
+   * these, so pages without scenarios do no extra work.
+   */
+  scenarioSelectors?: string[];
   settleMs?: number;
   navTimeoutMs?: number;
 }
@@ -81,6 +99,8 @@ export interface CaptureResult {
   tokenLeak: string[];
   interactions: InteractionOutcome[];
   blockedWrites: BlockedWrite[];
+  /** Per-selector DOM observations for scenario verification (empty if none requested). */
+  scenarioObservations: ScenarioObservation[];
   screenshotPath: string | null;
   error: string | null;
 }
@@ -116,12 +136,60 @@ async function scanTokenLeak(page: Page): Promise<string[]> {
 }
 
 /**
+ * Probes each selector in the live DOM and reports, per selector, how many
+ * elements matched and whether any is rendered and visible. Read-only.
+ *
+ * On a total evaluation failure (e.g. the page went away) it returns an empty
+ * array rather than fabricating present=false for everything. The scenario
+ * check treats a missing observation as "not evaluated" (warn), so a probe
+ * failure can never turn an `absent` expectation into a false pass that would
+ * mask a real leak.
+ */
+async function probeScenarios(
+  page: Page,
+  selectors: string[],
+): Promise<ScenarioObservation[]> {
+  if (selectors.length === 0) {
+    return [];
+  }
+  try {
+    return await page.evaluate((sels: string[]) => {
+      function isVisible(el: Element): boolean {
+        const style = window.getComputedStyle(el as HTMLElement);
+        if (style.display === "none" || style.visibility === "hidden") {
+          return false;
+        }
+        const rect = (el as HTMLElement).getBoundingClientRect();
+        return rect.width > 0 && rect.height > 0;
+      }
+      return sels.map((selector) => {
+        let nodes: Element[] = [];
+        try {
+          nodes = Array.from(document.querySelectorAll(selector));
+        } catch {
+          nodes = [];
+        }
+        return {
+          selector,
+          matched: nodes.length,
+          present: nodes.some(isVisible),
+        };
+      });
+    }, selectors);
+  } catch {
+    // Best-effort: a failed probe must not fail the capture, and must not be
+    // reported as present/absent (that is left "not evaluated" downstream).
+    return [];
+  }
+}
+
+/**
  * Visits one URL through the given proxy as a real user and captures every
  * signal we persist: exit IP/country, the site-detected country (whereami),
  * cache + locale headers, DOM markers, console/network errors, cookies,
- * security inputs, a block-page check, a full-page screenshot, and any
- * non-submitting interaction outcomes. Never throws; failures are returned in
- * `error`.
+ * security inputs, a block-page check, scenario selector observations, a
+ * full-page screenshot, and any non-submitting interaction outcomes. Never
+ * throws; failures are returned in `error`.
  *
  * When the proxy needs authentication, the browser is pointed at a local
  * proxy-chain relay instead of the upstream directly. This avoids Chromium's
@@ -134,6 +202,7 @@ export async function capturePage(input: CaptureInput): Promise<CaptureResult> {
   const settleMs = input.settleMs ?? env.SETTLE_MS;
   const navTimeoutMs = input.navTimeoutMs ?? env.NAV_TIMEOUT_MS;
   const steps = input.steps ?? [];
+  const scenarioSelectors = input.scenarioSelectors ?? [];
 
   const consoleErrors: ConsoleErrorEntry[] = [];
   const networkErrors: NetworkErrorEntry[] = [];
@@ -154,6 +223,7 @@ export async function capturePage(input: CaptureInput): Promise<CaptureResult> {
     tokenLeak: [],
     interactions: [],
     blockedWrites: guard.blockedWrites,
+    scenarioObservations: [],
     screenshotPath: null,
     error: null,
   };
@@ -230,6 +300,13 @@ export async function capturePage(input: CaptureInput): Promise<CaptureResult> {
     // Security inputs (read from the served page, before any interaction).
     result.cookies = await collectCookies(context, result.finalUrl);
     result.tokenLeak = await scanTokenLeak(page);
+
+    // Scenario selector presence/visibility in the live DOM (read-only). Probed
+    // in the page's initial state, BEFORE any interaction, because a billing
+    // toggle could hide a price element via CSS and produce a false "absent".
+    if (scenarioSelectors.length > 0 && !result.blockDetected) {
+      result.scenarioObservations = await probeScenarios(page, scenarioSelectors);
+    }
 
     // Non-submitting interaction, guarded so no write can reach the site.
     if (steps.length > 0 && !result.blockDetected) {
