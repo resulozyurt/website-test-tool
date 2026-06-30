@@ -9,8 +9,9 @@
  * CTA correctness is intentionally NOT checked here (Phase 4c decision). The
  * differentiating CTAs ("Start Free Trial", "Book a Demo", etc.) live in the
  * global header, which DOM extraction excludes, so main-content CTA detection
- * is unreliable. CTA/experience correctness is left to the advisory AI verdict;
- * the money-critical rule is still caught deterministically by the price check.
+ * is unreliable. CTA/experience correctness is left to the advisory AI verdict
+ * and to the scenario engine (Bricks `.brxe-<id>` selectors), not text match.
+ * The money-critical rule is still caught deterministically by the price check.
  */
 
 import type {
@@ -22,7 +23,7 @@ import type {
   RunStatus,
   Severity,
 } from "../types.js";
-import type { CaptureResult } from "./capture.js";
+import type { CaptureResult, ScenarioObservation } from "./capture.js";
 
 /** A CheckResult plus optional structured evidence persisted to checks.evidence. */
 export interface DeterministicCheck extends CheckResult {
@@ -277,7 +278,8 @@ function headingCheck(
  * Runs every applicable per-run check. http_health always runs.
  *
  * Note: there is no deterministic CTA check (Phase 4c). See the file header --
- * CTA correctness is handled by the advisory AI verdict, not here.
+ * CTA correctness is handled by the advisory AI verdict and the scenario
+ * engine, not here.
  */
 export function runDeterministicChecks(
   capture: CaptureResult,
@@ -295,6 +297,102 @@ export function runDeterministicChecks(
     if (c) {
       out.push(c);
     }
+  }
+  return out;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Scenario checks (Bricks `.brxe-<id>` presence/absence in the live DOM)     */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * A single scenario to verify against a run's DOM observations. This is a
+ * runner-facing view of a scenarios row; the sweep maps DB rows to this shape
+ * so the check layer stays free of database concerns.
+ */
+export interface RunScenario {
+  selector: string;
+  expectation: "present" | "absent";
+  kind: string;
+  label: string | null;
+  rule: string;
+  isMoneyCritical: boolean;
+  gating: boolean;
+}
+
+/**
+ * Turns matched scenarios + the run's DOM observations into `scenario` checks.
+ *
+ * Severity: money-critical scenarios gate as `critical`, the rest as `major`.
+ *
+ * Safety: when a scenario has no matching observation (the probe failed for it),
+ * the result is `warn` ("not evaluated") -- never `pass`. This is deliberate:
+ * silently passing an `absent` expectation we could not actually verify would
+ * mask a real leak (e.g. a price showing where it must not).
+ */
+export function scenarioChecks(
+  scenarios: RunScenario[],
+  observations: ScenarioObservation[],
+): DeterministicCheck[] {
+  if (scenarios.length === 0) {
+    return [];
+  }
+  const bySelector = new Map<string, ScenarioObservation>();
+  for (const obs of observations) {
+    bySelector.set(obs.selector, obs);
+  }
+
+  const out: DeterministicCheck[] = [];
+  for (const s of scenarios) {
+    const severity: Severity = s.isMoneyCritical ? "critical" : "major";
+    const label = s.label || s.selector;
+    const expectedText = `${s.expectation} (${s.rule})`;
+    const obs = bySelector.get(s.selector);
+
+    if (!obs) {
+      out.push(
+        check(
+          "scenario",
+          severity,
+          "warn",
+          expectedText,
+          "(not evaluated)",
+          `Could not verify "${label}" [${s.rule}]`,
+          {
+            selector: s.selector,
+            expectation: s.expectation,
+            rule: s.rule,
+            moneyCritical: s.isMoneyCritical,
+          },
+        ),
+      );
+      continue;
+    }
+
+    const ok = s.expectation === "present" ? obs.present : !obs.present;
+    const observedWord = obs.present ? "present" : "absent";
+    const actualText = `${observedWord} (matched ${obs.matched})`;
+
+    out.push(
+      check(
+        "scenario",
+        severity,
+        ok ? "pass" : "fail",
+        expectedText,
+        actualText,
+        ok
+          ? `"${label}" correctly ${s.expectation} [${s.rule}]`
+          : `"${label}" expected ${s.expectation} but was ${observedWord} [${s.rule}]`,
+        {
+          selector: s.selector,
+          expectation: s.expectation,
+          rule: s.rule,
+          matched: obs.matched,
+          present: obs.present,
+          moneyCritical: s.isMoneyCritical,
+        },
+      ),
+    );
   }
   return out;
 }
@@ -367,7 +465,7 @@ export function crossCountryCheck(
  * checks (security-header hygiene, cookie flags, info-disclosure headers, cache
  * warming) are informational -- they are still persisted and visible, but they
  * never push a run to warn/fail. The dangerous failure modes are all
- * critical/major (http, geo, language, price, cross_country, HTTPS,
+ * critical/major (http, geo, language, price, cross_country, scenario, HTTPS,
  * token-leak, heading, phone, interaction), so a clean run stays `pass`.
  */
 export function aggregateRunStatus(
