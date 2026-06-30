@@ -28,5 +28,6 @@ export type CheckType =
   | "heading"
   | "phone"
   | "interaction"
+  | "scenario"
   | "security_passive"
   | "ai_semantic";

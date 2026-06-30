@@ -2,12 +2,16 @@
  * PROD lane sweep runner.
  *
  * Two passes: capture every active market x page, then run deterministic + geo
- * + cross-country + passive-security + non-submitting-interaction checks,
- * persist the run and its checks, optionally add an advisory AI visual verdict,
- * and derive run/sweep status from the deterministic checks (AI never gates).
+ * + cross-country + scenario + passive-security + non-submitting-interaction
+ * checks, persist the run and its checks, optionally add an advisory AI visual
+ * verdict, and derive run/sweep status from the deterministic checks (AI never
+ * gates).
  *
  * Expectations are loaded once from the DB (manifest/manual rows) and merged
- * over the code baseline by resolveExpectations.
+ * over the code baseline by resolveExpectations. Active scenarios (Bricks
+ * selector visibility rules) are also loaded once and indexed by page+country;
+ * only pages that have scenarios are probed in the DOM, so the rest do no extra
+ * work.
  *
  * Usage: npm run sweep
  */
@@ -35,6 +39,7 @@ import {
 } from "../db/repository.js";
 import { loadExpectations, resolveExpectations } from "../config/expectations.js";
 import { resolveInteractions } from "../config/interactions.js";
+import { listActiveScenarios } from "../scenarios/store.js";
 import { verifyExperience } from "../ai/verify.js";
 import { capturePage, type CaptureResult } from "./capture.js";
 import { proxyEnvKey, resolveProxy } from "./proxy.js";
@@ -44,6 +49,8 @@ import {
   fingerprintKey,
   geoCheck,
   runDeterministicChecks,
+  scenarioChecks,
+  type RunScenario,
 } from "./checks.js";
 import { interactionChecks } from "./interaction.js";
 import { runSecurityChecks } from "./security.js";
@@ -62,6 +69,7 @@ interface CapturedRun {
   pageKey: string;
   capture: CaptureResult;
   expectation: ExpectationSet;
+  scenarios: RunScenario[];
   aiScreenshotPath: string;
 }
 
@@ -87,6 +95,30 @@ function isHealthy(capture: CaptureResult): boolean {
   );
 }
 
+/**
+ * Canonical form of a URL for matching a scenario's page_url to a run's url.
+ * Drops a leading `www.`, lower-cases host + path, and ensures a trailing slash,
+ * so `https://www.fieldpie.com/pricing` and `https://fieldpie.com/pricing/`
+ * collapse to the same key.
+ */
+function normalizeUrl(raw: string): string {
+  try {
+    const u = new URL(raw);
+    const host = u.hostname.replace(/^www\./, "").toLowerCase();
+    let path = u.pathname.toLowerCase();
+    if (!path.endsWith("/")) {
+      path += "/";
+    }
+    return `${host}${path}`;
+  } catch {
+    return raw.toLowerCase();
+  }
+}
+
+function scenarioKey(url: string, country: string): string {
+  return `${normalizeUrl(url)}::${country.toUpperCase()}`;
+}
+
 async function main(): Promise<void> {
   const environment = await getEnvironmentByKey("production");
   if (!environment || !environment.isActive) {
@@ -101,6 +133,34 @@ async function main(): Promise<void> {
   // DB-sourced expectations (manifest/manual), merged over the baseline by
   // resolveExpectations. Loaded once for the whole sweep.
   const expectationStore = await loadExpectations();
+
+  // Active scenarios (Bricks selector visibility rules), loaded once and indexed
+  // by (normalized url + country). Each run pulls only the scenarios for the
+  // exact page+country it is visiting; only those pages are probed in the DOM.
+  const scenarioRows = await listActiveScenarios();
+  const scenariosByKey = new Map<string, RunScenario[]>();
+  const selectorsByKey = new Map<string, string[]>();
+  for (const row of scenarioRows) {
+    const key = scenarioKey(row.pageUrl, row.country);
+    const list = scenariosByKey.get(key) ?? [];
+    list.push({
+      selector: row.selector,
+      expectation: row.expectation === "present" ? "present" : "absent",
+      kind: row.kind,
+      label: row.label,
+      rule: row.rule,
+      isMoneyCritical: row.isMoneyCritical,
+      gating: row.gating,
+    });
+    scenariosByKey.set(key, list);
+  }
+  for (const [key, list] of scenariosByKey) {
+    selectorsByKey.set(key, [...new Set(list.map((s) => s.selector))]);
+  }
+  console.log(
+    `loaded ${scenarioRows.length} active scenario(s) across ` +
+      `${scenariosByKey.size} page/country combo(s)`,
+  );
 
   const sweep = await createSweep({
     environmentId: environment.id,
@@ -143,6 +203,12 @@ async function main(): Promise<void> {
       const label = `${market.countryCode}/${market.language}/${page.pageKey}`;
 
       const url = new URL(path, environment.baseUrl).toString();
+
+      // Scenarios for this exact page+country (empty for pages without any).
+      const runKey = scenarioKey(url, market.countryCode);
+      const runScenarios = scenariosByKey.get(runKey) ?? [];
+      const scenarioSelectors = selectorsByKey.get(runKey);
+
       const runRow = await createRun({
         sweepId: sweep.id,
         marketId: market.id,
@@ -170,7 +236,11 @@ async function main(): Promise<void> {
         continue;
       }
 
-      console.log(`  [${captureIndex}/${totalCaptures}] ${label} capturing ${url} ...`);
+      const scenarioNote =
+        runScenarios.length > 0 ? ` [${runScenarios.length} scenario(s)]` : "";
+      console.log(
+        `  [${captureIndex}/${totalCaptures}] ${label} capturing ${url} ...${scenarioNote}`,
+      );
       const startedAt = Date.now();
 
       const capture = await capturePage({
@@ -180,6 +250,7 @@ async function main(): Promise<void> {
         screenshotPath,
         aiScreenshotPath,
         steps: resolveInteractions(page.pageKey),
+        scenarioSelectors,
       });
 
       const secs = ((Date.now() - startedAt) / 1000).toFixed(1);
@@ -196,6 +267,7 @@ async function main(): Promise<void> {
         language: market.language,
         pageKey: page.pageKey,
         capture,
+        scenarios: runScenarios,
         aiScreenshotPath,
         expectation: resolveExpectations(
           expectationStore,
@@ -240,6 +312,9 @@ async function main(): Promise<void> {
     checks.push(...runSecurityChecks(item.capture));
     checks.push(
       ...interactionChecks(item.capture.interactions, item.capture.blockedWrites),
+    );
+    checks.push(
+      ...scenarioChecks(item.scenarios, item.capture.scenarioObservations),
     );
 
     const status = aggregateRunStatus(item.capture, checks);
