@@ -50,9 +50,9 @@ export interface HealthConfig {
   /** Settle wait after load, ms. */
   settleMs: number;
   /**
-   * Whether the AI visual verdict runs this crawl. The scheduler sets this true
-   * once per day (the full daily crawl) and false for the lighter interim
-   * crawls, to stay within budget.
+   * Whether the AI visual review runs this crawl. Default false: AI is
+   * on-demand (deterministic checks always run and are free). The scheduler or
+   * a manual "review with AI" action sets this true. Keeps cost bounded.
    */
   aiEnabled: boolean;
   /** Viewport used for rendering + screenshots. */
@@ -61,6 +61,10 @@ export interface HealthConfig {
   maxPagesPerCountry: number;
   /** Max unique internal link targets to reachability-probe per page (politeness). */
   maxLinkProbesPerPage: number;
+  /** Pixel height of each AI slice (kept legible; ~one viewport tall). */
+  aiSliceHeight: number;
+  /** Max slices per page sent to AI (caps token cost on very long pages). */
+  aiMaxSlices: number;
 }
 
 export const HEALTH_CONFIG: HealthConfig = {
@@ -72,4 +76,6 @@ export const HEALTH_CONFIG: HealthConfig = {
   viewport: { width: 1440, height: 900 },
   maxPagesPerCountry: 0,
   maxLinkProbesPerPage: 40,
+  aiSliceHeight: 2000,
+  aiMaxSlices: 6,
 };

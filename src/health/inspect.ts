@@ -1,19 +1,17 @@
 /**
  * Inspects ONE page for the health crawl: visits the URL through the country
  * proxy as a read-only visitor, dismisses Bricks popups, scrolls to load lazy
- * content, then collects technical signals (HTTP, console, broken resources,
- * blank, cache bucket, site country), deterministic visual signals (broken
- * images, overflow, fonts), and functional signals (links/CTAs + dead internal
- * link targets), and takes a full-page screenshot.
+ * content, then collects technical, deterministic visual, and functional
+ * signals, takes a full-page screenshot, and (optionally) cuts readable
+ * top-to-bottom slices for AI visual review.
  *
  * Returns a plain PageHealth object. It does NOT write to the DB and does NOT
  * evaluate findings/severity -- that is the checks phase. It reuses the geo
- * lane's browser/proxy/signals helpers but is separate from capture.ts, whose
- * job (whereami + interaction + token-leak + scenario probe) differs.
+ * lane's browser/proxy/signals helpers but is separate from capture.ts.
  */
 
 import { mkdir } from "node:fs/promises";
-import { dirname } from "node:path";
+import { dirname, join } from "node:path";
 import type { BrowserContext, Page } from "playwright";
 import { env } from "../config/env.js";
 import type { CountryCode } from "../types.js";
@@ -53,6 +51,18 @@ export interface NetworkErrorEntry {
   failure: string | null;
 }
 
+/** How to slice the page for AI review (only used when slicing is requested). */
+export interface SliceOptions {
+  /** Directory to write slice PNGs into. */
+  dir: string;
+  /** Filename prefix (e.g. "US-en-pricing"). */
+  base: string;
+  /** Pixel height per slice. */
+  sliceHeight: number;
+  /** Max slices to produce (caps very long pages). */
+  maxSlices: number;
+}
+
 export interface InspectInput {
   url: string;
   country: CountryCode;
@@ -62,6 +72,8 @@ export interface InspectInput {
   navTimeoutMs: number;
   /** Max unique internal link targets to reachability-probe (politeness). */
   maxLinkProbes: number;
+  /** When set, produce readable page slices for AI review. Omit to skip AI slicing. */
+  slices?: SliceOptions;
 }
 
 /** Everything one page inspection produces (raw signals; not yet judged). */
@@ -79,6 +91,8 @@ export interface PageHealth {
   functional: FunctionalSignals | null;
   deadLinks: DeadLink[];
   screenshotPath: string | null;
+  /** Ordered slice image paths for AI review (empty unless slicing was requested). */
+  aiSlicePaths: string[];
   error: string | null;
   durationMs: number;
 }
@@ -155,10 +169,48 @@ async function collectSiteCountry(
 }
 
 /**
+ * Cuts the full page into readable, viewport-width slices of `sliceHeight` px
+ * (the last slice may be shorter), capped at `maxSlices`. Returns slice paths in
+ * top-to-bottom order. Read-only. Best-effort: returns what it managed to write.
+ */
+async function sliceForAi(page: Page, opts: SliceOptions): Promise<string[]> {
+  const paths: string[] = [];
+  try {
+    const dims = await page.evaluate(() => ({
+      width: document.documentElement.clientWidth || window.innerWidth || 1440,
+      height: document.documentElement.scrollHeight || 0,
+    }));
+    const total = dims.height;
+    if (total <= 0) {
+      return paths;
+    }
+    const count = Math.min(
+      opts.maxSlices,
+      Math.max(1, Math.ceil(total / opts.sliceHeight)),
+    );
+    for (let i = 0; i < count; i += 1) {
+      const y = i * opts.sliceHeight;
+      const h = Math.min(opts.sliceHeight, total - y);
+      if (h <= 0) {
+        break;
+      }
+      const p = join(opts.dir, `${opts.base}-slice${i + 1}.png`);
+      await page.screenshot({
+        path: p,
+        clip: { x: 0, y, width: dims.width, height: h },
+      });
+      paths.push(p);
+    }
+  } catch {
+    // best-effort: return whatever slices were written
+  }
+  return paths;
+}
+
+/**
  * Inspects one page. Never throws; failures land in `error`. The proxy is
- * routed through a local relay when it needs auth (same as the geo lane), and
- * the read-only guard is attached (but left inactive: the health crawl never
- * interacts, so only GETs happen anyway).
+ * routed through a local relay when it needs auth, and the read-only guard is
+ * attached (left inactive: the health crawl never interacts, so only GETs).
  */
 export async function inspectPage(input: InspectInput): Promise<PageHealth> {
   const startedAt = Date.now();
@@ -180,6 +232,7 @@ export async function inspectPage(input: InspectInput): Promise<PageHealth> {
     functional: null,
     deadLinks: [],
     screenshotPath: null,
+    aiSlicePaths: [],
     error: null,
     durationMs: 0,
   };
@@ -242,8 +295,6 @@ export async function inspectPage(input: InspectInput): Promise<PageHealth> {
       (result.visual?.textLength ?? 0) < 40 &&
       (result.visual?.scrollHeight ?? 0) < 400;
 
-    // Functional: read links/CTAs, then probe unique internal targets (HEAD,
-    // GET fallback) through the same proxy-bound request context.
     result.functional = await collectFunctionalSignals(page);
     if (result.functional.links.length > 0) {
       result.deadLinks = await probeInternalTargets(
@@ -256,6 +307,12 @@ export async function inspectPage(input: InspectInput): Promise<PageHealth> {
     await mkdir(dirname(input.screenshotPath), { recursive: true });
     await page.screenshot({ path: input.screenshotPath, fullPage: true });
     result.screenshotPath = input.screenshotPath;
+
+    // Readable slices for AI review, only when requested (keeps cost/time down).
+    if (input.slices) {
+      await mkdir(input.slices.dir, { recursive: true });
+      result.aiSlicePaths = await sliceForAi(page, input.slices);
+    }
   } catch (err) {
     result.error = err instanceof Error ? err.message : String(err);
   } finally {
