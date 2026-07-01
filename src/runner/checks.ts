@@ -323,12 +323,21 @@ export interface RunScenario {
 /**
  * Turns matched scenarios + the run's DOM observations into `scenario` checks.
  *
- * Severity: money-critical scenarios gate as `critical`, the rest as `major`.
+ * Asymmetric gating (Phase M4.3): the `absent` direction is the reliable,
+ * protective one -- it catches forbidden content (e.g. a non-US pricing CTA, or
+ * a price) leaking into a market where it must not appear -- so `absent`
+ * scenarios gate the run (money-critical -> critical, otherwise -> major).
  *
- * Safety: when a scenario has no matching observation (the probe failed for it),
- * the result is `warn` ("not evaluated") -- never `pass`. This is deliberate:
- * silently passing an `absent` expectation we could not actually verify would
- * mask a real leak (e.g. a price showing where it must not).
+ * The `present` direction is fragile: a stored Bricks element id can drift
+ * between generations, resolve to an unparsed dynamic tag (e.g. "{mb_...}"),
+ * belong to a template/loop element (a non-unique `.brxe-<id>`), or render late.
+ * A missing `present` element is therefore informational only (`minor`) and
+ * never gates. The "a price MUST be shown to US" direction is protected by the
+ * dedicated US price check, not by per-element present scenarios.
+ *
+ * Safety: a scenario with no matching observation is `warn` ("not evaluated"),
+ * never `pass`. Passing an `absent` expectation we could not actually verify
+ * would mask a real leak.
  */
 export function scenarioChecks(
   scenarios: RunScenario[],
@@ -344,11 +353,26 @@ export function scenarioChecks(
 
   const out: DeterministicCheck[] = [];
   for (const s of scenarios) {
-    const severity: Severity = s.isMoneyCritical ? "critical" : "major";
     const label = s.label || s.selector;
     const expectedText = `${s.expectation} (${s.rule})`;
-    const obs = bySelector.get(s.selector);
 
+    // Only the `absent` direction gates; `present` is informational (minor).
+    const gates = s.expectation === "absent";
+    const severity: Severity = gates
+      ? s.isMoneyCritical
+        ? "critical"
+        : "major"
+      : "minor";
+
+    const evidenceBase = {
+      selector: s.selector,
+      expectation: s.expectation,
+      rule: s.rule,
+      gating: gates,
+      moneyCritical: s.isMoneyCritical,
+    };
+
+    const obs = bySelector.get(s.selector);
     if (!obs) {
       out.push(
         check(
@@ -358,12 +382,7 @@ export function scenarioChecks(
           expectedText,
           "(not evaluated)",
           `Could not verify "${label}" [${s.rule}]`,
-          {
-            selector: s.selector,
-            expectation: s.expectation,
-            rule: s.rule,
-            moneyCritical: s.isMoneyCritical,
-          },
+          evidenceBase,
         ),
       );
       continue;
@@ -383,14 +402,7 @@ export function scenarioChecks(
         ok
           ? `"${label}" correctly ${s.expectation} [${s.rule}]`
           : `"${label}" expected ${s.expectation} but was ${observedWord} [${s.rule}]`,
-        {
-          selector: s.selector,
-          expectation: s.expectation,
-          rule: s.rule,
-          matched: obs.matched,
-          present: obs.present,
-          moneyCritical: s.isMoneyCritical,
-        },
+        { ...evidenceBase, matched: obs.matched, present: obs.present },
       ),
     );
   }
@@ -463,10 +475,11 @@ export function crossCountryCheck(
  *
  * Severity-aware: only `critical` and `major` checks gate the run. `minor`
  * checks (security-header hygiene, cookie flags, info-disclosure headers, cache
- * warming) are informational -- they are still persisted and visible, but they
- * never push a run to warn/fail. The dangerous failure modes are all
- * critical/major (http, geo, language, price, cross_country, scenario, HTTPS,
- * token-leak, heading, phone, interaction), so a clean run stays `pass`.
+ * warming, and `present`-direction scenarios) are informational -- they are
+ * still persisted and visible, but they never push a run to warn/fail. The
+ * dangerous failure modes are all critical/major (http, geo, language, price,
+ * cross_country, `absent` scenarios, HTTPS, token-leak, heading, phone,
+ * interaction), so a clean run stays `pass`.
  */
 export function aggregateRunStatus(
   capture: CaptureResult,

@@ -32,6 +32,9 @@ import {
 } from "./signals.js";
 import type { BrowserContext, Page } from "playwright";
 
+/** Extra wait after scrolling, to let lazy images/widgets mount and render. */
+const LAZY_LOAD_SETTLE_MS = 1500;
+
 export interface ConsoleErrorEntry {
   text: string;
 }
@@ -136,50 +139,77 @@ async function scanTokenLeak(page: Page): Promise<string[]> {
 }
 
 /**
- * Probes each selector in the live DOM and reports, per selector, how many
- * elements matched and whether any is rendered and visible. Read-only.
+ * Hides Bricks popups in OUR throwaway browser only and unlocks page scrolling.
  *
- * On a total evaluation failure (e.g. the page went away) it returns an empty
- * array rather than fabricating present=false for everything. The scenario
- * check treats a missing observation as "not evaluated" (warn), so a probe
- * failure can never turn an `absent` expectation into a false pass that would
- * mask a real leak.
+ * Bricks renders popups as separate overlay templates with the class
+ * `.brx-popup` (content inside `.brx-popup-content`); the page's own content is
+ * NOT inside these, so hiding them cannot blank the page. This targets ONLY
+ * those Bricks-popup classes -- no generic modal/overlay sweep -- and then
+ * clears the body scroll-lock Bricks applies while a popup is open, so
+ * auto-scroll can load lazy content (the pricing widget, images).
+ *
+ * Read-only: we hide nodes and clear a scroll lock in our DOM only. We do NOT
+ * click, accept/decline anything, or make a request -- no side effect on site.
+ *
+ * The page.evaluate body contains NO named function/arrow declarations
+ * (tsx/esbuild keepNames would inject a browser-undefined `__name`).
  */
-async function probeScenarios(
-  page: Page,
-  selectors: string[],
-): Promise<ScenarioObservation[]> {
-  if (selectors.length === 0) {
-    return [];
-  }
+async function dismissBricksPopups(page: Page): Promise<void> {
   try {
-    return await page.evaluate((sels: string[]) => {
-      function isVisible(el: Element): boolean {
-        const style = window.getComputedStyle(el as HTMLElement);
-        if (style.display === "none" || style.visibility === "hidden") {
-          return false;
-        }
-        const rect = (el as HTMLElement).getBoundingClientRect();
-        return rect.width > 0 && rect.height > 0;
+    await page.evaluate(() => {
+      const popups = document.querySelectorAll(".brx-popup, .brx-popup-content");
+      for (const el of Array.from(popups)) {
+        (el as HTMLElement).style.setProperty("display", "none", "important");
       }
-      return sels.map((selector) => {
-        let nodes: Element[] = [];
-        try {
-          nodes = Array.from(document.querySelectorAll(selector));
-        } catch {
-          nodes = [];
+      const root = document.documentElement;
+      root.style.setProperty("overflow", "auto", "important");
+      const body = document.body;
+      if (body) {
+        body.style.setProperty("overflow", "auto", "important");
+        if (window.getComputedStyle(body).position === "fixed") {
+          body.style.setProperty("position", "static", "important");
+          body.style.setProperty("top", "auto", "important");
         }
-        return {
-          selector,
-          matched: nodes.length,
-          present: nodes.some(isVisible),
-        };
-      });
-    }, selectors);
+      }
+    });
   } catch {
-    // Best-effort: a failed probe must not fail the capture, and must not be
-    // reported as present/absent (that is left "not evaluated" downstream).
-    return [];
+    // Best-effort: popup handling must never fail the capture.
+  }
+}
+
+/**
+ * Scrolls the page from top to bottom in steps, then back to the top. The site
+ * lazy-loads below-the-fold content (images, the pricing widget), so without
+ * scrolling the full-page screenshot is blank at the bottom, extractMarkers
+ * misses lazy prices ("$"), and lazy `.brxe-<id>` elements never enter the DOM.
+ * Read-only: scrolling has no side effects on the site.
+ *
+ * The page.evaluate body contains NO named function/arrow declarations
+ * (tsx/esbuild keepNames would wrap them in a browser-undefined `__name`
+ * helper and make the evaluate throw); all callbacks are anonymous and inline.
+ */
+async function autoScrollToLoadLazyContent(page: Page): Promise<void> {
+  try {
+    await page.evaluate(async () => {
+      await new Promise<void>((resolve) => {
+        let ticks = 0;
+        const step = Math.max(300, Math.floor(window.innerHeight * 0.85));
+        const timer = setInterval(() => {
+          window.scrollBy(0, step);
+          ticks += 1;
+          const atBottom =
+            window.innerHeight + window.scrollY >=
+            document.body.scrollHeight - 2;
+          // Hard cap on ticks so a page that keeps growing cannot loop forever.
+          if (atBottom || ticks > 60) {
+            clearInterval(timer);
+            resolve();
+          }
+        }, 120);
+      });
+    });
+  } catch {
+    // Best-effort: scrolling must never fail the capture.
   }
 }
 
@@ -188,8 +218,11 @@ async function probeScenarios(
  * signal we persist: exit IP/country, the site-detected country (whereami),
  * cache + locale headers, DOM markers, console/network errors, cookies,
  * security inputs, a block-page check, scenario selector observations, a
- * full-page screenshot, and any non-submitting interaction outcomes. Never
- * throws; failures are returned in `error`.
+ * full-page screenshot, and any non-submitting interaction outcomes.
+ *
+ * Before reading, page scrolling is unlocked and the page is scrolled
+ * top-to-bottom, so lazy-loaded content is present. Never throws; failures are
+ * returned in `error`.
  *
  * When the proxy needs authentication, the browser is pointed at a local
  * proxy-chain relay instead of the upstream directly. This avoids Chromium's
@@ -288,6 +321,16 @@ export async function capturePage(input: CaptureInput): Promise<CaptureResult> {
     result.cache = readCacheSignals(response);
     result.rawHeaders = rawHeaders(response);
     result.finalUrl = response?.url() ?? input.url;
+
+    // Hide Bricks popups + unlock scroll, then scroll to trigger lazy-loaded
+    // content, then hide again (a timed popup may appear during the scroll),
+    // then return to the top. All read-only; only Bricks popups are hidden.
+    await dismissBricksPopups(page);
+    await autoScrollToLoadLazyContent(page);
+    await page.waitForTimeout(LAZY_LOAD_SETTLE_MS);
+    await dismissBricksPopups(page);
+    await page.evaluate(() => window.scrollTo(0, 0));
+
     result.markers = await extractMarkers(page);
 
     const status = response?.status() ?? 0;
@@ -350,4 +393,58 @@ export async function capturePage(input: CaptureInput): Promise<CaptureResult> {
   }
 
   return result;
+}
+
+/**
+ * Probes each selector in the live DOM and reports, per selector, how many
+ * elements matched and whether any is rendered and visible. Read-only.
+ *
+ * IMPORTANT: the function passed to page.evaluate must contain NO named inner
+ * function (and no variable-assigned arrow). tsx/esbuild runs with keepNames,
+ * which wraps such functions in a module-scope `__name(...)` helper; that helper
+ * does not exist in the browser, so the evaluate would throw ReferenceError and
+ * every probe would silently return nothing. The visibility test is therefore
+ * inlined as a loop rather than a helper function.
+ *
+ * On a total evaluation failure it returns an empty array rather than
+ * fabricating present=false for everything. The scenario check treats a missing
+ * observation as "not evaluated" (warn), never `pass`, so a probe failure can
+ * never turn an `absent` expectation into a false pass that would mask a leak.
+ */
+async function probeScenarios(
+  page: Page,
+  selectors: string[],
+): Promise<ScenarioObservation[]> {
+  if (selectors.length === 0) {
+    return [];
+  }
+  try {
+    return await page.evaluate((sels: string[]) => {
+      return sels.map((selector) => {
+        let nodes: Element[] = [];
+        try {
+          nodes = Array.from(document.querySelectorAll(selector));
+        } catch {
+          nodes = [];
+        }
+        let present = false;
+        for (const el of nodes) {
+          const style = window.getComputedStyle(el as HTMLElement);
+          if (style.display === "none" || style.visibility === "hidden") {
+            continue;
+          }
+          const rect = (el as HTMLElement).getBoundingClientRect();
+          if (rect.width > 0 && rect.height > 0) {
+            present = true;
+            break;
+          }
+        }
+        return { selector, matched: nodes.length, present };
+      });
+    }, selectors);
+  } catch {
+    // Best-effort: a failed probe must not fail the capture, and must not be
+    // reported as present/absent (that is left "not evaluated" downstream).
+    return [];
+  }
 }
