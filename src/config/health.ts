@@ -8,6 +8,7 @@
  */
 
 import type { CountryCode, LanguageCode } from "../types.js";
+import type { ExpectedCta } from "../health/functional.js";
 
 /** One market to crawl: a country (=> proxy) and the page language to crawl. */
 export interface CrawlTarget {
@@ -28,6 +29,17 @@ export const CRAWL_TARGETS: CrawlTarget[] = [
   { country: "AE", language: "en", priority: "secondary" },
 ];
 
+/**
+ * The primary CTA each market must show, and (optionally) a substring its target
+ * should contain. Used by the functional checks to confirm the right button is
+ * present and clickable for that country. One line per country to extend.
+ */
+export const EXPECTED_CTA: Partial<Record<CountryCode, ExpectedCta>> = {
+  US: { text: "Start Free Trial" },
+  TR: { text: "Book a Demo" },
+  AE: { text: "Book a Meeting" },
+};
+
 export interface HealthConfig {
   /** How many pages to inspect in parallel (per country). Keep small: polite. */
   concurrency: number;
@@ -47,6 +59,8 @@ export interface HealthConfig {
   viewport: { width: number; height: number };
   /** Hard cap on pages per country, as a safety valve during development. 0 = no cap. */
   maxPagesPerCountry: number;
+  /** Max unique internal link targets to reachability-probe per page (politeness). */
+  maxLinkProbesPerPage: number;
 }
 
 export const HEALTH_CONFIG: HealthConfig = {
@@ -57,4 +71,5 @@ export const HEALTH_CONFIG: HealthConfig = {
   aiEnabled: false,
   viewport: { width: 1440, height: 900 },
   maxPagesPerCountry: 0,
+  maxLinkProbesPerPage: 40,
 };
