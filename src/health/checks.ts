@@ -339,10 +339,51 @@ export function buildFindings(
     }
   }
 
-  if (page.deadLinks.length > 0) {
+  // Internal link reachability, split by outcome. A probe returns a DeadLink
+  // for anything that was not a clean <400 response. We separate three cases so
+  // that only genuinely broken targets gate the page:
+  //   - Real HTTP error (status >= 400, except 410): a broken internal link
+  //     -> `dead_link` (major, gates). 5xx incl. Cloudflare/Kinsta 590 count.
+  //   - 410 Gone: an intentionally-removed target still linked somewhere
+  //     -> `link_gone` (minor), mirroring the page-level page_gone rule.
+  //   - Unreachable (status null) due to a transient/connection failure over
+  //     the residential proxy (timeout, reset, closed): NOT a broken link, the
+  //     probe simply could not reach it in time -> `link_unreachable` (minor).
+  //     A null status with a non-transient error is unexpected; treat it as a
+  //     real dead link (major) to stay safe.
+  const realDead: typeof page.deadLinks = [];
+  const goneLinks: typeof page.deadLinks = [];
+  const unreachableLinks: typeof page.deadLinks = [];
+  for (const dl of page.deadLinks) {
+    if (dl.status === 410) {
+      goneLinks.push(dl);
+    } else if (dl.status !== null && dl.status >= 400) {
+      realDead.push(dl);
+    } else if (dl.status === null && isNonServerFailure(dl.error)) {
+      unreachableLinks.push(dl);
+    } else {
+      // status null + non-transient error, or any other odd shape -> gate safe.
+      realDead.push(dl);
+    }
+  }
+  if (realDead.length > 0) {
     out.push(
-      finding("functional", "dead_link", "major", `${page.deadLinks.length} internal link target(s) not reachable`, {
-        links: page.deadLinks,
+      finding("functional", "dead_link", "major", `${realDead.length} internal link target(s) not reachable`, {
+        links: realDead,
+      }),
+    );
+  }
+  if (goneLinks.length > 0) {
+    out.push(
+      finding("functional", "link_gone", "minor", `${goneLinks.length} internal link(s) point to a removed (410) target`, {
+        links: goneLinks,
+      }),
+    );
+  }
+  if (unreachableLinks.length > 0) {
+    out.push(
+      finding("functional", "link_unreachable", "minor", `${unreachableLinks.length} internal link(s) could not be probed (transient/timeout, ignored)`, {
+        links: unreachableLinks,
       }),
     );
   }
