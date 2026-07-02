@@ -84,6 +84,63 @@ function isAbortOrBlock(failure: string | null): boolean {
 }
 
 /**
+ * Console messages that describe resource-load / CORS / network outcomes rather
+ * than a JS execution fault. Resource health is owned authoritatively by the
+ * network check (`broken_resource`), which has the real request host; the
+ * console mirror of it carries no reliable host, so these must never gate on
+ * their own. Chrome attributes CORS failures to the PAGE url (first-party),
+ * which is exactly why url-only attribution is not enough here.
+ */
+const RESOURCE_OR_CORS_RE =
+  /CORS policy|blocked by CORS|Cross-Origin|Access to (?:script|XMLHttpRequest|fetch|image|font|the script|resource)|Failed to load resource|net::ERR_|ERR_BLOCKED|has been blocked/i;
+
+/** Extracts every http(s) host mentioned in free text (URLs may be quoted). */
+function hostsInText(text: string): string[] {
+  const hosts: string[] = [];
+  const matches = text.match(/https?:\/\/[^\s'"()]+/g) ?? [];
+  for (const m of matches) {
+    const h = hostOf(m);
+    if (h) {
+      hosts.push(h);
+    }
+  }
+  return hosts;
+}
+
+/**
+ * Decides whether a console error should gate as first-party or be demoted to
+ * advisory noise. A JS execution error whose only referenced hosts are
+ * first-party gates (`major`). Anything that looks like a resource/CORS/network
+ * message, references any non-first-party host, or has no determinable origin is
+ * treated as noise (`minor`) so it cannot cause a false failure.
+ */
+function isFirstPartyConsoleError(
+  entry: ConsoleErrorEntry,
+  firstPartyHosts: string[],
+): boolean {
+  // Resource/CORS/network chatter is owned by the network check, never gates here.
+  if (RESOURCE_OR_CORS_RE.test(entry.text)) {
+    return false;
+  }
+  const hosts = hostsInText(entry.text);
+  const entryHost = hostOf(entry.url);
+  if (entryHost) {
+    hosts.push(entryHost);
+  }
+  if (hosts.length === 0) {
+    // No determinable origin -> do not gate (unknown is noise under model B).
+    return false;
+  }
+  // Any non-first-party host present -> treat as third-party noise.
+  const anyExternal = hosts.some((h) => !isFirstPartyHost(`https://${h}`, firstPartyHosts));
+  if (anyExternal) {
+    return false;
+  }
+  // All referenced hosts are first-party -> a genuine first-party JS error.
+  return true;
+}
+
+/**
  * Builds all findings for one inspected page. `expectedCta` is the market's
  * primary CTA (from config); `ai` is the optional AI visual result;
  * `firstPartyHosts` is the set of hosts whose failures gate (from config).
@@ -127,11 +184,14 @@ export function buildFindings(
     );
   }
 
-  // Console errors, split by origin: first-party gates, the rest is advisory.
+  // Console errors, split by origin. Chrome reports CORS/resource failures
+  // against the page url, so url-only attribution is not enough: we also read
+  // the message text (hosts + resource/CORS patterns). Only genuine first-party
+  // JS execution errors gate; resource/CORS/third-party/unknown are advisory.
   const firstPartyConsole: ConsoleErrorEntry[] = [];
   const otherConsole: ConsoleErrorEntry[] = [];
   for (const e of page.consoleErrors) {
-    if (isFirstPartyHost(e.url, firstPartyHosts)) {
+    if (isFirstPartyConsoleError(e, firstPartyHosts)) {
       firstPartyConsole.push(e);
     } else {
       otherConsole.push(e);
