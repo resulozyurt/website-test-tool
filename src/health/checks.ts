@@ -73,14 +73,23 @@ function isFirstPartyHost(rawUrl: string | null, firstPartyHosts: string[]): boo
 }
 
 /**
- * Aborted/blocked requests are not server failures: they come from ad/tracker
- * blocking, client aborts, or CSP/CORP responses, and must not gate the page.
+ * Network failures that are NOT server (4xx/5xx) faults and must not gate the
+ * page. Two groups:
+ *  - Aborted/blocked: ad/tracker blocking, client aborts, CSP/CORP responses.
+ *  - Transient connection failures: a single dropped/reset/timed-out request
+ *    over the residential proxy + Cloudflare edge. These are flaky by nature
+ *    (observed once on a Bricks FontAwesome .woff2 that loaded fine on 119/120
+ *    pages), so a single occurrence must not fail the page. A resource that is
+ *    genuinely gone still surfaces as a real HTTP 4xx/5xx (status >= 400), which
+ *    is handled separately and continues to gate. Persistent connection
+ *    failures are meant to be escalated later by the scheduler (same target
+ *    failing across consecutive runs), not by a single crawl.
  */
-const ABORT_BLOCK_RE =
-  /ERR_ABORTED|ERR_FAILED|ERR_BLOCKED|BLOCKED_BY_CLIENT|BLOCKED_BY_RESPONSE|NS_BINDING_ABORTED/i;
+const NON_SERVER_FAILURE_RE =
+  /ERR_ABORTED|ERR_FAILED|ERR_BLOCKED|BLOCKED_BY_CLIENT|BLOCKED_BY_RESPONSE|NS_BINDING_ABORTED|ERR_CONNECTION_CLOSED|ERR_CONNECTION_RESET|ERR_CONNECTION_REFUSED|ERR_CONNECTION_TIMED_OUT|ERR_TIMED_OUT|ERR_NETWORK_CHANGED|ERR_EMPTY_RESPONSE|ERR_SOCKET_NOT_CONNECTED|ERR_NAME_NOT_RESOLVED|ERR_ADDRESS_UNREACHABLE/i;
 
-function isAbortOrBlock(failure: string | null): boolean {
-  return failure != null && ABORT_BLOCK_RE.test(failure);
+function isNonServerFailure(failure: string | null): boolean {
+  return failure != null && NON_SERVER_FAILURE_RE.test(failure);
 }
 
 /**
@@ -227,7 +236,7 @@ export function buildFindings(
   const noiseBroken: NetworkErrorEntry[] = [];
   for (const n of page.networkErrors) {
     const isNoise =
-      !isFirstPartyHost(n.url, firstPartyHosts) || isAbortOrBlock(n.failure);
+      !isFirstPartyHost(n.url, firstPartyHosts) || isNonServerFailure(n.failure);
     if (isNoise) {
       noiseBroken.push(n);
     } else {
