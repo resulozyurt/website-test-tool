@@ -174,6 +174,24 @@ export function buildFindings(
     return out;
   }
 
+  // HTTP 410 Gone means the page was intentionally removed (deleted service
+  // pages that still linger in the discovery inventory). This is expected, not
+  // a fault: record a single advisory `page_gone` finding and return, so it
+  // does NOT gate and none of the downstream signals (broken resources on the
+  // 410 error page, missing CTA, etc.) create noise. Persistent 410s should be
+  // pruned from the inventory (is_excluded) by later inventory maintenance;
+  // until then this keeps them green-but-flagged. Note: 404 is deliberately NOT
+  // treated this way -- a 404 is still a real broken page and continues to gate.
+  if (page.httpStatus === 410) {
+    out.push(
+      finding("technical", "page_gone", "minor", "Page returns 410 Gone (intentionally removed)", {
+        httpStatus: 410,
+        finalUrl: page.finalUrl,
+      }),
+    );
+    return out;
+  }
+
   const http = page.httpStatus;
   if (http === null || http >= 400) {
     out.push(

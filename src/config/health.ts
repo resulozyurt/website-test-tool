@@ -30,14 +30,16 @@ export const CRAWL_TARGETS: CrawlTarget[] = [
 ];
 
 /**
- * The primary CTA each market must show, and (optionally) a substring its target
- * should contain. Used by the functional checks to confirm the right button is
- * present and clickable for that country. One line per country to extend.
+ * The primary CTA each market must show, keyed by LANGUAGE (not country): the
+ * button text depends on the page language, and multiple countries share a
+ * language (US and AE both serve English "Start Free Trial"; TR serves the
+ * Turkish "Ücretsiz Deneyin"). Keying by language keeps this correct and
+ * one-line extensible: add `es`/`ar` here when those markets launch. The
+ * functional check confirms this button is present and clickable.
  */
-export const EXPECTED_CTA: Partial<Record<CountryCode, ExpectedCta>> = {
-  US: { text: "Start Free Trial" },
-  TR: { text: "Book a Demo" },
-  AE: { text: "Book a Meeting" },
+export const EXPECTED_CTA_BY_LANG: Partial<Record<LanguageCode, ExpectedCta>> = {
+  en: { text: "Start Free Trial" },
+  tr: { text: "Ücretsiz Deneyin" },
 };
 
 export interface HealthConfig {

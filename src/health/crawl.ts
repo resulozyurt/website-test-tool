@@ -17,10 +17,10 @@
 
 import { mkdir } from "node:fs/promises";
 import { join } from "node:path";
-import type { CountryCode } from "../types.js";
+import type { CountryCode, LanguageCode } from "../types.js";
 import {
   CRAWL_TARGETS,
-  EXPECTED_CTA,
+  EXPECTED_CTA_BY_LANG,
   HEALTH_CONFIG,
 } from "../config/health.js";
 import { proxyEnvKey, resolveProxy } from "../runner/proxy.js";
@@ -91,7 +91,7 @@ function worse(a: HealthStatus, b: HealthStatus): HealthStatus {
 async function crawlTarget(
   runId: number,
   country: CountryCode,
-  language: string,
+  language: LanguageCode,
   pages: CrawlPage[],
   outputDir: string,
   aiEnabled: boolean,
@@ -103,7 +103,9 @@ async function crawlTarget(
     return { ok: 0, fail: 0, worst: "pass", aiCost: 0 };
   }
 
-  const expectedCta = EXPECTED_CTA[country];
+  // CTA expectation is language-driven (US and AE share English), so resolve it
+  // from the page language rather than the country.
+  const expectedCta = EXPECTED_CTA_BY_LANG[language];
   let ok = 0;
   let fail = 0;
   let worst: HealthStatus = "pass";

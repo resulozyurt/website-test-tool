@@ -247,16 +247,32 @@ export interface ExpectedCta {
 }
 
 /**
+ * Case-folds text for tolerant CTA matching. Turkish is the reason this is not
+ * a plain `toLowerCase()`: the site renders CTAs in uppercase ("ÜCRETSİZ
+ * DENEYİN") while config stores them in title case ("Ücretsiz Deneyin"), and
+ * JS `toLowerCase()` turns the dotted capital "İ" (U+0130) into "i" + combining
+ * dot (two code points), which then fails to equal a plain "i". We normalize
+ * the dotted/dotless I variants to a plain ASCII "i" BEFORE lowercasing so both
+ * forms fold to the same string. Runs in Node (safe to be a named function).
+ */
+function foldForMatch(s: string): string {
+  return s
+    .replace(/[İIı]/g, "i")
+    .toLowerCase();
+}
+
+/**
  * Finds whether the market's expected CTA is present and clickable. Matches by
- * visible text (case-insensitive contains). Returns the best match or null.
+ * visible text (accent/locale-tolerant, case-insensitive contains). Returns the
+ * best match or null.
  */
 export function findExpectedCta(
   signals: FunctionalSignals,
   expected: ExpectedCta,
 ): { present: boolean; clickable: boolean; href: string | null } {
-  const needle = expected.text.toLowerCase();
+  const needle = foldForMatch(expected.text);
   const matches = signals.links.filter((l) =>
-    l.text.toLowerCase().includes(needle),
+    foldForMatch(l.text).includes(needle),
   );
   if (matches.length === 0) {
     return { present: false, clickable: false, href: null };
