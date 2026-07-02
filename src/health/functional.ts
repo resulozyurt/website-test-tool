@@ -8,9 +8,16 @@
  * (falling back to GET on 403/405/501, which some WP/Cloudflare setups return
  * for HEAD). Real submit-through-the-form testing is a staging concern.
  *
+ * Reachability probing is deduplicated crawl-wide: a shared LinkProbeCache
+ * ensures each unique internal target is probed once across every page (and
+ * even across in-flight parallel pages), which is the main cost fix -- nav and
+ * footer links no longer get re-probed on every page.
+ *
  * IMPORTANT: the page.evaluate body contains NO named function/arrow
  * declarations (tsx/esbuild keepNames would inject a browser-undefined
- * `__name`). All callbacks are anonymous and inline.
+ * `__name`). All callbacks are anonymous and inline. The probe helpers below
+ * run in Node (not serialized to the browser), so ordinary named functions are
+ * fine there.
  */
 
 import type { APIRequestContext, Page } from "playwright";
@@ -136,15 +143,69 @@ export interface DeadLink {
 }
 
 /**
- * Probes unique internal link targets for reachability using HEAD, falling back
- * to GET when HEAD is rejected (403/405/501). Returns only the unhealthy ones.
- * Bounded by `max` to stay polite. Uses the proxy-bound request context.
+ * Crawl-wide reachability cache: maps an absolute target URL to a settled (or
+ * in-flight) probe result. `null` means the target was reachable/healthy. The
+ * crawl creates one of these and passes it through every page so each unique
+ * target is probed exactly once, and parallel pages share an in-flight probe.
+ */
+export type LinkProbeCache = Map<string, Promise<DeadLink | null>>;
+
+/** Options for reachability probing (timeouts + optional crawl-wide cache). */
+export interface ProbeOptions {
+  /** Max unique internal targets to probe per page (politeness cap). */
+  max: number;
+  /** HEAD request timeout, ms. */
+  headTimeoutMs: number;
+  /** GET fallback timeout, ms. */
+  getTimeoutMs: number;
+  /** Shared cache so a target is probed once crawl-wide (optional). */
+  cache?: LinkProbeCache;
+}
+
+/**
+ * Probes ONE target: HEAD first, GET fallback on 403/405/501 (setups that
+ * reject HEAD). Returns a DeadLink when unhealthy, or null when healthy. Runs in
+ * Node against the proxy-bound request context; never throws.
+ */
+async function probeSingle(
+  request: APIRequestContext,
+  url: string,
+  headTimeoutMs: number,
+  getTimeoutMs: number,
+): Promise<DeadLink | null> {
+  let status: number | null = null;
+  let method = "HEAD";
+  try {
+    let res = await request.head(url, { timeout: headTimeoutMs });
+    status = res.status();
+    if (status === 403 || status === 405 || status === 501) {
+      method = "GET";
+      res = await request.get(url, { timeout: getTimeoutMs });
+      status = res.status();
+    }
+    if (status >= 400) {
+      return { url, status, method, error: null };
+    }
+    return null;
+  } catch (err) {
+    const error = err instanceof Error ? err.message : String(err);
+    return { url, status, method, error };
+  }
+}
+
+/**
+ * Probes unique internal link targets for reachability, deduplicated crawl-wide
+ * via the shared cache when provided. Returns only the unhealthy ones. Bounded
+ * by `options.max` to stay polite. Uses the page's proxy-bound request context;
+ * cached results from another page are just awaited values (no context needed).
  */
 export async function probeInternalTargets(
   request: APIRequestContext,
   links: LinkInfo[],
-  max = 40,
+  options: ProbeOptions,
 ): Promise<DeadLink[]> {
+  const { max, headTimeoutMs, getTimeoutMs, cache } = options;
+
   const seen = new Set<string>();
   const targets: string[] = [];
   for (const link of links) {
@@ -159,23 +220,19 @@ export async function probeInternalTargets(
 
   const dead: DeadLink[] = [];
   for (const url of targets) {
-    let status: number | null = null;
-    let method = "HEAD";
-    let error: string | null = null;
-    try {
-      let res = await request.head(url, { timeout: 15000 });
-      status = res.status();
-      if (status === 403 || status === 405 || status === 501) {
-        method = "GET";
-        res = await request.get(url, { timeout: 20000 });
-        status = res.status();
+    let pending: Promise<DeadLink | null>;
+    const cached = cache?.get(url);
+    if (cached) {
+      pending = cached;
+    } else {
+      pending = probeSingle(request, url, headTimeoutMs, getTimeoutMs);
+      if (cache) {
+        cache.set(url, pending);
       }
-      if (status >= 400) {
-        dead.push({ url, status, method, error: null });
-      }
-    } catch (err) {
-      error = err instanceof Error ? err.message : String(err);
-      dead.push({ url, status, method, error });
+    }
+    const result = await pending;
+    if (result) {
+      dead.push(result);
     }
   }
   return dead;

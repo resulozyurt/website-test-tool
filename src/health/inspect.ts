@@ -36,6 +36,7 @@ import {
   probeInternalTargets,
   type DeadLink,
   type FunctionalSignals,
+  type LinkProbeCache,
 } from "./functional.js";
 
 /** Extra wait after scrolling, to let lazy images/widgets mount and render. */
@@ -43,6 +44,13 @@ const LAZY_LOAD_SETTLE_MS = 1500;
 
 export interface ConsoleErrorEntry {
   text: string;
+  /**
+   * Best-effort origin of the error, used by the checks phase to separate
+   * first-party JS failures (gate) from third-party/unknown noise (advisory).
+   * From msg.location().url for console errors, or parsed from the stack for
+   * uncaught page errors. Null when it cannot be determined.
+   */
+  url: string | null;
 }
 
 export interface NetworkErrorEntry {
@@ -72,6 +80,12 @@ export interface InspectInput {
   navTimeoutMs: number;
   /** Max unique internal link targets to reachability-probe (politeness). */
   maxLinkProbes: number;
+  /** HEAD probe timeout, ms. */
+  probeHeadTimeoutMs: number;
+  /** GET fallback probe timeout, ms. */
+  probeGetTimeoutMs: number;
+  /** Crawl-wide link-probe cache so each target is probed once (optional). */
+  probeCache?: LinkProbeCache;
   /** When set, produce readable page slices for AI review. Omit to skip AI slicing. */
   slices?: SliceOptions;
 }
@@ -95,6 +109,15 @@ export interface PageHealth {
   aiSlicePaths: string[];
   error: string | null;
   durationMs: number;
+}
+
+/** Extracts the first http(s) URL from an error stack (best-effort). Node-side. */
+function firstUrlInStack(stack: string | undefined): string | null {
+  if (!stack) {
+    return null;
+  }
+  const match = stack.match(/https?:\/\/[^\s):]+/);
+  return match ? match[0] : null;
 }
 
 /**
@@ -254,11 +277,12 @@ export async function inspectPage(input: InspectInput): Promise<PageHealth> {
     const page = await context.newPage();
     page.on("console", (msg) => {
       if (msg.type() === "error") {
-        consoleErrors.push({ text: msg.text() });
+        const loc = msg.location();
+        consoleErrors.push({ text: msg.text(), url: loc?.url || null });
       }
     });
     page.on("pageerror", (err) => {
-      consoleErrors.push({ text: err.message });
+      consoleErrors.push({ text: err.message, url: firstUrlInStack(err.stack) });
     });
     page.on("requestfailed", (request) => {
       networkErrors.push({
@@ -300,7 +324,12 @@ export async function inspectPage(input: InspectInput): Promise<PageHealth> {
       result.deadLinks = await probeInternalTargets(
         context.request,
         result.functional.links,
-        input.maxLinkProbes,
+        {
+          max: input.maxLinkProbes,
+          headTimeoutMs: input.probeHeadTimeoutMs,
+          getTimeoutMs: input.probeGetTimeoutMs,
+          cache: input.probeCache,
+        },
       );
     }
 

@@ -61,6 +61,18 @@ export interface HealthConfig {
   maxPagesPerCountry: number;
   /** Max unique internal link targets to reachability-probe per page (politeness). */
   maxLinkProbesPerPage: number;
+  /** HEAD reachability-probe timeout, ms. */
+  probeHeadTimeoutMs: number;
+  /** GET fallback reachability-probe timeout, ms (for hosts that reject HEAD). */
+  probeGetTimeoutMs: number;
+  /**
+   * Hosts whose failures gate the page. A console error or failed resource is
+   * only counted as a real problem when it comes from one of these (exact host
+   * or a subdomain). Everything else -- analytics, ad/chat widgets, CORS,
+   * aborted/blocked requests -- is recorded as advisory (minor) noise and does
+   * NOT fail the page. Add a host here (one line) to treat it as first-party.
+   */
+  firstPartyHosts: string[];
   /** Pixel height of each AI slice (kept legible; ~one viewport tall). */
   aiSliceHeight: number;
   /** Max slices per page sent to AI (caps token cost on very long pages). */
@@ -71,11 +83,14 @@ export const HEALTH_CONFIG: HealthConfig = {
   concurrency: 3,
   politenessDelayMs: 500,
   navTimeoutMs: 45000,
-  settleMs: 4000,
+  settleMs: 2500,
   aiEnabled: false,
   viewport: { width: 1440, height: 900 },
   maxPagesPerCountry: 0,
   maxLinkProbesPerPage: 40,
+  probeHeadTimeoutMs: 8000,
+  probeGetTimeoutMs: 12000,
+  firstPartyHosts: ["fieldpie.com"],
   aiSliceHeight: 2000,
   aiMaxSlices: 6,
 };

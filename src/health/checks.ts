@@ -5,9 +5,20 @@
  *
  * Severity model mirrors the geo lane: only critical/major gate the page;
  * minor is informational. Aggregate: error > fail > warn > pass.
+ *
+ * Console errors and failed resource requests are attributed to an origin:
+ * first-party failures (fieldpie.com) gate as `major`; third-party or
+ * unknown-origin noise (analytics, ad/chat widgets, CORS, aborted/blocked
+ * requests) is demoted to a `minor` advisory finding so it stays visible in the
+ * panel without failing the page. This keeps real first-party regressions
+ * gating while eliminating the observed false failures.
  */
 
-import type { PageHealth } from "./inspect.js";
+import type {
+  ConsoleErrorEntry,
+  NetworkErrorEntry,
+  PageHealth,
+} from "./inspect.js";
 import type { AiVisualResult } from "./ai-visual.js";
 import {
   findExpectedCta,
@@ -33,14 +44,55 @@ function finding(
   return { category, type, severity, source, message, detail };
 }
 
+/** Hostname of a URL, lowercased, or null when it cannot be parsed. */
+function hostOf(rawUrl: string | null): string | null {
+  if (!rawUrl) {
+    return null;
+  }
+  try {
+    return new URL(rawUrl).hostname.toLowerCase();
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * True when the URL's host is one of the first-party hosts (exact match or a
+ * subdomain of it). Unknown/unparseable hosts are NOT first-party -- unknown
+ * origin is treated as noise so it cannot gate the page.
+ */
+function isFirstPartyHost(rawUrl: string | null, firstPartyHosts: string[]): boolean {
+  const host = hostOf(rawUrl);
+  if (!host) {
+    return false;
+  }
+  return firstPartyHosts.some((h) => {
+    const base = h.toLowerCase();
+    return host === base || host.endsWith(`.${base}`);
+  });
+}
+
+/**
+ * Aborted/blocked requests are not server failures: they come from ad/tracker
+ * blocking, client aborts, or CSP/CORP responses, and must not gate the page.
+ */
+const ABORT_BLOCK_RE =
+  /ERR_ABORTED|ERR_FAILED|ERR_BLOCKED|BLOCKED_BY_CLIENT|BLOCKED_BY_RESPONSE|NS_BINDING_ABORTED/i;
+
+function isAbortOrBlock(failure: string | null): boolean {
+  return failure != null && ABORT_BLOCK_RE.test(failure);
+}
+
 /**
  * Builds all findings for one inspected page. `expectedCta` is the market's
- * primary CTA (from config); `ai` is the optional AI visual result.
+ * primary CTA (from config); `ai` is the optional AI visual result;
+ * `firstPartyHosts` is the set of hosts whose failures gate (from config).
  */
 export function buildFindings(
   page: PageHealth,
   expectedCta: ExpectedCta | undefined,
   ai: AiVisualResult | null,
+  firstPartyHosts: string[],
 ): HealthFindingInput[] {
   const out: HealthFindingInput[] = [];
 
@@ -75,26 +127,72 @@ export function buildFindings(
     );
   }
 
-  if (page.consoleErrors.length > 0) {
+  // Console errors, split by origin: first-party gates, the rest is advisory.
+  const firstPartyConsole: ConsoleErrorEntry[] = [];
+  const otherConsole: ConsoleErrorEntry[] = [];
+  for (const e of page.consoleErrors) {
+    if (isFirstPartyHost(e.url, firstPartyHosts)) {
+      firstPartyConsole.push(e);
+    } else {
+      otherConsole.push(e);
+    }
+  }
+  if (firstPartyConsole.length > 0) {
     out.push(
       finding(
         "technical",
         "console_error",
         "major",
-        `${page.consoleErrors.length} JS console error(s)`,
-        { errors: page.consoleErrors.slice(0, 10) },
+        `${firstPartyConsole.length} first-party JS console error(s)`,
+        { errors: firstPartyConsole.slice(0, 10) },
+      ),
+    );
+  }
+  if (otherConsole.length > 0) {
+    out.push(
+      finding(
+        "technical",
+        "console_error_thirdparty",
+        "minor",
+        `${otherConsole.length} third-party/unknown console error(s) (ignored)`,
+        { errors: otherConsole.slice(0, 10) },
       ),
     );
   }
 
-  if (page.networkErrors.length > 0) {
+  // Failed resource requests, split by origin. Only real first-party 4xx/5xx
+  // (or a genuine first-party load failure) gates; third-party and
+  // aborted/blocked requests are advisory noise.
+  const firstPartyBroken: NetworkErrorEntry[] = [];
+  const noiseBroken: NetworkErrorEntry[] = [];
+  for (const n of page.networkErrors) {
+    const isNoise =
+      !isFirstPartyHost(n.url, firstPartyHosts) || isAbortOrBlock(n.failure);
+    if (isNoise) {
+      noiseBroken.push(n);
+    } else {
+      firstPartyBroken.push(n);
+    }
+  }
+  if (firstPartyBroken.length > 0) {
     out.push(
       finding(
         "technical",
         "broken_resource",
         "major",
-        `${page.networkErrors.length} failed resource request(s) (4xx/5xx/blocked)`,
-        { errors: page.networkErrors.slice(0, 15) },
+        `${firstPartyBroken.length} first-party resource request(s) failed (4xx/5xx/blocked)`,
+        { errors: firstPartyBroken.slice(0, 15) },
+      ),
+    );
+  }
+  if (noiseBroken.length > 0) {
+    out.push(
+      finding(
+        "technical",
+        "third_party_noise",
+        "minor",
+        `${noiseBroken.length} third-party/aborted resource request(s) (ignored)`,
+        { errors: noiseBroken.slice(0, 15) },
       ),
     );
   }

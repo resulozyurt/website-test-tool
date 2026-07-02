@@ -8,6 +8,10 @@
  * enabled for the run, readable slices are cut and sent to Claude for an
  * advisory visual verdict.
  *
+ * A single crawl-wide link-probe cache is shared across every target and page
+ * so each unique internal target is reachability-probed exactly once (nav and
+ * footer links are otherwise re-probed on every page -- the main cost fix).
+ *
  * Separate from the geo sweep; writes only to the 0005 health tables.
  */
 
@@ -23,6 +27,7 @@ import { proxyEnvKey, resolveProxy } from "../runner/proxy.js";
 import { inspectPage, type PageHealth } from "./inspect.js";
 import { buildFindings, aggregatePageStatus } from "./checks.js";
 import { reviewPageVisual } from "./ai-visual.js";
+import type { LinkProbeCache } from "./functional.js";
 import {
   createHealthRun,
   finishHealthRun,
@@ -90,6 +95,7 @@ async function crawlTarget(
   pages: CrawlPage[],
   outputDir: string,
   aiEnabled: boolean,
+  probeCache: LinkProbeCache,
 ): Promise<{ ok: number; fail: number; worst: HealthStatus; aiCost: number }> {
   const proxy = resolveProxy(country);
   if (!proxy) {
@@ -121,6 +127,9 @@ async function crawlTarget(
         settleMs: HEALTH_CONFIG.settleMs,
         navTimeoutMs: HEALTH_CONFIG.navTimeoutMs,
         maxLinkProbes: HEALTH_CONFIG.maxLinkProbesPerPage,
+        probeHeadTimeoutMs: HEALTH_CONFIG.probeHeadTimeoutMs,
+        probeGetTimeoutMs: HEALTH_CONFIG.probeGetTimeoutMs,
+        probeCache,
         slices: aiEnabled
           ? {
               dir: join(outputDir, "slices"),
@@ -145,7 +154,12 @@ async function crawlTarget(
         }
       }
 
-      const findings = buildFindings(health, expectedCta, ai);
+      const findings = buildFindings(
+        health,
+        expectedCta,
+        ai,
+        HEALTH_CONFIG.firstPartyHosts,
+      );
       const status = aggregatePageStatus(health, findings);
 
       const pageId = await insertHealthPage(runId, {
@@ -212,6 +226,11 @@ export async function runCrawl(options: CrawlOptions): Promise<void> {
   const perCountryLimit =
     options.limit > 0 ? options.limit : HEALTH_CONFIG.maxPagesPerCountry;
 
+  // One cache for the whole crawl: a unique internal target is probed once,
+  // even across countries. Cached results are settled values, so awaiting a
+  // probe started by an already-closed context is safe.
+  const probeCache: LinkProbeCache = new Map();
+
   for (const target of targets) {
     const pages = await listPagesToCrawl(target.language, perCountryLimit);
     if (pages.length === 0) {
@@ -238,6 +257,7 @@ export async function runCrawl(options: CrawlOptions): Promise<void> {
       pages,
       outputDir,
       options.ai,
+      probeCache,
     );
 
     const runStatus: HealthRunStatus =
