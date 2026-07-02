@@ -1,3 +1,6 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   /* Surfaces and ink */
   --bg: #f4f5f8;
@@ -40,29 +43,80 @@
   --radius-sm: 6px;
 }
 
-* {
-  box-sizing: border-box;
+/* New design tokens (H6 shell). Light defaults; .dark overrides. Prefixed
+   --app-* so they never collide with the legacy geo variables above. */
+:root {
+  --app-bg: #f7f8fa;
+  --app-surface: #ffffff;
+  --app-card: #ffffff;
+  --app-elev: #fbfcfd;
+  --app-text: #131720;
+  --app-text-2: #3b4351;
+  --app-muted: #5c6675;
+  --app-faint: #8b94a3;
+  --app-border: #e7eaef;
+  --app-border-strong: #d6dbe3;
+  --app-accent: #3b5bdb;
+  --app-accent-weak: #eef1fd;
+
+  --st-ok: #1f8a4c; --st-ok-bg: #e7f5ec; --st-ok-fg: #10713c;
+  --st-warn: #c68900; --st-warn-bg: #fbf1d4; --st-warn-fg: #855400;
+  --st-bad: #c5342a; --st-bad-bg: #fbe8e5; --st-bad-fg: #a4170c;
+  --st-err: #7b4fb0; --st-err-bg: #f0e8f8; --st-err-fg: #5b2f8f;
+  --st-info: #2f72c8; --st-info-bg: #e6effb; --st-info-fg: #1c4f93;
+  --st-none: #eef0f3; --st-none-fg: #5c6675;
 }
 
-html,
-body {
-  margin: 0;
-  padding: 0;
+.dark {
+  --app-bg: #0e1116;
+  --app-surface: #161b22;
+  --app-card: #1a2029;
+  --app-elev: #1e2530;
+  --app-text: #e8ecf2;
+  --app-text-2: #c2cad6;
+  --app-muted: #9aa4b2;
+  --app-faint: #6b7482;
+  --app-border: #262d38;
+  --app-border-strong: #343c48;
+  --app-accent: #7f92ff;
+  --app-accent-weak: #1b2135;
+
+  --st-ok-bg: #10281c; --st-ok-fg: #63d69b;
+  --st-warn-bg: #2c2410; --st-warn-fg: #e6b24d;
+  --st-bad-bg: #2e1614; --st-bad-fg: #f0817a;
+  --st-err-bg: #241a33; --st-err-fg: #b79ae0;
+  --st-info-bg: #12233b; --st-info-fg: #6fa8ec;
+  --st-none: #1e2530; --st-none-fg: #9aa4b2;
 }
 
+@theme inline {
+  --color-app-bg: var(--app-bg);
+  --color-surface: var(--app-surface);
+  --color-card: var(--app-card);
+  --color-elev: var(--app-elev);
+  --color-ink: var(--app-text);
+  --color-ink-2: var(--app-text-2);
+  --color-muted: var(--app-muted);
+  --color-faint: var(--app-faint);
+  --color-line: var(--app-border);
+  --color-line-strong: var(--app-border-strong);
+  --color-brand: var(--app-accent);
+  --color-brand-weak: var(--app-accent-weak);
+  --font-sans: var(--sans);
+  --font-mono: var(--mono);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
 body {
-  background: var(--bg);
-  color: var(--ink);
+  background: var(--app-bg);
+  color: var(--app-text);
   font-family: var(--sans);
   font-size: 14px;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
 }
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
+a { color: inherit; text-decoration: none; }
 
 /* Layout ------------------------------------------------------------------ */
 

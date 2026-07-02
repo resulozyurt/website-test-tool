@@ -11,6 +11,8 @@ import type {
   CheckType,
   CountryCode,
   EnvironmentKey,
+  HealthPageStatus,
+  HealthRunStatus,
   LanguageCode,
   RunStatus,
   Severity,
@@ -273,5 +275,192 @@ export async function getAiVerdictsForRuns(
      where run_id = any($1)
      order by run_id, created_at desc`,
     [runIds],
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/* Health crawl lane (migration 0005)                                         */
+/* -------------------------------------------------------------------------- */
+
+/** One health run (a full-site crawl for one country), with page counts. */
+export interface HealthRunView {
+  id: number;
+  country: CountryCode;
+  trigger: SweepTrigger;
+  aiEnabled: boolean;
+  status: HealthRunStatus;
+  pagesTotal: number;
+  pagesOk: number;
+  pagesWarn: number;
+  pagesFail: number;
+  startedAt: Date;
+  finishedAt: Date | null;
+}
+
+/** The latest health run for a country, for the overview cards. */
+export interface CountryHealthView {
+  country: CountryCode;
+  runId: number;
+  status: HealthRunStatus;
+  pagesTotal: number;
+  pagesOk: number;
+  pagesWarn: number;
+  pagesFail: number;
+  startedAt: Date;
+  finishedAt: Date | null;
+}
+
+interface HealthRunRow {
+  id: number;
+  country: CountryCode;
+  trigger: SweepTrigger;
+  aiEnabled: boolean;
+  status: HealthRunStatus;
+  pagesTotal: string;
+  pagesOk: string;
+  pagesWarn: string;
+  pagesFail: string;
+  startedAt: Date;
+  finishedAt: Date | null;
+}
+
+function toRunView(row: HealthRunRow): HealthRunView {
+  return {
+    id: row.id,
+    country: row.country,
+    trigger: row.trigger,
+    aiEnabled: row.aiEnabled,
+    status: row.status,
+    pagesTotal: toNumber(row.pagesTotal),
+    pagesOk: toNumber(row.pagesOk),
+    pagesWarn: toNumber(row.pagesWarn),
+    pagesFail: toNumber(row.pagesFail),
+    startedAt: row.startedAt,
+    finishedAt: row.finishedAt,
+  };
+}
+
+/** Most recent health runs across all countries. */
+export async function listHealthRuns(limit = 25): Promise<HealthRunView[]> {
+  const rows = await readQuery<HealthRunRow>(
+    `select
+       id,
+       country,
+       trigger,
+       ai_enabled   as "aiEnabled",
+       status,
+       pages_total  as "pagesTotal",
+       pages_ok     as "pagesOk",
+       pages_warn   as "pagesWarn",
+       pages_fail   as "pagesFail",
+       started_at   as "startedAt",
+       finished_at  as "finishedAt"
+     from health_runs
+     order by started_at desc
+     limit $1`,
+    [limit],
+  );
+  return rows.map(toRunView);
+}
+
+/** The latest finished/most-recent run per country (for overview cards). */
+export async function latestHealthByCountry(): Promise<CountryHealthView[]> {
+  const rows = await readQuery<HealthRunRow>(
+    `select distinct on (country)
+       id,
+       country,
+       trigger,
+       ai_enabled   as "aiEnabled",
+       status,
+       pages_total  as "pagesTotal",
+       pages_ok     as "pagesOk",
+       pages_warn   as "pagesWarn",
+       pages_fail   as "pagesFail",
+       started_at   as "startedAt",
+       finished_at  as "finishedAt"
+     from health_runs
+     order by country, started_at desc`,
+  );
+  return rows.map((row) => {
+    const v = toRunView(row);
+    return {
+      country: v.country,
+      runId: v.id,
+      status: v.status,
+      pagesTotal: v.pagesTotal,
+      pagesOk: v.pagesOk,
+      pagesWarn: v.pagesWarn,
+      pagesFail: v.pagesFail,
+      startedAt: v.startedAt,
+      finishedAt: v.finishedAt,
+    };
+  });
+}
+
+/** A single page inspected within a health run. */
+export interface HealthPageView {
+  id: number;
+  runId: number;
+  url: string;
+  path: string | null;
+  language: string | null;
+  country: CountryCode;
+  httpStatus: number | null;
+  blank: boolean;
+  cacheBucket: string | null;
+  siteCountry: string | null;
+  status: HealthPageStatus;
+  durationMs: number | null;
+}
+
+/** One health run header by id (null when it does not exist). */
+export async function getHealthRun(id: number): Promise<HealthRunView | null> {
+  const rows = await readQuery<HealthRunRow>(
+    `select
+       id,
+       country,
+       trigger,
+       ai_enabled   as "aiEnabled",
+       status,
+       pages_total  as "pagesTotal",
+       pages_ok     as "pagesOk",
+       pages_warn   as "pagesWarn",
+       pages_fail   as "pagesFail",
+       started_at   as "startedAt",
+       finished_at  as "finishedAt"
+     from health_runs
+     where id = $1`,
+    [id],
+  );
+  return rows[0] ? toRunView(rows[0]) : null;
+}
+
+/** All pages for a health run, worst-status first. */
+export async function getHealthPages(runId: number): Promise<HealthPageView[]> {
+  return readQuery<HealthPageView>(
+    `select
+       id,
+       run_id       as "runId",
+       url,
+       path,
+       language,
+       country,
+       http_status  as "httpStatus",
+       blank,
+       cache_bucket as "cacheBucket",
+       site_country as "siteCountry",
+       status,
+       duration_ms  as "durationMs"
+     from health_pages
+     where run_id = $1
+     order by
+       case status
+         when 'error' then 0
+         when 'fail'  then 1
+         when 'warn'  then 2
+         else 3
+       end,
+       path`,
+    [runId],
   );
 }

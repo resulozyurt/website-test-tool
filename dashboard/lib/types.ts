@@ -31,3 +31,19 @@ export type CheckType =
   | "scenario"
   | "security_passive"
   | "ai_semantic";
+/* -------------------------------------------------------------------------- */
+/* Health crawl lane (migration 0005)                                         */
+/*                                                                            */
+/* Hand-kept copy of the runner's health vocabulary. The dashboard deploys    */
+/* from its own root and cannot import ../../src, so keep this in sync with    */
+/* src/health/store.ts and migration 0005 by hand.                            */
+/* -------------------------------------------------------------------------- */
+
+export type HealthRunStatus = "running" | "pass" | "warn" | "fail";
+export type HealthPageStatus = "pass" | "warn" | "fail" | "error";
+export type HealthCategory =
+  | "technical"
+  | "visual"
+  | "functional"
+  | "location";
+export type HealthFindingSource = "deterministic" | "ai";
