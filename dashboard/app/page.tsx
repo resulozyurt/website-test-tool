@@ -1,7 +1,18 @@
 import Link from "next/link";
-import { latestHealthByCountry, listHealthRuns } from "@/lib/queries";
+import {
+  healthFindingDistribution,
+  latestHealthByCountry,
+  listHealthRuns,
+  healthRunTrend,
+} from "@/lib/queries";
 import { CountryCards } from "@/components/health/CountryCards";
 import { RecentRuns } from "@/components/health/RecentRuns";
+import { PassRateTrend } from "@/components/charts/PassRateTrend";
+import {
+  FindingDistribution,
+  type DistributionDatum,
+} from "@/components/charts/FindingDistribution";
+import type { TrendPoint } from "@/components/charts/chartTheme";
 
 // Data reflects live monitoring runs; never serve a cached page.
 export const dynamic = "force-dynamic";
@@ -21,14 +32,34 @@ function overallSummary(
   return { total, ok, issues, rate };
 }
 
+/** Deterministic YYYY-MM-DD (UTC) so server render and hydration agree. */
+function isoDate(d: Date): string {
+  return new Date(d).toISOString().slice(0, 10);
+}
+
 export default async function OverviewPage() {
-  const [countries, runs] = await Promise.all([
+  const [countries, runs, trend] = await Promise.all([
     latestHealthByCountry(),
     listHealthRuns(12),
+    healthRunTrend(12),
   ]);
+
+  // Distribution is scoped to the latest run per country, matching the cards.
+  const distribution: DistributionDatum[] = await healthFindingDistribution(
+    countries.map((c) => c.runId),
+  );
+
+  const trendPoints: TrendPoint[] = trend
+    .filter((t) => t.passRate !== null)
+    .map((t) => ({
+      country: t.country,
+      dateLabel: isoDate(t.startedAt),
+      passRate: t.passRate as number,
+    }));
 
   const summary = overallSummary(countries);
   const healthy = summary.issues === 0 && countries.length > 0;
+  const showCharts = trendPoints.length > 0 || distribution.length > 0;
 
   return (
     <>
@@ -99,6 +130,38 @@ export default async function OverviewPage() {
           <div className="mb-8">
             <CountryCards rows={countries} />
           </div>
+
+          {showCharts && (
+            <div className="mb-8 grid gap-4 lg:grid-cols-2">
+              {trendPoints.length > 0 && (
+                <div className="rounded-xl border border-line bg-card p-4">
+                  <div className="mb-3">
+                    <div className="font-mono text-[11px] font-medium uppercase tracking-[0.1em] text-faint">
+                      Pass-rate trend
+                    </div>
+                    <div className="text-[13px] text-muted">
+                      Recent runs by country
+                    </div>
+                  </div>
+                  <PassRateTrend points={trendPoints} />
+                </div>
+              )}
+
+              {distribution.length > 0 && (
+                <div className="rounded-xl border border-line bg-card p-4">
+                  <div className="mb-3">
+                    <div className="font-mono text-[11px] font-medium uppercase tracking-[0.1em] text-faint">
+                      Findings by type
+                    </div>
+                    <div className="text-[13px] text-muted">
+                      Latest run per country
+                    </div>
+                  </div>
+                  <FindingDistribution rows={distribution} />
+                </div>
+              )}
+            </div>
+          )}
 
           <div className="mb-3 flex items-center justify-between">
             <h2 className="text-sm font-medium text-ink-2">Recent runs</h2>

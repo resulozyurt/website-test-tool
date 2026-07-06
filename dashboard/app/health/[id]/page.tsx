@@ -1,15 +1,29 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getHealthRun, getHealthPages } from "@/lib/queries";
+import {
+  getHealthRun,
+  getHealthPages,
+  getHealthFindings,
+  type HealthFindingView,
+} from "@/lib/queries";
 import { formatDateTime, formatDuration } from "@/lib/format";
 import { StatusPill } from "@/components/health/StatusPill";
+import { Findings } from "@/components/health/Findings";
+import { ChipFilter, type FilterValues } from "@/components/health/ChipFilter";
 
 export const dynamic = "force-dynamic";
 
+function firstParam(value: string | string[] | undefined): string | undefined {
+  if (Array.isArray(value)) return value[0];
+  return value;
+}
+
 export default async function HealthRunPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const { id } = await params;
   const runId = Number(id);
@@ -22,7 +36,44 @@ export default async function HealthRunPage({
     notFound();
   }
 
-  const pages = await getHealthPages(runId);
+  const [pages, findings] = await Promise.all([
+    getHealthPages(runId),
+    getHealthFindings(runId),
+  ]);
+
+  const sp = await searchParams;
+  const filters: FilterValues = {
+    status: firstParam(sp.status),
+    severity: firstParam(sp.severity),
+  };
+
+  // Group findings by their page for nested rendering.
+  const findingsByPage = new Map<number, HealthFindingView[]>();
+  for (const f of findings) {
+    const list = findingsByPage.get(f.pageId) ?? [];
+    list.push(f);
+    findingsByPage.set(f.pageId, list);
+  }
+
+  // Apply filters: status narrows which pages show; severity narrows to pages
+  // that carry that severity (and, per page, which findings are displayed).
+  const visiblePages = pages.filter((p) => {
+    if (filters.status && p.status !== filters.status) return false;
+    if (filters.severity) {
+      const pf = findingsByPage.get(p.id) ?? [];
+      if (!pf.some((f) => f.severity === filters.severity)) return false;
+    }
+    return true;
+  });
+
+  const findingsForPage = (pageId: number): HealthFindingView[] => {
+    const pf = findingsByPage.get(pageId) ?? [];
+    return filters.severity
+      ? pf.filter((f) => f.severity === filters.severity)
+      : pf;
+  };
+
+  const filtersActive = Boolean(filters.status || filters.severity);
 
   return (
     <>
@@ -55,6 +106,23 @@ export default async function HealthRunPage({
         ))}
       </div>
 
+      <ChipFilter
+        basePath={`/health/${run.id}`}
+        current={filters}
+        groups={[
+          {
+            label: "Status",
+            field: "status",
+            options: ["pass", "warn", "fail", "error"],
+          },
+          {
+            label: "Severity",
+            field: "severity",
+            options: ["critical", "major", "minor"],
+          },
+        ]}
+      />
+
       <div className="overflow-hidden rounded-xl border border-line bg-card">
         <table className="w-full text-sm">
           <thead>
@@ -67,34 +135,56 @@ export default async function HealthRunPage({
             </tr>
           </thead>
           <tbody>
-            {pages.map((p) => (
-              <tr
-                key={p.id}
-                className="border-b border-line last:border-0 hover:bg-elev"
-              >
-                <td className="px-4 py-3 font-mono text-[13px]">
-                  {p.path || "/"}
-                </td>
-                <td className="px-4 py-3">
-                  <StatusPill status={p.status} />
-                </td>
-                <td className="hidden px-4 py-3 font-mono text-xs text-muted sm:table-cell">
-                  {p.httpStatus ?? "—"}
-                </td>
-                <td className="hidden px-4 py-3 font-mono text-xs text-muted sm:table-cell">
-                  {p.siteCountry ?? "—"}
-                </td>
-                <td className="hidden px-4 py-3 font-mono text-xs text-muted sm:table-cell">
-                  {p.cacheBucket ?? "—"}
+            {visiblePages.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={5}
+                  className="px-4 py-8 text-center text-sm text-muted"
+                >
+                  No pages match the current filters.
                 </td>
               </tr>
-            ))}
+            ) : (
+              visiblePages.map((p) => {
+                const pageFindings = findingsForPage(p.id);
+                return (
+                  <tr
+                    key={p.id}
+                    className="border-b border-line align-top last:border-0"
+                  >
+                    <td className="px-4 py-3 font-mono text-[13px]">
+                      {p.path || "/"}
+                      {pageFindings.length > 0 && (
+                        <Findings findings={pageFindings} />
+                      )}
+                    </td>
+                    <td className="px-4 py-3">
+                      <StatusPill status={p.status} />
+                    </td>
+                    <td className="hidden px-4 py-3 font-mono text-xs text-muted sm:table-cell">
+                      {p.httpStatus ?? "—"}
+                    </td>
+                    <td className="hidden px-4 py-3 font-mono text-xs text-muted sm:table-cell">
+                      {p.siteCountry ?? "—"}
+                    </td>
+                    <td className="hidden px-4 py-3 font-mono text-xs text-muted sm:table-cell">
+                      {p.cacheBucket ?? "—"}
+                    </td>
+                  </tr>
+                );
+              })
+            )}
           </tbody>
         </table>
       </div>
 
-      <div className="mt-3 font-mono text-xs text-faint">
-        Started {formatDateTime(run.startedAt)}
+      <div className="mt-3 flex items-center justify-between font-mono text-xs text-faint">
+        <span>Started {formatDateTime(run.startedAt)}</span>
+        {filtersActive && (
+          <Link href={`/health/${run.id}`} className="hover:text-muted">
+            Clear filters
+          </Link>
+        )}
       </div>
     </>
   );
