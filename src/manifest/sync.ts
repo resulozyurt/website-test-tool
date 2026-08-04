@@ -79,15 +79,16 @@ export async function syncExpectations(
 
     const existing = await getExpectationByMarketPage(market.id, page.id, exec);
 
-    // Never clobber a human override: manual > manifest.
-    if (existing && existing.source === "manual") {
+    // Never clobber a human override or a fresher auto-learned row.
+    // Priority: manual > auto > manifest.
+    if (existing && (existing.source === "manual" || existing.source === "auto")) {
       entries.push({
         country: m.country,
         language: m.language,
         pageKey: m.pageKey,
         outcome: "skipped",
         checksum,
-        reason: "manual override present; left untouched",
+        reason: "higher-priority row present (manual/auto); left untouched",
       });
       continue;
     }

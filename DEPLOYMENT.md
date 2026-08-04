@@ -119,10 +119,51 @@ bir **health run** görünmeli. Runner'ın Deploy Logs'unda
 
 ---
 
-## 5. Sıradaki fazlar (bilgi)
+## 5. Faz 3 — Ekran görüntüsü kalıcılığı (Cloudflare R2)
 
-- **Faz 3 — Ekran görüntüsü (R2):** görüntüler Cloudflare R2'ye yüklenip panelde
-  gösterilir.
+Runner artık her tam sayfa ekran görüntüsünü R2'ye yükler ve DB'ye object key'i
+yazar; panel görseli kendi `/api/screenshot` route'u üzerinden (Basic Auth
+arkasında) akıtır. Bucket **private** kalabilir.
+
+### 5.1 Cloudflare'de R2 kurulumu (bir kez)
+
+1. Cloudflare Dashboard → **R2 Object Storage** → **Create bucket**. Bir ad ver
+   (ör. `fieldpie-monitor-shots`), konum/depolama sınıfını varsayılan bırak →
+   **Create bucket**. (Ücretsiz kademe: 10 GB depolama + aylık milyonlarca
+   işlem — bu kullanım için fazlasıyla yeterli.)
+2. R2 → **Overview** → **API Tokens** kısmında **Manage** → **Create Account API
+   token** → izin olarak **Object Read & Write** seç → oluştur.
+3. Çıkan **Access Key ID** ve **Secret Access Key** değerlerini kaydet
+   (**Secret bir daha gösterilmez**).
+4. **S3 endpoint**: `https://<ACCOUNT_ID>.r2.cloudflarestorage.com`
+   (Account ID'yi R2 Overview / hesap ayarlarında bulursun).
+
+### 5.2 Env değişkenleri (HEM runner HEM dashboard servisine)
+
+| Değişken | Değer |
+|----------|-------|
+| `STORAGE_ENDPOINT` | `https://<ACCOUNT_ID>.r2.cloudflarestorage.com` |
+| `STORAGE_BUCKET` | bucket adı (ör. `fieldpie-monitor-shots`) |
+| `STORAGE_ACCESS_KEY_ID` | R2 token'ın Access Key ID'si |
+| `STORAGE_SECRET_ACCESS_KEY` | R2 token'ın Secret Access Key'i |
+
+> Dört değişkenin **dördü de** iki serviste olmalı: runner yüklemek, dashboard
+> okumak için kullanır. Eksikse runner upload'ı atlar (görüntü kalıcı olmaz),
+> panel de görsel göstermez — sistem yine çalışır.
+
+### 5.3 Doğrulama
+
+Env'ler girildikten sonra bir cron/sweep çalıştır; panelde bir run/health-page
+detayına gir → **Screenshot** küçük görseli görünmeli, tıklayınca tam boy açılmalı.
+Eski (Faz 3 öncesi) kayıtlarda görsel olmaz — bu normaldir.
+
+> İsteğe bağlı: R2 bucket'ında **Object lifecycle** kuralı ile (ör. 30 gün)
+> eski görüntüleri otomatik sildirebilirsin (depolamayı düşük tutar).
+
+---
+
+## 6. Sıradaki faz (bilgi)
+
 - **Faz 4 — Gerçek insan gibi tıklama:** health hattında navigasyon-only gerçek
   tıklama testleri.
 

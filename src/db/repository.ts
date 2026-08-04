@@ -40,7 +40,7 @@ export interface Executor {
 }
 
 /** Where an expectation row came from. Manual rows take priority over manifest. */
-export type ExpectationSource = "manifest" | "manual";
+export type ExpectationSource = "manifest" | "manual" | "auto";
 
 /* -------------------------------------------------------------------------- */
 /* Row types (camelCase mirror of the DB tables)                              */

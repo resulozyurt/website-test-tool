@@ -42,6 +42,7 @@ import { resolveInteractions } from "../config/interactions.js";
 import { listActiveScenarios } from "../scenarios/store.js";
 import { verifyExperience } from "../ai/verify.js";
 import { capturePage, type CaptureResult } from "./capture.js";
+import { isStorageConfigured, uploadFile } from "../storage/r2.js";
 import { proxyEnvKey, resolveProxy } from "./proxy.js";
 import {
   aggregateRunStatus,
@@ -320,6 +321,17 @@ async function main(): Promise<void> {
     const status = aggregateRunStatus(item.capture, checks);
     const { capture } = item;
 
+    // Persist the full-page screenshot to R2 (ephemeral local disk otherwise).
+    // When storage is configured we store the R2 key (or null on upload
+    // failure); when it is not, we keep the local path for local-dev viewing.
+    let screenshotKey: string | null = capture.screenshotPath;
+    if (capture.screenshotPath && isStorageConfigured()) {
+      screenshotKey = await uploadFile(
+        capture.screenshotPath,
+        `sweeps/run-${item.runId}.png`,
+      );
+    }
+
     await finishRun(item.runId, {
       status,
       exitIp: capture.exit.ip,
@@ -328,7 +340,7 @@ async function main(): Promise<void> {
       kinstaCache: capture.cache?.kinstaCache ?? null,
       cfCacheStatus: capture.cache?.cfCacheStatus ?? null,
       contentLanguage: capture.cache?.contentLanguage ?? null,
-      screenshotKey: capture.screenshotPath,
+      screenshotKey,
       rawHeaders: capture.rawHeaders,
       consoleErrors:
         capture.consoleErrors.length > 0 ? capture.consoleErrors : null,

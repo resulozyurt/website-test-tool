@@ -1,6 +1,7 @@
 import { formatCost, formatPercent, normalizeStatus, type StatusKey } from "@/lib/format";
 import type { AiVerdictView, CheckView, RunView } from "@/lib/queries";
 import { CheckTable } from "./CheckTable";
+import { Screenshot } from "./Screenshot";
 import { StatusPill } from "./health/StatusPill";
 
 /** Left spine color: a run's status at a glance, before you read anything. */
@@ -132,6 +133,10 @@ export function RunCard({
 
         <CheckTable checks={checks} />
         <AiBlock ai={ai} />
+        <Screenshot
+          screenshotKey={run.screenshotKey}
+          alt={`${run.country}/${run.pageKey} screenshot`}
+        />
       </div>
     </div>
   );

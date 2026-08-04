@@ -90,6 +90,7 @@ export interface RunView {
   exitIp: string | null;
   contentLanguage: string | null;
   error: string | null;
+  screenshotKey: string | null;
   startedAt: Date;
   finishedAt: Date | null;
 }
@@ -228,6 +229,7 @@ export async function getRunsBySweep(sweepId: number): Promise<RunView[]> {
        r.exit_ip        as "exitIp",
        r.content_language as "contentLanguage",
        r.error,
+       r.screenshot_key as "screenshotKey",
        r.started_at     as "startedAt",
        r.finished_at    as "finishedAt"
      from runs r
@@ -420,6 +422,7 @@ export interface HealthPageView {
   cacheBucket: string | null;
   siteCountry: string | null;
   status: HealthPageStatus;
+  screenshotKey: string | null;
   durationMs: number | null;
 }
 
@@ -460,6 +463,7 @@ export async function getHealthPages(runId: number): Promise<HealthPageView[]> {
        cache_bucket as "cacheBucket",
        site_country as "siteCountry",
        status,
+       screenshot_key as "screenshotKey",
        duration_ms  as "durationMs"
      from health_pages
      where run_id = $1

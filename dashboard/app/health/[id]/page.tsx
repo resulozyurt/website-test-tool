@@ -9,6 +9,7 @@ import {
 import { formatDateTime, formatDuration } from "@/lib/format";
 import { StatusPill } from "@/components/health/StatusPill";
 import { Findings } from "@/components/health/Findings";
+import { Screenshot } from "@/components/Screenshot";
 import { ChipFilter, type FilterValues } from "@/components/health/ChipFilter";
 
 export const dynamic = "force-dynamic";
@@ -157,6 +158,10 @@ export default async function HealthRunPage({
                       {pageFindings.length > 0 && (
                         <Findings findings={pageFindings} />
                       )}
+                      <Screenshot
+                        screenshotKey={p.screenshotKey}
+                        alt={`${p.country} ${p.path || "/"} screenshot`}
+                      />
                     </td>
                     <td className="px-4 py-3">
                       <StatusPill status={p.status} />

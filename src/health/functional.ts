@@ -35,6 +35,8 @@ export interface LinkInfo {
   /** href is empty, "#", or "javascript:void(0)" style (a dead control). */
   brokenHref: boolean;
   tag: string;
+  /** Rendered and visible (size + display + visibility), regardless of clickability. */
+  visible: boolean;
 }
 
 export interface FunctionalSignals {
@@ -62,6 +64,7 @@ export async function collectFunctionalSignals(
         clickable: boolean;
         brokenHref: boolean;
         tag: string;
+        visible: boolean;
       }[] = [];
 
       for (const node of els) {
@@ -107,6 +110,10 @@ export async function collectFunctionalSignals(
         const style = window.getComputedStyle(el);
         const rect = el.getBoundingClientRect();
         const sized = rect.width > 2 && rect.height > 2;
+        const visibleFlag =
+          sized &&
+          style.display !== "none" &&
+          style.visibility !== "hidden";
         const shown =
           style.display !== "none" &&
           style.visibility !== "hidden" &&
@@ -124,7 +131,7 @@ export async function collectFunctionalSignals(
           }
         }
 
-        out.push({ text, href, resolved, internal, clickable, brokenHref, tag });
+        out.push({ text, href, resolved, internal, clickable, brokenHref, tag, visible: visibleFlag });
       }
 
       return { links: out, total: out.length };

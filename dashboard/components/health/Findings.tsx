@@ -1,5 +1,6 @@
 import type { HealthFindingView } from "@/lib/queries";
 import { SeverityPill } from "./SeverityPill";
+import { findingMeta } from "@/lib/findingCatalog";
 
 /** Pretty-print the jsonb detail column, or null when there is nothing to show. */
 function detailText(detail: unknown): string | null {
@@ -14,16 +15,21 @@ function detailText(detail: unknown): string | null {
 
 function FindingRow({ finding }: { finding: HealthFindingView }) {
   const json = detailText(finding.detail);
+  const meta = findingMeta(finding.type);
   return (
     <div className="py-2">
       <div className="flex flex-wrap items-center gap-2">
         <SeverityPill severity={finding.severity} />
-        <span className="font-mono text-[12px] text-ink-2">{finding.type}</span>
+        <span className="text-[13px] font-medium text-ink-2">{meta.label}</span>
+        <span className="font-mono text-[11px] text-faint">{finding.type}</span>
         <span className="font-mono text-[10px] uppercase tracking-wide text-faint">
           {finding.category}
         </span>
       </div>
       <div className="mt-1 text-[13px] text-muted">{finding.message}</div>
+      {meta.description && (
+        <div className="mt-0.5 text-[12px] text-faint">{meta.description}</div>
+      )}
       {json && (
         <details className="mt-1">
           <summary className="cursor-pointer select-none font-mono text-[11px] text-faint hover:text-muted">

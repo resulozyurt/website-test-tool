@@ -38,6 +38,10 @@ import {
   type FunctionalSignals,
   type LinkProbeCache,
 } from "./functional.js";
+import {
+  collectInteractionSignals,
+  type InteractionSignals,
+} from "./interact.js";
 
 /** Extra wait after scrolling, to let lazy images/widgets mount and render. */
 const LAZY_LOAD_SETTLE_MS = 1500;
@@ -103,6 +107,7 @@ export interface PageHealth {
   networkErrors: NetworkErrorEntry[];
   visual: VisualSignals | null;
   functional: FunctionalSignals | null;
+  interaction: InteractionSignals | null;
   deadLinks: DeadLink[];
   screenshotPath: string | null;
   /** Ordered slice image paths for AI review (empty unless slicing was requested). */
@@ -253,6 +258,7 @@ export async function inspectPage(input: InspectInput): Promise<PageHealth> {
     networkErrors,
     visual: null,
     functional: null,
+    interaction: null,
     deadLinks: [],
     screenshotPath: null,
     aiSlicePaths: [],
@@ -295,6 +301,29 @@ export async function inspectPage(input: InspectInput): Promise<PageHealth> {
       const status = response.status();
       if (status >= 400) {
         networkErrors.push({ url: response.url(), status, failure: null });
+      }
+    });
+
+    // Install a layout-shift (CLS) observer at document start so shifts during
+    // load and the lazy-content scroll accumulate into window.__clsValue, read
+    // later by collectVisualSignals. Best-effort; unsupported -> stays 0.
+    await page.addInitScript(() => {
+      try {
+        (window as unknown as { __clsValue: number }).__clsValue = 0;
+        const obs = new PerformanceObserver((list) => {
+          for (const entry of list.getEntries()) {
+            const e = entry as unknown as {
+              value?: number;
+              hadRecentInput?: boolean;
+            };
+            if (!e.hadRecentInput && typeof e.value === "number") {
+              (window as unknown as { __clsValue: number }).__clsValue += e.value;
+            }
+          }
+        });
+        obs.observe({ type: "layout-shift", buffered: true });
+      } catch {
+        // layout-shift not supported in this browser build
       }
     });
 
@@ -342,6 +371,10 @@ export async function inspectPage(input: InspectInput): Promise<PageHealth> {
       await mkdir(input.slices.dir, { recursive: true });
       result.aiSlicePaths = await sliceForAi(page, input.slices);
     }
+
+    // Read-only human-like interaction (hover menus, inspect forms). Runs LAST,
+    // after the screenshot, so it cannot disturb the captured visuals.
+    result.interaction = await collectInteractionSignals(page);
   } catch (err) {
     result.error = err instanceof Error ? err.message : String(err);
   } finally {
