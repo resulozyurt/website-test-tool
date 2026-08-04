@@ -24,11 +24,21 @@ function createPool(): Pool {
   });
 }
 
-// Reuse a single pool across requests in production and across hot reloads in
-// development (Next.js re-evaluates modules on every change in dev).
-export const pool: Pool = global.__dashboardPool ?? createPool();
-if (process.env.NODE_ENV !== "production") {
-  global.__dashboardPool = pool;
+// Lazily create the pool on first query, NOT at module import. `next build`
+// imports every page module to collect data even for force-dynamic routes; if
+// the pool were built at import time it would call createPool() during the
+// build (where DATABASE_URL is absent) and throw "DATABASE_URL is not set",
+// failing the build. Deferring creation to the first readQuery() means the
+// connection string is only required at runtime, where it is present.
+//
+// The single instance is cached on globalThis so it is reused across requests
+// in production and across hot reloads in development (Next.js re-evaluates
+// modules on every change in dev).
+function getPool(): Pool {
+  if (!global.__dashboardPool) {
+    global.__dashboardPool = createPool();
+  }
+  return global.__dashboardPool;
 }
 
 // The dashboard must never mutate the database. This guard rejects anything
@@ -44,6 +54,6 @@ export async function readQuery<T>(
   if (!READ_ONLY.test(text)) {
     throw new Error("readQuery only allows SELECT/WITH statements.");
   }
-  const result = await pool.query(text, params);
+  const result = await getPool().query(text, params);
   return result.rows as T[];
 }
