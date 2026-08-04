@@ -36,6 +36,8 @@ export interface ContentMarkers {
   ctaCandidates: string[];
   /** True when Turkish-specific characters or words are detected in the body. */
   turkishDetected: boolean;
+  /** Main-content visible text sample (trimmed) for content-language detection. */
+  textSample: string;
   /** Stable hash of the locale-relevant content, used for cross-country diffing. */
   fingerprint: string;
 }
@@ -266,6 +268,7 @@ export async function extractMarkers(page: Page): Promise<ContentMarkers> {
     phoneNumbers,
     ctaCandidates,
     turkishDetected,
+    textSample: (raw.mainText || raw.bodyText || "").replace(/\s+/g, " ").trim().slice(0, 5000),
     fingerprint,
   };
 }

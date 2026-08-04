@@ -24,6 +24,7 @@ export type CheckType =
   | "cache_header"
   | "cross_country"
   | "language"
+  | "content_language"
   | "cta"
   | "price"
   | "heading"

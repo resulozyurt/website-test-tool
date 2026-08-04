@@ -25,6 +25,8 @@ import {
   type FunctionalSignals,
 } from "./functional.js";
 import type { ExpectedCta } from "./functional.js";
+import { analyzeLinkCoherence } from "./coherence.js";
+import { assessLanguage, type Lang } from "../lang/detect.js";
 import type {
   FindingCategory,
   FindingSeverity,
@@ -159,6 +161,7 @@ export function buildFindings(
   expectedCta: ExpectedCta | undefined,
   ai: AiVisualResult | null,
   firstPartyHosts: string[],
+  expectedLanguage: Lang | undefined,
 ): HealthFindingInput[] {
   const out: HealthFindingInput[] = [];
 
@@ -316,6 +319,33 @@ export function buildFindings(
         }),
       );
     }
+    if (v.cumulativeLayoutShift > 0.6) {
+      out.push(
+        finding("visual", "layout_shift", "major", `Large layout shift during load (CLS ${v.cumulativeLayoutShift})`, {
+          cls: v.cumulativeLayoutShift,
+        }),
+      );
+    } else if (v.cumulativeLayoutShift > 0.25) {
+      out.push(
+        finding("visual", "layout_shift", "minor", `Noticeable layout shift during load (CLS ${v.cumulativeLayoutShift})`, {
+          cls: v.cumulativeLayoutShift,
+        }),
+      );
+    }
+    if (v.unloadedImages.length > 0) {
+      out.push(
+        finding("visual", "image_not_loaded", "minor", `${v.unloadedImages.length} image(s) still not loaded after scroll`, {
+          images: v.unloadedImages,
+        }),
+      );
+    }
+    if (v.overlaps.length > 0) {
+      out.push(
+        finding("visual", "element_overlap", "minor", `${v.overlaps.length} overlapping element pair(s)`, {
+          overlaps: v.overlaps,
+        }),
+      );
+    }
   }
 
   // --- Functional ----------------------------------------------------------
@@ -329,12 +359,31 @@ export function buildFindings(
         }),
       );
     }
-    const unclickable = f.links.filter((l) => !l.clickable && !l.brokenHref);
+    const unclickable = f.links.filter((l) => !l.clickable && !l.brokenHref && l.visible);
     if (unclickable.length > 0) {
       out.push(
         finding("functional", "unclickable", "minor", `${unclickable.length} link/button(s) not clickable (hidden/zero-size/covered/disabled)`, {
           links: unclickable.slice(0, 15).map((l) => ({ text: l.text, tag: l.tag })),
         }),
+      );
+    }
+  }
+
+  // Button/link text-vs-target coherence: a link whose visible text names a
+  // destination ("Pricing", "İletişim", "Book a Demo") but points elsewhere
+  // (home, or a different section). Advisory (minor): intent inference is
+  // heuristic, so it surfaces in the panel without failing the page.
+  if (page.functional) {
+    const mismatches = analyzeLinkCoherence(page.functional);
+    if (mismatches.length > 0) {
+      out.push(
+        finding(
+          "functional",
+          "link_coherence",
+          "minor",
+          `${mismatches.length} link(s) whose text and target disagree`,
+          { mismatches: mismatches.slice(0, 15) },
+        ),
       );
     }
   }
@@ -412,6 +461,60 @@ export function buildFindings(
           actual: cta.href,
         }),
       );
+    }
+  }
+
+  // --- Interaction (read-only: hovered menus, inspected forms) -------------
+  const it = page.interaction;
+  if (it) {
+    if (it.brokenForms.length > 0) {
+      out.push(
+        finding("functional", "form_no_fields", "minor", `${it.brokenForms.length} visible form(s) render no input fields`, {
+          forms: it.brokenForms,
+        }),
+      );
+    }
+    if (it.menusNotRevealing.length > 0) {
+      out.push(
+        finding("functional", "menu_no_reveal", "minor", `${it.menusNotRevealing.length} nav menu(s) did not open on hover`, {
+          menus: it.menusNotRevealing,
+        }),
+      );
+    }
+  }
+
+  // --- Location / content language ----------------------------------------
+  // Does the page's actual visible text match the language this market should
+  // serve? Catches a TR page rendered in English, or an ES/AR page left
+  // untranslated -- the html-lang attribute alone would miss these.
+  if (expectedLanguage && page.visual?.textSample) {
+    const a = assessLanguage(page.visual.textSample, expectedLanguage);
+    if (a.detected !== "unknown") {
+      if (a.mismatch) {
+        out.push(
+          finding(
+            "location",
+            "content_language",
+            "major",
+            `Page text looks like "${a.detected}" but should be "${expectedLanguage}" (${a.reason})`,
+            {
+              detected: a.detected,
+              foreignRatio: a.foreignRatio,
+              sampleLength: a.sampleLength,
+            },
+          ),
+        );
+      } else if (a.foreignRatio >= 0.6) {
+        out.push(
+          finding(
+            "location",
+            "foreign_text",
+            "minor",
+            `Significant non-"${expectedLanguage}" text detected (possible untranslated content)`,
+            { detected: a.detected, foreignRatio: a.foreignRatio },
+          ),
+        );
+      }
     }
   }
 

@@ -30,6 +30,7 @@ import {
   HEALTH_CONFIG,
 } from "../config/health.js";
 import { proxyEnvKey, resolveProxy } from "../runner/proxy.js";
+import { isStorageConfigured, uploadFile } from "../storage/r2.js";
 import { inspectPage, type PageHealth } from "./inspect.js";
 import { buildFindings, aggregatePageStatus } from "./checks.js";
 import { reviewPageVisual } from "./ai-visual.js";
@@ -173,8 +174,20 @@ async function crawlTarget(
         expectedCta,
         ai,
         HEALTH_CONFIG.firstPartyHosts,
+        language,
       );
       const status = aggregatePageStatus(health, findings);
+
+      // Persist the full-page screenshot to R2 (local disk is ephemeral on
+      // Railway). Store the R2 key when configured (null on upload failure);
+      // otherwise keep the local path for local-dev viewing. Best-effort.
+      let screenshotKey: string | null = health.screenshotPath;
+      if (health.screenshotPath && isStorageConfigured()) {
+        screenshotKey = await uploadFile(
+          health.screenshotPath,
+          `health/run-${runId}/${base}.png`,
+        );
+      }
 
       // Persist. store.ts already retries transient failures; if a page still
       // cannot be written, we lose that row but NOT the crawl -- the remaining
@@ -198,7 +211,7 @@ async function crawlTarget(
           aiVerdict: ai?.verdict ?? null,
           aiNotes: ai ? (ai.suggestion ?? (ai.error ? `error: ${ai.error}` : null)) : null,
           aiCostUsd: ai?.costUsd ?? null,
-          screenshotKey: health.screenshotPath,
+          screenshotKey,
           status,
           error: health.error,
           durationMs: health.durationMs,

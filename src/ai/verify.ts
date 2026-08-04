@@ -29,7 +29,11 @@ const SYSTEM_PROMPT =
   "of one page (top portion) and the expected experience for a specific " +
   "country and language. Decide whether the screenshot matches the expected " +
   "experience. Be strict about pricing: if prices are expected to be hidden " +
-  "but you see numeric prices, that is a mismatch (and vice versa). Ignore " +
+  "but you see numeric prices, that is a mismatch (and vice versa). Be strict " +
+  "about LANGUAGE: the visible text should be in the expected language; if you " +
+  "see text in a different language (e.g. English left untranslated on a " +
+  "Spanish/Arabic/Turkish page), or an image whose embedded text is in the " +
+  "wrong language, that is a mismatch — note it in findings. Ignore " +
   "cookie-consent dialogs and unrelated popups. Respond with ONLY a JSON " +
   'object, no preamble, of the form: {"verdict":"match"|"mismatch"|' +
   '"uncertain","confidence":0.0-1.0,"findings":["short finding", ...]}';

@@ -32,8 +32,12 @@ const SYSTEM_PROMPT =
   "Look ONLY for objective visual/layout defects: broken or missing images, " +
   "text overflowing or overlapping other elements, cut-off or clipped content, " +
   "elements spilling off the page, obviously misaligned or collapsed layout, " +
-  "unstyled/raw content. Ignore cookie banners and marketing popups. Do NOT " +
-  "comment on wording, copy, or subjective taste. Respond with ONLY a JSON " +
+  "unstyled/raw content. ALSO flag language defects: the page's expected " +
+  "language is given in the prompt; report any text clearly in a DIFFERENT " +
+  "language (e.g. English left untranslated on a Turkish/Spanish/Arabic page) " +
+  "and any image whose embedded text is in the wrong language. Ignore cookie " +
+  "banners and marketing popups. Do NOT comment on wording quality, copy, or " +
+  "subjective taste. Respond with ONLY a JSON " +
   'object, no preamble: {"verdict":"clean"|"issues"|"uncertain",' +
   '"confidence":0.0-1.0,"issues":["short concrete defect", ...],' +
   '"suggestion":"one short sentence or empty"}';

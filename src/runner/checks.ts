@@ -24,6 +24,7 @@ import type {
   Severity,
 } from "../types.js";
 import type { CaptureResult, ScenarioObservation } from "./capture.js";
+import { assessLanguage, type Lang } from "../lang/detect.js";
 
 /** A CheckResult plus optional structured evidence persisted to checks.evidence. */
 export interface DeterministicCheck extends CheckResult {
@@ -184,6 +185,57 @@ function languageCheck(
   return null;
 }
 
+/**
+ * Content-language check: does the page's actual visible text match the language
+ * this market/page should serve? Catches the cases the html-lang check cannot --
+ * a TR page rendered in English, or an ES/AR page left untranslated -- by
+ * assessing the body text itself. Conservative: only a clear signal gates.
+ */
+function contentLanguageCheck(
+  capture: CaptureResult,
+  exp: ExpectationSet,
+): DeterministicCheck | null {
+  const markers = capture.markers;
+  const expected = exp.language?.htmlLang;
+  if (!markers || !expected || !markers.textSample) {
+    return null;
+  }
+  const a = assessLanguage(markers.textSample, expected as Lang);
+  if (a.detected === "unknown") {
+    return null; // too little signal -- add no noise
+  }
+  if (a.mismatch) {
+    return check(
+      "content_language",
+      "major",
+      "fail",
+      expected,
+      a.detected,
+      `Page text looks like "${a.detected}" but expected "${expected}" (${a.reason})`,
+      { detected: a.detected, foreignRatio: a.foreignRatio, sampleLength: a.sampleLength },
+    );
+  }
+  if (a.foreignRatio >= 0.6) {
+    return check(
+      "content_language",
+      "minor",
+      "warn",
+      expected,
+      `foreign~${Math.round(a.foreignRatio * 100)}%`,
+      `Significant non-"${expected}" text detected (possible untranslated content)`,
+      { detected: a.detected, foreignRatio: a.foreignRatio },
+    );
+  }
+  return check(
+    "content_language",
+    "minor",
+    "pass",
+    expected,
+    a.detected,
+    `Content language consistent with "${expected}"`,
+  );
+}
+
 function phoneCheck(
   capture: CaptureResult,
   exp: ExpectationSet,
@@ -289,6 +341,7 @@ export function runDeterministicChecks(
   const optional = [
     cacheHeaderCheck(capture, expectation),
     languageCheck(capture, expectation),
+    contentLanguageCheck(capture, expectation),
     phoneCheck(capture, expectation),
     priceCheck(capture, expectation),
     headingCheck(capture, expectation),
