@@ -1,7 +1,17 @@
-import { formatCost, formatPercent, normalizeStatus } from "@/lib/format";
+import { formatCost, formatPercent, normalizeStatus, type StatusKey } from "@/lib/format";
 import type { AiVerdictView, CheckView, RunView } from "@/lib/queries";
 import { CheckTable } from "./CheckTable";
-import { StatusBadge } from "./StatusBadge";
+import { StatusPill } from "./health/StatusPill";
+
+/** Left spine color: a run's status at a glance, before you read anything. */
+const SPINE: Record<StatusKey, string> = {
+  pass: "bg-[var(--st-ok)]",
+  warn: "bg-[var(--st-warn)]",
+  fail: "bg-[var(--st-bad)]",
+  error: "bg-[var(--st-err)]",
+  running: "bg-[var(--st-info)]",
+  unknown: "bg-[var(--app-faint)]",
+};
 
 function MetaItem({
   k,
@@ -12,10 +22,18 @@ function MetaItem({
   v: string;
   tone?: "good" | "bad";
 }) {
+  const toneClass =
+    tone === "good"
+      ? "text-[var(--st-ok-fg)]"
+      : tone === "bad"
+        ? "text-[var(--st-bad-fg)]"
+        : "text-ink-2";
   return (
-    <div className="meta-item">
-      <span className="k">{k}</span>
-      <span className={`v${tone ? ` ${tone}` : ""}`}>{v}</span>
+    <div className="flex flex-col gap-px">
+      <span className="font-mono text-[10px] uppercase tracking-wide text-faint">
+        {k}
+      </span>
+      <span className={"font-mono text-xs " + toneClass}>{v}</span>
     </div>
   );
 }
@@ -30,16 +48,35 @@ function cacheTone(value: string | null): "good" | undefined {
   return value && value.toUpperCase().includes("HIT") ? "good" : undefined;
 }
 
+const VERDICT_TONE: Record<string, string> = {
+  match: "text-[var(--st-ok-fg)]",
+  mismatch: "text-[var(--st-warn-fg)]",
+  uncertain: "text-muted",
+};
+
 function AiBlock({ ai }: { ai: AiVerdictView | undefined }) {
   if (!ai) return null;
   const verdict = ai.verdict.toLowerCase();
   return (
-    <div className="ai">
-      <span className="tag">AI · advisory</span>
-      <span className={`verdict ${verdict}`}>{ai.verdict}</span>
-      <span className="field">conf {formatPercent(ai.confidence)}</span>
-      <span className="field">{ai.model}</span>
-      <span className="field">cost {formatCost(ai.costUsd)}</span>
+    <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 rounded-lg border border-dashed border-line-strong bg-elev px-3.5 py-3">
+      <span className="font-mono text-[10px] uppercase tracking-wide text-faint">
+        AI · advisory
+      </span>
+      <span
+        className={
+          "font-mono text-xs font-semibold " +
+          (VERDICT_TONE[verdict] ?? "text-muted")
+        }
+      >
+        {ai.verdict}
+      </span>
+      <span className="font-mono text-xs text-ink-2">
+        conf {formatPercent(ai.confidence)}
+      </span>
+      <span className="font-mono text-xs text-ink-2">{ai.model}</span>
+      <span className="font-mono text-xs text-ink-2">
+        cost {formatCost(ai.costUsd)}
+      </span>
     </div>
   );
 }
@@ -59,21 +96,21 @@ export function RunCard({
   const geoMismatch = Boolean(site && run.exitCountry && site !== run.exitCountry);
 
   return (
-    <div className="card run">
-      <div className={`run-spine spine-${spine}`} aria-hidden="true" />
-      <div className="run-body">
-        <div className="run-head">
-          <div className="run-title">
+    <div className="grid grid-cols-[4px_1fr] overflow-hidden rounded-xl border border-line bg-card">
+      <div className={SPINE[spine]} aria-hidden="true" />
+      <div className="p-4">
+        <div className="mb-3 flex items-center justify-between gap-3">
+          <div className="font-mono text-[15px] font-semibold">
             {run.country}
-            <span className="sep">/</span>
+            <span className="mx-1.5 text-faint">/</span>
             {run.pageKey}
-            <span className="sep">·</span>
+            <span className="mx-1.5 text-faint">·</span>
             {run.language}
           </div>
-          <StatusBadge status={run.status} />
+          <StatusPill status={run.status} />
         </div>
 
-        <div className="meta">
+        <div className="mb-3 flex flex-wrap gap-x-5 gap-y-2">
           <MetaItem
             k="HTTP"
             v={run.httpStatus ? String(run.httpStatus) : "—"}

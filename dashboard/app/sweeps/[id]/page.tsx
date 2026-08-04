@@ -8,9 +8,9 @@ import {
   type MatrixCell,
 } from "@/lib/queries";
 import { formatDateTime, formatDuration } from "@/lib/format";
-import { StatusBadge } from "@/components/StatusBadge";
+import { StatusPill } from "@/components/health/StatusPill";
 import { SweepMatrix } from "@/components/SweepMatrix";
-import { Filters, type FilterState } from "@/components/Filters";
+import { ChipFilter, type FilterValues } from "@/components/health/ChipFilter";
 import { RunCard } from "@/components/RunCard";
 
 export const dynamic = "force-dynamic";
@@ -64,7 +64,7 @@ export default async function SweepPage({
   const pages = Array.from(new Set(runs.map((r) => r.pageKey)));
 
   const sp = await searchParams;
-  const filters: FilterState = {
+  const filters: FilterValues = {
     country: firstParam(sp.country),
     page: firstParam(sp.page),
     status: firstParam(sp.status),
@@ -79,49 +79,64 @@ export default async function SweepPage({
 
   return (
     <>
-      <div className="crumbs">
-        <Link href="/">← sweeps</Link>
+      <div className="mb-1 font-mono text-xs text-muted">
+        <Link href="/geo" className="hover:text-ink">
+          ← geo sweeps
+        </Link>
       </div>
 
-      <div className="page-head">
+      <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <div className="eyebrow">{sweep.environmentKey} · {sweep.trigger}</div>
-          <h1>Sweep #{sweep.id}</h1>
+          <div className="font-mono text-[11px] font-medium uppercase tracking-[0.13em] text-muted">
+            {sweep.environmentKey} · {sweep.trigger}
+          </div>
+          <h1 className="mt-1 text-[22px] font-medium tracking-tight">
+            Sweep #{sweep.id}
+          </h1>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-          <span className="mono" style={{ color: "var(--muted)", fontSize: 12 }}>
+        <div className="flex items-center gap-3.5">
+          <span className="font-mono text-xs text-muted">
             {formatDateTime(sweep.startedAt)} ·{" "}
             {formatDuration(sweep.startedAt, sweep.finishedAt)}
           </span>
-          <StatusBadge status={sweep.status} />
+          <StatusPill status={sweep.status} />
         </div>
       </div>
 
-      <section className="section">
-        <h2 className="section-title">Country × page</h2>
-        <div className="card" style={{ padding: 16, display: "inline-block" }}>
+      <section className="mb-7">
+        <h2 className="mb-3 text-sm font-medium text-ink-2">Country × page</h2>
+        <div className="inline-block rounded-xl border border-line bg-card p-4">
           <SweepMatrix cells={cells} />
         </div>
       </section>
 
-      <Filters
-        sweepId={sweep.id}
+      <ChipFilter
+        basePath={`/sweeps/${sweep.id}`}
         current={filters}
-        countries={countries}
-        pages={pages}
+        groups={[
+          { label: "Country", field: "country", options: countries },
+          { label: "Page", field: "page", options: pages },
+          {
+            label: "Status",
+            field: "status",
+            options: ["pass", "warn", "fail", "error"],
+          },
+        ]}
       />
 
-      <section className="section">
-        <h2 className="section-title">
+      <section className="mb-7">
+        <h2 className="mb-3 text-sm font-medium text-ink-2">
           Runs{" "}
-          <span className="mono" style={{ color: "var(--faint)", fontWeight: 400 }}>
+          <span className="font-mono font-normal text-faint">
             ({visibleRuns.length} of {runs.length})
           </span>
         </h2>
         {visibleRuns.length === 0 ? (
-          <div className="card empty">No runs match the current filters.</div>
+          <div className="rounded-xl border border-line bg-card p-8 text-center text-sm text-muted">
+            No runs match the current filters.
+          </div>
         ) : (
-          <div className="runs-grid">
+          <div className="grid gap-3.5">
             {visibleRuns.map((run) => (
               <RunCard
                 key={run.id}

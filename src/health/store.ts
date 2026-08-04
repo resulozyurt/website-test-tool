@@ -2,10 +2,15 @@
  * Persistence for the health crawl. Self-contained (uses the shared pool or a
  * transaction client), so it does not touch the runner's repository layer or
  * the discovery store. Writes to the 0005 tables only.
+ *
+ * Every statement issued against the shared pool goes through `run`, which
+ * retries transient connection failures. Statements issued against a caller's
+ * transaction client are NOT retried: replaying one statement inside a broken
+ * transaction would be incorrect, so that is left to the caller.
  */
 
 import type { QueryResult, QueryResultRow } from "pg";
-import { pool } from "../db/client.js";
+import { pool, withRetry } from "../db/client.js";
 import type { CountryCode, LanguageCode } from "../types.js";
 
 /** The pool or a transaction client from pool.connect(). */
@@ -14,6 +19,20 @@ export interface Executor {
     text: string,
     params?: unknown[],
   ): Promise<QueryResult<R>>;
+}
+
+/** Issues a statement, retrying transient failures only on the shared pool. */
+async function run<R extends QueryResultRow = any>(
+  exec: Executor,
+  label: string,
+  text: string,
+  params: unknown[],
+): Promise<QueryResult<R>> {
+  const onSharedPool = (exec as unknown) === (pool as unknown);
+  if (onSharedPool) {
+    return withRetry(() => exec.query<R>(text, params), label);
+  }
+  return exec.query<R>(text, params);
 }
 
 export type HealthStatus = "pass" | "warn" | "fail" | "error";
@@ -53,13 +72,13 @@ export async function listPagesToCrawl(
     params.push(limit);
     sql += ` limit $2`;
   }
-  const res = await exec.query<{
+  const res = await run<{
     id: number;
     url: string;
     path: string;
     language: string;
     slug: string | null;
-  }>(sql, params);
+  }>(exec, "listPagesToCrawl", sql, params);
   return res.rows.map((r) => ({
     discoveredPageId: r.id,
     url: r.url,
@@ -79,7 +98,9 @@ export async function createHealthRun(
   input: { country: CountryCode; trigger: "manual" | "cron"; aiEnabled: boolean },
   exec: Executor = pool,
 ): Promise<HealthRunRow> {
-  const res = await exec.query<HealthRunRow>(
+  const res = await run<HealthRunRow>(
+    exec,
+    "createHealthRun",
     `insert into health_runs (country, trigger, ai_enabled, status)
      values ($1, $2, $3, 'running')
      returning id, country, status`,
@@ -99,7 +120,9 @@ export async function finishHealthRun(
   },
   exec: Executor = pool,
 ): Promise<void> {
-  await exec.query(
+  await run(
+    exec,
+    "finishHealthRun",
     `update health_runs
         set status = $2,
             pages_total = $3,
@@ -117,6 +140,43 @@ export async function finishHealthRun(
       input.pagesFail,
     ],
   );
+}
+
+/**
+ * Closes out runs left in 'running' by a crashed process, so they stop being
+ * reported as live. Uses the real page counts already persisted for the run,
+ * rather than trusting whatever the dead process had in memory. The age
+ * threshold keeps a concurrently running crawl safe.
+ */
+export async function failStaleHealthRuns(
+  olderThanMinutes = 120,
+  exec: Executor = pool,
+): Promise<number> {
+  const res = await run<{ id: number }>(
+    exec,
+    "failStaleHealthRuns",
+    `update health_runs r
+        set status = 'fail',
+            finished_at = now(),
+            pages_total = counts.total,
+            pages_ok    = counts.ok,
+            pages_fail  = counts.bad
+       from (
+         select hr.id,
+                count(hp.id)                                            as total,
+                count(*) filter (where hp.status = 'pass')              as ok,
+                count(*) filter (where hp.status in ('fail', 'error'))  as bad
+           from health_runs hr
+           left join health_pages hp on hp.run_id = hr.id
+          where hr.status = 'running'
+            and hr.started_at < now() - ($1 || ' minutes')::interval
+          group by hr.id
+       ) as counts
+      where r.id = counts.id
+      returning r.id`,
+    [String(olderThanMinutes)],
+  );
+  return res.rowCount ?? 0;
 }
 
 export interface HealthPageInput {
@@ -149,7 +209,9 @@ export async function insertHealthPage(
   input: HealthPageInput,
   exec: Executor = pool,
 ): Promise<number> {
-  const res = await exec.query<{ id: number }>(
+  const res = await run<{ id: number }>(
+    exec,
+    "insertHealthPage",
     `insert into health_pages
        (run_id, discovered_page_id, url, path, language, country, http_status,
         final_url, blank, cache_bucket, site_country, console_errors,
@@ -201,7 +263,9 @@ export async function insertHealthFinding(
   input: HealthFindingInput,
   exec: Executor = pool,
 ): Promise<void> {
-  await exec.query(
+  await run(
+    exec,
+    "insertHealthFinding",
     `insert into health_findings
        (page_id, category, type, severity, source, message, detail)
      values ($1, $2, $3, $4, $5, $6, $7)`,

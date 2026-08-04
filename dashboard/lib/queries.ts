@@ -11,6 +11,8 @@ import type {
   CheckType,
   CountryCode,
   EnvironmentKey,
+  HealthCategory,
+  HealthFindingSource,
   HealthPageStatus,
   HealthRunStatus,
   LanguageCode,
@@ -363,7 +365,14 @@ export async function listHealthRuns(limit = 25): Promise<HealthRunView[]> {
   return rows.map(toRunView);
 }
 
-/** The latest finished/most-recent run per country (for overview cards). */
+/**
+ * The latest *completed* run per country (for the overview cards).
+ *
+ * Runs still in 'running' are excluded on purpose: a crashed crawl stays in
+ * 'running' with zero page counts, and a card fed that row would render a
+ * healthy-looking "0/0 pass". The cards must always show the last run that
+ * actually produced a result.
+ */
 export async function latestHealthByCountry(): Promise<CountryHealthView[]> {
   const rows = await readQuery<HealthRunRow>(
     `select distinct on (country)
@@ -379,6 +388,7 @@ export async function latestHealthByCountry(): Promise<CountryHealthView[]> {
        started_at   as "startedAt",
        finished_at  as "finishedAt"
      from health_runs
+     where status <> 'running'
      order by country, started_at desc`,
   );
   return rows.map((row) => {
@@ -463,4 +473,189 @@ export async function getHealthPages(runId: number): Promise<HealthPageView[]> {
        path`,
     [runId],
   );
+}
+
+/* -------------------------------------------------------------------------- */
+/* Health crawl lane — H6.2 additions (findings, trend, distribution)         */
+/*                                                                            */
+/* All read-only SELECTs, same as everything above: they go through           */
+/* readQuery, coerce count() to a number, and alias snake_case to camelCase.  */
+/* No schema changes; these only read migration-0005 tables.                  */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * One deterministic/AI finding attached to a page inside a health run.
+ * `detail` is the raw jsonb column (already parsed by pg into a JS value);
+ * the UI renders it inside a collapsed <details> block, so we keep it opaque.
+ */
+export interface HealthFindingView {
+  id: number;
+  pageId: number;
+  path: string | null;
+  category: HealthCategory;
+  type: string;
+  severity: Severity;
+  source: HealthFindingSource;
+  message: string;
+  detail: unknown;
+}
+
+/** A single point on the pass-rate trend: one finished health run. */
+export interface HealthTrendPoint {
+  runId: number;
+  country: CountryCode;
+  startedAt: Date;
+  pagesTotal: number;
+  pagesOk: number;
+  /** Whole-percent pass rate (0..100), or null when the run had no pages. */
+  passRate: number | null;
+}
+
+/** Aggregated finding count, grouped by severity + category + type. */
+export interface HealthDistributionRow {
+  severity: Severity;
+  category: HealthCategory;
+  type: string;
+  count: number;
+}
+
+interface HealthFindingRow {
+  id: number;
+  pageId: number;
+  path: string | null;
+  category: HealthCategory;
+  type: string;
+  severity: Severity;
+  source: HealthFindingSource;
+  message: string;
+  detail: unknown;
+}
+
+interface HealthTrendRow {
+  runId: number;
+  country: CountryCode;
+  startedAt: Date;
+  pagesTotal: string;
+  pagesOk: string;
+}
+
+interface HealthDistributionQueryRow {
+  severity: Severity;
+  category: HealthCategory;
+  type: string;
+  count: string;
+}
+
+/**
+ * All findings for a health run, joined to their page for path/ordering.
+ * Ordered by page path, then worst severity first, so the detail page can
+ * group by page and keep gating findings (critical/major) above minor ones.
+ */
+export async function getHealthFindings(
+  runId: number,
+): Promise<HealthFindingView[]> {
+  const rows = await readQuery<HealthFindingRow>(
+    `select
+       f.id,
+       f.page_id   as "pageId",
+       hp.path,
+       f.category,
+       f.type,
+       f.severity,
+       f.source,
+       f.message,
+       f.detail
+     from health_findings f
+     join health_pages hp on hp.id = f.page_id
+     where hp.run_id = $1
+     order by
+       hp.path nulls first,
+       case f.severity
+         when 'critical' then 0
+         when 'major'    then 1
+         else 2
+       end,
+       f.id`,
+    [runId],
+  );
+  return rows.map((row) => ({
+    id: row.id,
+    pageId: row.pageId,
+    path: row.path,
+    category: row.category,
+    type: row.type,
+    severity: row.severity,
+    source: row.source,
+    message: row.message,
+    detail: row.detail,
+  }));
+}
+
+/**
+ * Pass-rate trend for the last `limit` finished health runs, returned in
+ * chronological (oldest-first) order so a time axis reads left-to-right.
+ * Running crawls are excluded because their page counts are still moving and
+ * would show a misleading dip.
+ */
+export async function healthRunTrend(limit = 12): Promise<HealthTrendPoint[]> {
+  const rows = await readQuery<HealthTrendRow>(
+    `select
+       id           as "runId",
+       country,
+       started_at   as "startedAt",
+       pages_total  as "pagesTotal",
+       pages_ok     as "pagesOk"
+     from health_runs
+     where status <> 'running'
+     order by started_at desc
+     limit $1`,
+    [limit],
+  );
+
+  return rows
+    .map((row) => {
+      const pagesTotal = toNumber(row.pagesTotal);
+      const pagesOk = toNumber(row.pagesOk);
+      const passRate =
+        pagesTotal > 0 ? Math.round((pagesOk / pagesTotal) * 100) : null;
+      return {
+        runId: row.runId,
+        country: row.country,
+        startedAt: row.startedAt,
+        pagesTotal,
+        pagesOk,
+        passRate,
+      };
+    })
+    .reverse();
+}
+
+/**
+ * Finding counts across a set of health runs, grouped by severity, category,
+ * and type. Used for the overview distribution chart (typically fed the latest
+ * run id per country). Returns [] for an empty id list without hitting the DB.
+ */
+export async function healthFindingDistribution(
+  runIds: number[],
+): Promise<HealthDistributionRow[]> {
+  if (runIds.length === 0) return [];
+  const rows = await readQuery<HealthDistributionQueryRow>(
+    `select
+       f.severity,
+       f.category,
+       f.type,
+       count(*) as "count"
+     from health_findings f
+     join health_pages hp on hp.id = f.page_id
+     where hp.run_id = any($1)
+     group by f.severity, f.category, f.type
+     order by count(*) desc, f.severity, f.type`,
+    [runIds],
+  );
+  return rows.map((row) => ({
+    severity: row.severity,
+    category: row.category,
+    type: row.type,
+    count: toNumber(row.count),
+  }));
 }

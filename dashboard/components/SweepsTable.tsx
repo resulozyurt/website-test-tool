@@ -1,74 +1,78 @@
 import Link from "next/link";
 import { formatDateTime, formatDuration } from "@/lib/format";
 import type { SweepListItem } from "@/lib/queries";
-import { StatusBadge } from "./StatusBadge";
+import { StatusPill } from "./health/StatusPill";
 import { SweepMatrixCompact } from "./SweepMatrix";
 
 function Counts({ item }: { item: SweepListItem }) {
+  const parts: { n: number; label: string; tone: string }[] = [
+    { n: item.passCount, label: "pass", tone: "text-[var(--st-ok-fg)]" },
+    { n: item.warnCount, label: "warn", tone: "text-[var(--st-warn-fg)]" },
+    { n: item.failCount, label: "fail", tone: "text-[var(--st-bad-fg)]" },
+  ];
   return (
-    <span className="counts">
-      <span className={item.passCount ? "c-pass" : "zero"}>
-        {item.passCount} pass
-      </span>
-      <span className={item.warnCount ? "c-warn" : "zero"}>
-        {item.warnCount} warn
-      </span>
-      <span className={item.failCount ? "c-fail" : "zero"}>
-        {item.failCount} fail
-      </span>
+    <span className="inline-flex gap-2.5 font-mono text-xs tabular-nums">
+      {parts.map((p) => (
+        <span key={p.label} className={p.n ? p.tone : "text-faint"}>
+          {p.n} {p.label}
+        </span>
+      ))}
     </span>
   );
 }
 
 export function SweepsTable({ items }: { items: SweepListItem[] }) {
   return (
-    <div className="card">
-      <table className="sweeps">
+    <div className="overflow-hidden rounded-xl border border-line bg-card">
+      <table className="w-full text-sm">
         <thead>
-          <tr>
-            <th>Sweep</th>
-            <th>Status</th>
-            <th className="hide-sm">Matrix</th>
-            <th className="hide-sm">Result</th>
-            <th className="hide-sm">Started</th>
-            <th className="hide-sm">Duration</th>
-            <th />
+          <tr className="border-b border-line text-left font-mono text-[11px] uppercase tracking-wide text-faint">
+            <th className="px-4 py-2.5 font-medium">Sweep</th>
+            <th className="px-4 py-2.5 font-medium">Status</th>
+            <th className="hidden px-4 py-2.5 font-medium sm:table-cell">Matrix</th>
+            <th className="hidden px-4 py-2.5 font-medium sm:table-cell">Result</th>
+            <th className="hidden px-4 py-2.5 font-medium md:table-cell">Started</th>
+            <th className="hidden px-4 py-2.5 font-medium md:table-cell">Duration</th>
+            <th className="px-4 py-2.5" />
           </tr>
         </thead>
         <tbody>
           {items.map((item) => (
-            <tr key={item.id}>
-              <td>
-                <Link href={`/sweeps/${item.id}`} className="sweep-id">
-                  #{item.id}
-                </Link>{" "}
-                <span className="mono" style={{ color: "var(--faint)" }}>
-                  {item.trigger}
-                </span>
-              </td>
-              <td>
-                <StatusBadge status={item.status} />
-              </td>
-              <td className="hide-sm">
-                <SweepMatrixCompact cells={item.cells} />
-              </td>
-              <td className="hide-sm">
-                <Counts item={item} />
-              </td>
-              <td className="hide-sm mono" style={{ color: "var(--muted)" }}>
-                {formatDateTime(item.startedAt)}
-              </td>
-              <td className="hide-sm mono" style={{ color: "var(--muted)" }}>
-                {formatDuration(item.startedAt, item.finishedAt)}
-              </td>
-              <td style={{ textAlign: "right" }}>
+            <tr
+              key={item.id}
+              className="border-b border-line last:border-0 hover:bg-elev"
+            >
+              <td className="px-4 py-3">
                 <Link
                   href={`/sweeps/${item.id}`}
-                  className="row-link mono"
-                  aria-label={`Open sweep ${item.id}`}
-                  style={{ color: "var(--muted)" }}
+                  className="font-mono font-semibold hover:text-brand"
                 >
-                  open{" "}
+                  #{item.id}
+                </Link>{" "}
+                <span className="font-mono text-xs text-faint">{item.trigger}</span>
+              </td>
+              <td className="px-4 py-3">
+                <StatusPill status={item.status} />
+              </td>
+              <td className="hidden px-4 py-3 sm:table-cell">
+                <SweepMatrixCompact cells={item.cells} />
+              </td>
+              <td className="hidden px-4 py-3 sm:table-cell">
+                <Counts item={item} />
+              </td>
+              <td className="hidden px-4 py-3 font-mono text-xs text-muted md:table-cell">
+                {formatDateTime(item.startedAt)}
+              </td>
+              <td className="hidden px-4 py-3 font-mono text-xs text-muted md:table-cell">
+                {formatDuration(item.startedAt, item.finishedAt)}
+              </td>
+              <td className="px-4 py-3 text-right">
+                <Link
+                  href={`/sweeps/${item.id}`}
+                  className="font-mono text-xs text-muted hover:text-brand"
+                  aria-label={`Open sweep ${item.id}`}
+                >
+                  open →
                 </Link>
               </td>
             </tr>

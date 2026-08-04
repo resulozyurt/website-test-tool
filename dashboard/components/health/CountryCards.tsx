@@ -28,7 +28,11 @@ export function CountryCards({ rows }: { rows: CountryHealthView[] }) {
         const label = COUNTRY_LABEL[code];
         const data = byCountry.get(code);
 
-        if (!data) {
+        // A run that inspected no pages proves nothing. Treat it like no data
+        // rather than letting "0 issues" masquerade as a pass.
+        const hasResult = Boolean(data && data.pagesTotal > 0);
+
+        if (!data || !hasResult) {
           return (
             <div
               key={code}
@@ -41,14 +45,14 @@ export function CountryCards({ rows }: { rows: CountryHealthView[] }) {
                 </span>
               </div>
               <div className="mt-4 flex items-center justify-between text-sm text-faint">
-                <span>Not run yet</span>
+                <span>{data ? "No pages recorded" : "Not run yet"}</span>
                 <span className="font-mono">—</span>
               </div>
             </div>
           );
         }
 
-        const rate = data.pagesTotal > 0 ? data.pagesOk / data.pagesTotal : 0;
+        const rate = data.pagesOk / data.pagesTotal;
         const issues = data.pagesFail + data.pagesWarn;
         return (
           <Link

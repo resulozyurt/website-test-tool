@@ -1,0 +1,12 @@
+{
+  "$schema": "https://railway.com/railway.schema.json",
+  "build": {
+    "builder": "DOCKERFILE",
+    "dockerfilePath": "Dockerfile"
+  },
+  "deploy": {
+    "startCommand": "npm run migrate && npm run seed && npm run sweep",
+    "restartPolicyType": "NEVER",
+    "numReplicas": 1
+  }
+}

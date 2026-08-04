@@ -1,14 +1,15 @@
 import type { CheckView } from "@/lib/queries";
-import { StatusBadge } from "./StatusBadge";
+import { StatusPill } from "./health/StatusPill";
+import { SeverityPill } from "./health/SeverityPill";
 
 function ExpectedActual({ check }: { check: CheckView }) {
   if (check.expected === null && check.actual === null) {
-    return <span style={{ color: "var(--faint)" }}>—</span>;
+    return <span className="text-faint">—</span>;
   }
   return (
-    <span className="expected-actual">
+    <span className="font-mono text-xs text-ink-2">
       {check.expected ?? "—"}
-      <span className="arrow">→</span>
+      <span className="mx-1 text-faint">→</span>
       {check.actual ?? "—"}
     </span>
   );
@@ -17,37 +18,44 @@ function ExpectedActual({ check }: { check: CheckView }) {
 export function CheckTable({ checks }: { checks: CheckView[] }) {
   if (checks.length === 0) {
     return (
-      <p className="mono" style={{ color: "var(--faint)", margin: "4px 0 0" }}>
-        No checks recorded.
-      </p>
+      <p className="mt-1 font-mono text-xs text-faint">No checks recorded.</p>
     );
   }
 
   return (
-    <table className="checks">
+    <table className="mt-1 w-full text-[13px]">
       <thead>
-        <tr>
-          <th>Check</th>
-          <th>Severity</th>
-          <th>Status</th>
-          <th>Expected → Actual</th>
-          <th>Message</th>
+        <tr className="border-b border-line text-left font-mono text-[10px] uppercase tracking-wide text-faint">
+          <th className="py-1.5 pr-3 font-medium">Check</th>
+          <th className="py-1.5 pr-3 font-medium">Severity</th>
+          <th className="py-1.5 pr-3 font-medium">Status</th>
+          <th className="hidden py-1.5 pr-3 font-medium sm:table-cell">
+            Expected → Actual
+          </th>
+          <th className="hidden py-1.5 font-medium sm:table-cell">Message</th>
         </tr>
       </thead>
       <tbody>
         {checks.map((check) => (
-          <tr key={check.id}>
-            <td className="type">{check.type}</td>
-            <td>
-              <span className={`sev sev-${check.severity}`}>{check.severity}</span>
+          <tr
+            key={check.id}
+            className="border-b border-line align-top last:border-0"
+          >
+            <td className="py-2 pr-3 font-mono font-semibold whitespace-nowrap">
+              {check.type}
             </td>
-            <td>
-              <StatusBadge status={check.status} />
+            <td className="py-2 pr-3">
+              <SeverityPill severity={check.severity} />
             </td>
-            <td>
+            <td className="py-2 pr-3">
+              <StatusPill status={check.status} />
+            </td>
+            <td className="hidden py-2 pr-3 sm:table-cell">
               <ExpectedActual check={check} />
             </td>
-            <td className="msg">{check.message}</td>
+            <td className="hidden py-2 text-muted sm:table-cell">
+              {check.message}
+            </td>
           </tr>
         ))}
       </tbody>

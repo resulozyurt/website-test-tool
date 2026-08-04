@@ -1,0 +1,21 @@
+# Keep the runner image small and never leak secrets into it.
+node_modules
+**/node_modules
+dashboard
+.git
+.gitignore
+.env
+.env.*
+# Generated outputs (screenshots, reports) — regenerated at runtime.
+poc-output
+runner-output
+manifest-output
+learn-output
+discovery-output
+healthcheck-output
+*-output
+dist
+*.log
+.DS_Store
+# Docs are not needed inside the image.
+*.md

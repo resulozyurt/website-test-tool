@@ -12,6 +12,12 @@
  * so each unique internal target is reachability-probed exactly once (nav and
  * footer links are otherwise re-probed on every page -- the main cost fix).
  *
+ * Durability: a monitoring tool must not lose a 40-minute crawl to one network
+ * hiccup. Database writes are retried (store.ts); a page whose write still
+ * fails is counted as failed and the crawl carries on; and the run row is
+ * always closed out -- even if the crawl throws -- so nothing is left stuck in
+ * 'running' and reported as live.
+ *
  * Separate from the geo sweep; writes only to the 0005 health tables.
  */
 
@@ -30,6 +36,7 @@ import { reviewPageVisual } from "./ai-visual.js";
 import type { LinkProbeCache } from "./functional.js";
 import {
   createHealthRun,
+  failStaleHealthRuns,
   finishHealthRun,
   insertHealthFinding,
   insertHealthPage,
@@ -47,6 +54,14 @@ export interface CrawlOptions {
   /** Cap pages per country (0 = config default / no cap). */
   limit: number;
   trigger: "manual" | "cron";
+}
+
+/** Running counts for one target, mutated in place so a crash keeps partials. */
+interface Progress {
+  ok: number;
+  fail: number;
+  worst: HealthStatus;
+  aiCost: number;
 }
 
 function slugOf(page: CrawlPage): string {
@@ -87,7 +102,7 @@ function worse(a: HealthStatus, b: HealthStatus): HealthStatus {
   return rank[b] > rank[a] ? b : a;
 }
 
-/** Crawls one country/language target; returns per-page status counts. */
+/** Crawls one country/language target, accumulating counts into `progress`. */
 async function crawlTarget(
   runId: number,
   country: CountryCode,
@@ -96,20 +111,17 @@ async function crawlTarget(
   outputDir: string,
   aiEnabled: boolean,
   probeCache: LinkProbeCache,
-): Promise<{ ok: number; fail: number; worst: HealthStatus; aiCost: number }> {
+  progress: Progress,
+): Promise<void> {
   const proxy = resolveProxy(country);
   if (!proxy) {
     console.warn(`  no proxy for ${country} (set ${proxyEnvKey(country)}); skipping target`);
-    return { ok: 0, fail: 0, worst: "pass", aiCost: 0 };
+    return;
   }
 
   // CTA expectation is language-driven (US and AE share English), so resolve it
   // from the page language rather than the country.
   const expectedCta = EXPECTED_CTA_BY_LANG[language];
-  let ok = 0;
-  let fail = 0;
-  let worst: HealthStatus = "pass";
-  let aiCost = 0;
   let done = 0;
 
   await pool(
@@ -152,7 +164,7 @@ async function crawlTarget(
           url: health.url,
         });
         if (ai?.costUsd) {
-          aiCost += ai.costUsd;
+          progress.aiCost += ai.costUsd;
         }
       }
 
@@ -164,40 +176,52 @@ async function crawlTarget(
       );
       const status = aggregatePageStatus(health, findings);
 
-      const pageId = await insertHealthPage(runId, {
-        discoveredPageId: page.discoveredPageId,
-        url: health.url,
-        path: page.path,
-        language,
-        country,
-        httpStatus: health.httpStatus,
-        finalUrl: health.finalUrl,
-        blank: health.blank,
-        cacheBucket: health.cache?.kinstaCache ?? null,
-        siteCountry: health.siteCountry,
-        consoleErrors: health.consoleErrors.length ? health.consoleErrors : null,
-        networkErrors: health.networkErrors.length ? health.networkErrors : null,
-        brokenImages: health.visual?.brokenImages?.length ? health.visual.brokenImages : null,
-        brokenLinks: health.deadLinks.length ? health.deadLinks : null,
-        aiVerdict: ai?.verdict ?? null,
-        aiNotes: ai ? (ai.suggestion ?? (ai.error ? `error: ${ai.error}` : null)) : null,
-        aiCostUsd: ai?.costUsd ?? null,
-        screenshotKey: health.screenshotPath,
-        status,
-        error: health.error,
-        durationMs: health.durationMs,
-      });
+      // Persist. store.ts already retries transient failures; if a page still
+      // cannot be written, we lose that row but NOT the crawl -- the remaining
+      // pages are worth far more than this one.
+      try {
+        const pageId = await insertHealthPage(runId, {
+          discoveredPageId: page.discoveredPageId,
+          url: health.url,
+          path: page.path,
+          language,
+          country,
+          httpStatus: health.httpStatus,
+          finalUrl: health.finalUrl,
+          blank: health.blank,
+          cacheBucket: health.cache?.kinstaCache ?? null,
+          siteCountry: health.siteCountry,
+          consoleErrors: health.consoleErrors.length ? health.consoleErrors : null,
+          networkErrors: health.networkErrors.length ? health.networkErrors : null,
+          brokenImages: health.visual?.brokenImages?.length ? health.visual.brokenImages : null,
+          brokenLinks: health.deadLinks.length ? health.deadLinks : null,
+          aiVerdict: ai?.verdict ?? null,
+          aiNotes: ai ? (ai.suggestion ?? (ai.error ? `error: ${ai.error}` : null)) : null,
+          aiCostUsd: ai?.costUsd ?? null,
+          screenshotKey: health.screenshotPath,
+          status,
+          error: health.error,
+          durationMs: health.durationMs,
+        });
 
-      for (const fnd of findings) {
-        await insertHealthFinding(pageId, fnd);
+        for (const fnd of findings) {
+          await insertHealthFinding(pageId, fnd);
+        }
+      } catch (err) {
+        const message = err instanceof Error ? err.message : String(err);
+        console.error(`  ! persist failed for ${slug}: ${message} (crawl continues)`);
+        progress.fail += 1;
+        progress.worst = worse(progress.worst, "error");
+        done += 1;
+        return;
       }
 
       if (status === "pass") {
-        ok += 1;
+        progress.ok += 1;
       } else {
-        fail += 1;
+        progress.fail += 1;
       }
-      worst = worse(worst, status);
+      progress.worst = worse(progress.worst, status);
       done += 1;
 
       const flags = findings
@@ -211,8 +235,6 @@ async function crawlTarget(
       );
     },
   );
-
-  return { ok, fail, worst, aiCost };
 }
 
 /** Runs the health crawl for the selected targets. */
@@ -223,6 +245,18 @@ export async function runCrawl(options: CrawlOptions): Promise<void> {
   if (targets.length === 0) {
     console.log("no matching crawl targets");
     return;
+  }
+
+  // Close out runs abandoned by a previously crashed process, so the dashboard
+  // stops reporting them as live. Best-effort: never block a crawl on this.
+  try {
+    const healed = await failStaleHealthRuns();
+    if (healed > 0) {
+      console.log(`closed ${healed} stale run(s) left in 'running' by a crash`);
+    }
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    console.warn(`  could not close stale runs: ${message}`);
   }
 
   const perCountryLimit =
@@ -252,30 +286,61 @@ export async function runCrawl(options: CrawlOptions): Promise<void> {
         `${options.ai ? " (AI on)" : ""}`,
     );
 
-    const { ok, fail, worst, aiCost } = await crawlTarget(
-      run.id,
-      target.country,
-      target.language,
-      pages,
-      outputDir,
-      options.ai,
-      probeCache,
-    );
+    const progress: Progress = { ok: 0, fail: 0, worst: "pass", aiCost: 0 };
+    let crawlError: unknown = null;
 
-    const runStatus: HealthRunStatus =
-      worst === "fail" || worst === "error" ? "fail" : worst === "warn" ? "warn" : "pass";
+    try {
+      await crawlTarget(
+        run.id,
+        target.country,
+        target.language,
+        pages,
+        outputDir,
+        options.ai,
+        probeCache,
+        progress,
+      );
+    } catch (err) {
+      crawlError = err;
+    }
 
-    await finishHealthRun(run.id, {
-      status: runStatus,
-      pagesTotal: pages.length,
-      pagesOk: ok,
-      pagesWarn: 0,
-      pagesFail: fail,
-    });
+    // The run row is closed out either way: a crashed crawl is recorded as a
+    // failure with whatever it managed to inspect, never left as 'running'.
+    const inspected = progress.ok + progress.fail;
+    const runStatus: HealthRunStatus = crawlError
+      ? "fail"
+      : progress.worst === "fail" || progress.worst === "error"
+        ? "fail"
+        : progress.worst === "warn"
+          ? "warn"
+          : "pass";
+
+    try {
+      await finishHealthRun(run.id, {
+        status: runStatus,
+        pagesTotal: crawlError ? inspected : pages.length,
+        pagesOk: progress.ok,
+        pagesWarn: 0,
+        pagesFail: progress.fail,
+      });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      console.error(`  ! could not finish run #${run.id}: ${message}`);
+    }
+
+    if (crawlError) {
+      const message =
+        crawlError instanceof Error ? crawlError.message : String(crawlError);
+      console.error(
+        `health run #${run.id} ${target.country} ABORTED after ${inspected}/${pages.length} page(s): ${message}`,
+      );
+      throw crawlError;
+    }
 
     console.log(
       `health run #${run.id} ${target.country} finished -> ${runStatus}` +
-        ` (ok=${ok}, fail=${fail}${aiCost > 0 ? `, ai=$${aiCost.toFixed(4)}` : ""})`,
+        ` (ok=${progress.ok}, fail=${progress.fail}` +
+        `${progress.aiCost > 0 ? `, ai=$${progress.aiCost.toFixed(4)}` : ""})`,
     );
     console.log(`  output: ${outputDir}`);
   }

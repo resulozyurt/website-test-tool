@@ -80,7 +80,7 @@ export function PassRateTrend({ points }: { points: TrendPoint[] }) {
           <ResponsiveContainer width="100%" height="100%">
             <LineChart
               data={data}
-              margin={{ top: 8, right: 12, bottom: 4, left: -12 }}
+              margin={{ top: 8, right: 12, bottom: 4, left: 0 }}
             >
               <CartesianGrid stroke={GRID} strokeDasharray="2 3" vertical={false} />
               <XAxis
@@ -93,7 +93,7 @@ export function PassRateTrend({ points }: { points: TrendPoint[] }) {
               <YAxis
                 domain={[0, 100]}
                 ticks={[0, 50, 100]}
-                width={40}
+                width={46}
                 tick={{ fill: AXIS, fontSize: 11 }}
                 tickLine={{ stroke: GRID }}
                 axisLine={{ stroke: GRID }}
