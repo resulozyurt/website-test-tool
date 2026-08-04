@@ -25,7 +25,13 @@ COPY . .
 
 ENV NODE_ENV=production
 
-# Default job: apply migrations, upsert config from targets.ts, then run one geo
-# sweep so the dashboard has data. All three steps are idempotent. Overridden by
-# railway.json's startCommand (kept identical here as a fallback).
-CMD ["sh", "-c", "npm run migrate && npm run seed && npm run sweep"]
+# Default job (Phase 2 — 12h cron): the full monitoring pipeline.
+#   migrate + seed (idempotent prerequisites) ->
+#   autopilot (discover + learn, best-effort) ->
+#   sweep (geo lane, best-effort) ->
+#   healthcheck (full-site crawl, best-effort)
+# autopilot/sweep/healthcheck are each guarded with `|| true` (see the "cron"
+# script) so one lane failing never blocks the others. Railway invokes this on
+# the service's Cron Schedule (0 */12 * * *); restartPolicyType is NEVER so the
+# container exits cleanly after each run.
+CMD ["sh", "-c", "npm run cron"]

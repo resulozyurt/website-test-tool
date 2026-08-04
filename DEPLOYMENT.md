@@ -92,11 +92,35 @@ Sorun olursa:
 
 ---
 
-## 4. Sıradaki fazlar (bilgi)
+## 4. Faz 2 — 12 saatlik cron (kurulum)
 
-- **Faz 2 — 12 saatlik cron:** runner servisine Railway **Cron Schedule**
-  `0 */12 * * *` eklenir; start komutu tam pipeline'a (`autopilot` + `sweep` +
-  `healthcheck`) çevrilir.
+Runner artık her çalıştığında **tam pipeline**'ı koşar (`npm run cron`):
+`migrate → seed → autopilot (öğrenme) → sweep (geo) → healthcheck (tüm site)`.
+autopilot/sweep/healthcheck her biri `|| true` ile korunur — biri patlarsa
+diğerleri yine çalışır.
+
+**Railway'de yapılacak (runner servisi):**
+
+1. Runner servisi → **Settings → Cron Schedule** alanına: `0 */12 * * *`
+   (UTC; her gün 00:00 ve 12:00'de çalışır).
+2. **Restart Policy** zaten `NEVER` (railway.json). Cron servisi işini bitirince
+   durur — bu normaldir.
+3. Değişiklikleri push et (aşağıdaki commit). Railway yeni imajı build eder.
+   Cron bir sonraki tetik saatinde (00:00/12:00 UTC) çalışır; hemen bir sonuç
+   görmek istersen servisin **⋯ → Restart/Redeploy** ile bir kez elle tetikle.
+
+**Doğrulama:** Cron çalıştıktan sonra panelde hem yeni bir **sweep** hem de yeni
+bir **health run** görünmeli. Runner'ın Deploy Logs'unda
+`autopilot … done`, `sweep … -> …`, `health run #N … finished` satırları olur.
+
+> Not: Tüm siteyi 3 ülke proxy'siyle gezen health crawl en yüksek proxy
+> maliyetli adımdır. Maliyet yükselirse `src/config/health.ts` içindeki
+> `maxPagesPerCountry` ile sınırlayabilir ya da cron sıklığını düşürebiliriz.
+
+---
+
+## 5. Sıradaki fazlar (bilgi)
+
 - **Faz 3 — Ekran görüntüsü (R2):** görüntüler Cloudflare R2'ye yüklenip panelde
   gösterilir.
 - **Faz 4 — Gerçek insan gibi tıklama:** health hattında navigasyon-only gerçek

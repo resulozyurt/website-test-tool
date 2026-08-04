@@ -18,6 +18,9 @@
     "manifest:sync": "tsx src/manifest/sync-cli.ts",
     "learn": "tsx src/learn/learn-cli.ts",
     "learn:apply": "tsx src/learn/apply-cli.ts",
+    "learn:auto": "tsx src/learn/auto-cli.ts",
+    "autopilot": "tsx src/orchestrate.ts",
+    "cron": "npm run migrate && npm run seed && (npm run autopilot || true) && (npm run sweep || true) && (npm run healthcheck || true)",
     "typecheck": "tsc --noEmit"
   },
   "engines": {
