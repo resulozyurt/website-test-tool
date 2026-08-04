@@ -92,7 +92,7 @@ Sorun olursa:
 
 ---
 
-## 4. Faz 2 — 12 saatlik cron (kurulum)
+## 4. Faz 2 — günlük (24 saatte bir) cron (kurulum)
 
 Runner artık her çalıştığında **tam pipeline**'ı koşar (`npm run cron`):
 `migrate → seed → autopilot (öğrenme) → sweep (geo) → healthcheck (tüm site)`.
@@ -101,8 +101,8 @@ diğerleri yine çalışır.
 
 **Railway'de yapılacak (runner servisi):**
 
-1. Runner servisi → **Settings → Cron Schedule** alanına: `0 */12 * * *`
-   (UTC; her gün 00:00 ve 12:00'de çalışır).
+1. Runner servisi → **Settings → Cron Schedule**: `0 0 * * *` (Railway'in
+   **"Daily"** ön ayarı). Günde bir kez 00:00 UTC = 03:00 TR'de çalışır.
 2. **Restart Policy** zaten `NEVER` (railway.json). Cron servisi işini bitirince
    durur — bu normaldir.
 3. Değişiklikleri push et (aşağıdaki commit). Railway yeni imajı build eder.

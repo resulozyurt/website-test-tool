@@ -32,6 +32,6 @@ ENV NODE_ENV=production
 #   healthcheck (full-site crawl, best-effort)
 # autopilot/sweep/healthcheck are each guarded with `|| true` (see the "cron"
 # script) so one lane failing never blocks the others. Railway invokes this on
-# the service's Cron Schedule (0 */12 * * *); restartPolicyType is NEVER so the
+# the service's Cron Schedule (0 0 * * * — daily at 00:00 UTC); restartPolicyType is NEVER so the
 # container exits cleanly after each run.
 CMD ["sh", "-c", "npm run cron"]
