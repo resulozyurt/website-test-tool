@@ -20,7 +20,9 @@
     "learn:apply": "tsx src/learn/apply-cli.ts",
     "learn:auto": "tsx src/learn/auto-cli.ts",
     "autopilot": "tsx src/orchestrate.ts",
-    "cron": "npm run migrate && npm run seed && (npm run autopilot || true) && (npm run sweep || true) && (npm run healthcheck || true)",
+    "cron": "sh scripts/cron.sh",
+    "cron:daily": "npm run migrate && npm run seed && (npm run sweep -- --cron || true) && (npm run healthcheck -- --cron || true)",
+    "cron:weekly": "npm run migrate && npm run seed && (npm run autopilot || true) && (npm run sweep -- --cron --scope=full || true) && (npm run healthcheck -- --cron --scope=full || true)",
     "typecheck": "tsc --noEmit"
   },
   "engines": {

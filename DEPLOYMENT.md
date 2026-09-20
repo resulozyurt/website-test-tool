@@ -92,12 +92,25 @@ Sorun olursa:
 
 ---
 
-## 4. Faz 2 — günlük (24 saatte bir) cron (kurulum)
+## 4. Zamanlama — günlük kritik + haftalık tam tarama
 
-Runner artık her çalıştığında **tam pipeline**'ı koşar (`npm run cron`):
-`migrate → seed → autopilot (öğrenme) → sweep (geo) → healthcheck (tüm site)`.
-autopilot/sweep/healthcheck her biri `|| true` ile korunur — biri patlarsa
-diğerleri yine çalışır.
+Railway bir servise tek zamanlama verir; günlük/haftalık ayrımını
+`scripts/cron.sh` yapar. Servis **günlük** tetiklenir, betik o tetiklemenin
+hangi pipeline'ı koşacağına karar verir:
+
+| Gün | Komut | Ne yapar |
+|-----|-------|----------|
+| Her gün | `npm run cron:daily` | `migrate → seed → sweep --cron → healthcheck --cron` — 4 huni sayfası (home, pricing, demo, free-trial) × aktif pazarlar, sabit beklentilere karşı |
+| Pazar (`FULL_CRAWL_DOW=7`) | `npm run cron:weekly` | `migrate → seed → autopilot → sweep --scope=full → healthcheck --scope=full` — öğrenme + tüm site |
+
+`FULL_CRAWL_DOW` ISO gün numarasıdır (1 = Pazartesi … 7 = Pazar); başka bir güne
+almak ya da `0` verip haftalık koşuyu kapatmak için bu env'i kullan. sweep ve
+healthcheck `|| true` ile korunur — biri patlarsa diğeri yine çalışır.
+
+> Günlük koşu bilerek `autopilot` çalıştırmaz: beklentileri canlı render'dan
+> yeniden öğrenen bir adımı, o beklentilere karşı kontrol yapmadan hemen önce
+> koşturmak bir bozulmanın kendini "yeni normal" diye öğretmesine yol açar.
+> Öğrenme haftalık tam koşuda kalır.
 
 **Railway'de yapılacak (runner servisi):**
 
@@ -105,17 +118,20 @@ diğerleri yine çalışır.
    **"Daily"** ön ayarı). Günde bir kez 00:00 UTC = 03:00 TR'de çalışır.
 2. **Restart Policy** zaten `NEVER` (railway.json). Cron servisi işini bitirince
    durur — bu normaldir.
-3. Değişiklikleri push et (aşağıdaki commit). Railway yeni imajı build eder.
-   Cron bir sonraki tetik saatinde (00:00/12:00 UTC) çalışır; hemen bir sonuç
-   görmek istersen servisin **⋯ → Restart/Redeploy** ile bir kez elle tetikle.
+3. Değişiklikleri push et. Railway yeni imajı build eder. Cron bir sonraki
+   tetik saatinde çalışır; hemen sonuç görmek istersen servisin
+   **⋯ → Restart/Redeploy** ile bir kez elle tetikle.
 
 **Doğrulama:** Cron çalıştıktan sonra panelde hem yeni bir **sweep** hem de yeni
-bir **health run** görünmeli. Runner'ın Deploy Logs'unda
-`autopilot … done`, `sweep … -> …`, `health run #N … finished` satırları olur.
+bir **health run** görünmeli; ikisinin de kapsamı (`scope`) kayıtlıdır. Deploy
+Logs'ta `cron: … -> daily (critical) pipeline`, `sweep #N started (… scope=critical …)`
+ve `health run #N … [critical]` satırları olur.
 
 > Not: Tüm siteyi 3 ülke proxy'siyle gezen health crawl en yüksek proxy
-> maliyetli adımdır. Maliyet yükselirse `src/config/health.ts` içindeki
-> `maxPagesPerCountry` ile sınırlayabilir ya da cron sıklığını düşürebiliriz.
+> maliyetli adımdır; bu yüzden haftada bir koşar. Günlük koşu pazar başına 4
+> sayfa görür (3 pazar × 4 sayfa = 12 sayfa yüklemesi). Maliyet yine yükselirse
+> `src/config/health.ts` içindeki `maxPagesPerCountry` ya da `FULL_CRAWL_DOW=0`
+> ile ayarlanabilir.
 
 ---
 
