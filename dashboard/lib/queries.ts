@@ -32,9 +32,13 @@ export interface MatrixCell {
   status: RunStatus;
 }
 
+/** Which page set a run covered: the daily funnel four, or the whole site. */
+export type RunScope = "critical" | "full";
+
 export interface SweepListItem {
   id: number;
   trigger: SweepTrigger;
+  scope: RunScope;
   status: SweepStatus;
   startedAt: Date;
   finishedAt: Date | null;
@@ -49,6 +53,7 @@ export interface SweepListItem {
 export interface SweepHeader {
   id: number;
   trigger: SweepTrigger;
+  scope: RunScope;
   status: SweepStatus;
   startedAt: Date;
   finishedAt: Date | null;
@@ -102,6 +107,7 @@ export interface RunView {
 interface SweepRow {
   id: number;
   trigger: SweepTrigger;
+  scope: RunScope;
   status: SweepStatus;
   startedAt: Date;
   finishedAt: Date | null;
@@ -138,6 +144,7 @@ export async function listSweeps(
     `select
        s.id,
        s.trigger,
+       s.scope,
        s.status,
        s.started_at  as "startedAt",
        s.finished_at as "finishedAt",
@@ -169,6 +176,7 @@ export async function listSweeps(
   return sweepRows.map((row) => ({
     id: row.id,
     trigger: row.trigger,
+    scope: row.scope,
     status: row.status,
     startedAt: row.startedAt,
     finishedAt: row.finishedAt,
@@ -202,6 +210,7 @@ export async function getSweep(id: number): Promise<SweepHeader | null> {
     `select
        s.id,
        s.trigger,
+       s.scope,
        s.status,
        s.started_at  as "startedAt",
        s.finished_at as "finishedAt",
@@ -291,6 +300,7 @@ export interface HealthRunView {
   id: number;
   country: CountryCode;
   trigger: SweepTrigger;
+  scope: RunScope;
   aiEnabled: boolean;
   status: HealthRunStatus;
   pagesTotal: number;
@@ -318,6 +328,7 @@ interface HealthRunRow {
   id: number;
   country: CountryCode;
   trigger: SweepTrigger;
+  scope: RunScope;
   aiEnabled: boolean;
   status: HealthRunStatus;
   pagesTotal: string;
@@ -333,6 +344,7 @@ function toRunView(row: HealthRunRow): HealthRunView {
     id: row.id,
     country: row.country,
     trigger: row.trigger,
+    scope: row.scope,
     aiEnabled: row.aiEnabled,
     status: row.status,
     pagesTotal: toNumber(row.pagesTotal),
@@ -351,6 +363,7 @@ export async function listHealthRuns(limit = 25): Promise<HealthRunView[]> {
        id,
        country,
        trigger,
+       scope,
        ai_enabled   as "aiEnabled",
        status,
        pages_total  as "pagesTotal",
@@ -433,6 +446,7 @@ export async function getHealthRun(id: number): Promise<HealthRunView | null> {
        id,
        country,
        trigger,
+       scope,
        ai_enabled   as "aiEnabled",
        status,
        pages_total  as "pagesTotal",

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { HealthRunView } from "@/lib/queries";
 import { formatDateTime, formatDuration } from "@/lib/format";
+import { ScopeBadge } from "../ScopeBadge";
 import { StatusPill } from "./StatusPill";
 
 export function RecentRuns({ runs }: { runs: HealthRunView[] }) {
@@ -42,7 +43,8 @@ export function RecentRuns({ runs }: { runs: HealthRunView[] }) {
                 >
                   #{run.id}
                 </Link>{" "}
-                <span className="font-mono text-xs text-faint">{run.trigger}</span>
+                <span className="font-mono text-xs text-faint">{run.trigger}</span>{" "}
+                <ScopeBadge scope={run.scope} />
               </td>
               <td className="px-4 py-3 font-mono">{run.country}</td>
               <td className="px-4 py-3">

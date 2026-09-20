@@ -87,7 +87,7 @@ export default async function HealthRunPage({
         <h1 className="text-[22px] font-medium tracking-tight">
           Run #{run.id}{" "}
           <span className="font-mono text-base text-faint">
-            {run.country} · {run.trigger}
+            {run.country} · {run.trigger} · {run.scope === "critical" ? "funnel pages" : "full site"}
           </span>
         </h1>
         <StatusPill status={run.status} />

@@ -88,7 +88,7 @@ export default async function SweepPage({
       <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
         <div>
           <div className="font-mono text-[11px] font-medium uppercase tracking-[0.13em] text-muted">
-            {sweep.environmentKey} · {sweep.trigger}
+            {sweep.environmentKey} · {sweep.trigger} · {sweep.scope === "critical" ? "funnel pages" : "full site"}
           </div>
           <h1 className="mt-1 text-[22px] font-medium tracking-tight">
             Sweep #{sweep.id}

@@ -110,6 +110,24 @@ gezer ve uçtan uca sağlık çıkarır:
 > Not: Health crawl gerçek tıklama **yapmaz** (PROD salt-okunur). Tıklanabilirlik
 > geometrik olarak ölçülür. Gerçek submit testi staging işidir (henüz yok).
 
+### 3.2.1 Kapsam modeli (günlük vs haftalık)
+
+Her iki hat da iki kapsamdan biriyle koşar:
+
+| Kapsam | Ne zaman | Ne tarar |
+|--------|----------|----------|
+| `critical` | her gün | `config/targets.ts` içinde `isCritical` işaretli 4 huni sayfası (home, pricing, demo, free-trial) × aktif pazarlar |
+| `full` | Pazar (`FULL_CRAWL_DOW`) | tüm envanter + `autopilot` (keşif, senaryo, manifest, öğrenme) |
+
+Kritik liste envanterden değil **config'den** kurulur: `/fieldpie-free-trial/`
+sitemap'te yok (noindex) ve `config/discovery.ts` içindeki sabit URL listesiyle
+envanterde tutuluyor. Kapsam hem `sweeps.scope` hem `health_runs.scope`
+sütununa yazılır ve panelde rozet olarak görünür.
+
+Günlük koşu bilerek `autopilot` çalıştırmaz: beklentileri canlı render'dan
+yeniden öğrenen bir adım, o beklentilere karşı kontrol yapmadan hemen önce
+koşarsa bir bozulma kendini "yeni normal" diye öğretir.
+
 ### 3.3 Öğrenme / besleme boru hattı
 - **`src/discovery/`**: Sitemap'i okur (salt-okunur GET), tüm URL'leri sınıflar
   (dil, slug, test dışı mı) ve `discovered_pages` envanterini günceller.
@@ -154,8 +172,9 @@ grafikleri.
 | `npm run manifest:sync` | manifest → expectations |
 | `npm run learn` / `learn:apply` / `learn:auto` | canlı render öğrenme |
 | `npm run autopilot` | tüm öğrenme zinciri uçtan uca |
-| `npm run sweep` | GEO SWEEP hattını çalıştır |
-| `npm run healthcheck` | HEALTH CRAWL hattını çalıştır |
+| `npm run sweep` | GEO SWEEP hattı — varsayılan kritik kapsam (`-- --scope=full` ile tüm sayfalar) |
+| `npm run healthcheck` | HEALTH CRAWL hattı — varsayılan kritik kapsam (`-- --scope=full` ile tüm site) |
+| `npm run cron` | Zamanlayıcı girişi: gün Pazar ise haftalık tam koşu, değilse günlük kritik koşu |
 | `npm run typecheck` | TS tip kontrolü |
 
 Ortam değişkenleri `.env` (bkz. `.env.example` ve `src/config/env.ts`): proxy'ler
@@ -177,7 +196,7 @@ RESEND_API_KEY.
 | 6 | "TR'ye sessiz düşme" arızası | ✅ Var | GEO sweep cross-country |
 | 7 | Ülke farklarını **kendi öğrenmesi** | 🟡 Kısmi | manifest/inventory'e bağımlı; manifestsiz saf render-diff yok |
 | 8 | Gerçek insan gibi **tıklama/gezinme** | 🟡 Kısmi | sweep'te submit-etmeyen tık; health'te sadece geometrik |
-| 9 | **Periyodik otomatik çalışma** (6 saatte bir) | ❌ Yok | zamanlayıcı/cron kodu yok |
+| 9 | **Periyodik otomatik çalışma** | ✅ Var | Railway Cron + `scripts/cron.sh`: her gün 4 huni sayfası, Pazar tüm site |
 | 10 | **Hata olunca alarm** (e-posta/Slack) | ❌ Yok | sadece env placeholder, kod yok |
 | 11 | **Ekran görüntüsü kalıcılığı** (R2) + panelde gösterim | ❌ Yok | lokal path saklanıyor, panelde gösterilmiyor |
 | 12 | **Deployment** (Docker + Railway) | ❌ Yok | repoda Dockerfile/railway config yok |

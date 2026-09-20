@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ScopeBadge } from "./ScopeBadge";
 import { formatDateTime, formatDuration } from "@/lib/format";
 import type { SweepListItem } from "@/lib/queries";
 import { StatusPill } from "./health/StatusPill";
@@ -49,7 +50,8 @@ export function SweepsTable({ items }: { items: SweepListItem[] }) {
                 >
                   #{item.id}
                 </Link>{" "}
-                <span className="font-mono text-xs text-faint">{item.trigger}</span>
+                <span className="font-mono text-xs text-faint">{item.trigger}</span>{" "}
+                <ScopeBadge scope={item.scope} />
               </td>
               <td className="px-4 py-3">
                 <StatusPill status={item.status} />
