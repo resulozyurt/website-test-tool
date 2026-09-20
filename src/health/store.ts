@@ -11,6 +11,7 @@
 
 import type { QueryResult, QueryResultRow } from "pg";
 import { pool, withRetry } from "../db/client.js";
+import { criticalTargets, type Scope } from "../config/critical.js";
 import type { CountryCode, LanguageCode } from "../types.js";
 
 /** The pool or a transaction client from pool.connect(). */
@@ -41,9 +42,10 @@ export type FindingCategory = "technical" | "visual" | "functional" | "location"
 export type FindingSeverity = "critical" | "major" | "minor";
 export type FindingSource = "deterministic" | "ai";
 
-/** A discovered page to crawl (active, not excluded), for one language. */
+/** A page to crawl, for one language. */
 export interface CrawlPage {
-  discoveredPageId: number;
+  /** Null for a page that is not (yet) in the discovered inventory. */
+  discoveredPageId: number | null;
   url: string;
   path: string;
   language: string;
@@ -88,6 +90,49 @@ export async function listPagesToCrawl(
   }));
 }
 
+/**
+ * The daily critical set for one language, built from config rather than from
+ * the inventory, so a page the sitemap omits (the noindex trial funnel) is
+ * still crawled and the list cannot silently shrink when discovery has a bad
+ * day. Discovered-page ids are attached when we know them, by path, and left
+ * null otherwise.
+ */
+export async function listCriticalPagesToCrawl(
+  language: LanguageCode,
+  limit = 0,
+  exec: Executor = pool,
+): Promise<CrawlPage[]> {
+  const targets = criticalTargets(language);
+  if (targets.length === 0) {
+    return [];
+  }
+  const paths = targets.map((t) => t.path);
+  const res = await run<{ id: number; path: string }>(
+    exec,
+    "listCriticalPagesToCrawl",
+    `select id, path
+       from discovered_pages
+      where lower(path) = any($1)
+      order by is_active desc, id asc`,
+    [paths],
+  );
+  const idByPath = new Map<string, number>();
+  for (const row of res.rows) {
+    const key = row.path.toLowerCase();
+    if (!idByPath.has(key)) {
+      idByPath.set(key, row.id);
+    }
+  }
+  const pages = targets.map((t) => ({
+    discoveredPageId: idByPath.get(t.path) ?? null,
+    url: t.url,
+    path: t.path,
+    language,
+    slug: t.pageKey,
+  }));
+  return limit > 0 ? pages.slice(0, limit) : pages;
+}
+
 export interface HealthRunRow {
   id: number;
   country: string;
@@ -95,16 +140,21 @@ export interface HealthRunRow {
 }
 
 export async function createHealthRun(
-  input: { country: CountryCode; trigger: "manual" | "cron"; aiEnabled: boolean },
+  input: {
+    country: CountryCode;
+    trigger: "manual" | "cron";
+    aiEnabled: boolean;
+    scope: Scope;
+  },
   exec: Executor = pool,
 ): Promise<HealthRunRow> {
   const res = await run<HealthRunRow>(
     exec,
     "createHealthRun",
-    `insert into health_runs (country, trigger, ai_enabled, status)
-     values ($1, $2, $3, 'running')
+    `insert into health_runs (country, trigger, ai_enabled, status, scope)
+     values ($1, $2, $3, 'running', $4)
      returning id, country, status`,
-    [input.country, input.trigger, input.aiEnabled],
+    [input.country, input.trigger, input.aiEnabled, input.scope],
   );
   return res.rows[0];
 }

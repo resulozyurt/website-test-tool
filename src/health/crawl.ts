@@ -29,6 +29,7 @@ import {
   EXPECTED_CTA_BY_LANG,
   HEALTH_CONFIG,
 } from "../config/health.js";
+import type { Scope } from "../config/critical.js";
 import { proxyEnvKey, resolveProxy } from "../runner/proxy.js";
 import { isStorageConfigured, uploadFile } from "../storage/r2.js";
 import { inspectPage, type PageHealth } from "./inspect.js";
@@ -41,6 +42,7 @@ import {
   finishHealthRun,
   insertHealthFinding,
   insertHealthPage,
+  listCriticalPagesToCrawl,
   listPagesToCrawl,
   type CrawlPage,
   type HealthRunStatus,
@@ -55,6 +57,11 @@ export interface CrawlOptions {
   /** Cap pages per country (0 = config default / no cap). */
   limit: number;
   trigger: "manual" | "cron";
+  /**
+   * 'critical' visits only the daily funnel set (config/critical.ts);
+   * 'full' walks the whole discovered inventory, as the weekly run does.
+   */
+  scope: Scope;
 }
 
 /** Running counts for one target, mutated in place so a crash keeps partials. */
@@ -281,22 +288,30 @@ export async function runCrawl(options: CrawlOptions): Promise<void> {
   const probeCache: LinkProbeCache = new Map();
 
   for (const target of targets) {
-    const pages = await listPagesToCrawl(target.language, perCountryLimit);
+    const pages =
+      options.scope === "critical"
+        ? await listCriticalPagesToCrawl(target.language, options.limit)
+        : await listPagesToCrawl(target.language, perCountryLimit);
     if (pages.length === 0) {
       console.log(`no pages to crawl for ${target.country}/${target.language}`);
       continue;
     }
 
     const run = await createHealthRun(
-      { country: target.country, trigger: options.trigger, aiEnabled: options.ai },
+      {
+        country: target.country,
+        trigger: options.trigger,
+        aiEnabled: options.ai,
+        scope: options.scope,
+      },
       undefined,
     );
     const outputDir = join("healthcheck-output", `run-${run.id}`);
     await mkdir(outputDir, { recursive: true });
 
     console.log(
-      `health run #${run.id} ${target.country}/${target.language}: ${pages.length} page(s)` +
-        `${options.ai ? " (AI on)" : ""}`,
+      `health run #${run.id} ${target.country}/${target.language} [${options.scope}]: ` +
+        `${pages.length} page(s)${options.ai ? " (AI on)" : ""}`,
     );
 
     const progress: Progress = { ok: 0, fail: 0, worst: "pass", aiCost: 0 };
