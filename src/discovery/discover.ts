@@ -12,6 +12,7 @@ import {
   classify,
   deriveSlug,
   detectLanguage,
+  fixedUrls,
   hostKey,
   sitemapCandidates,
   targetHostKey,
@@ -22,7 +23,7 @@ export interface DiscoveredPage {
   path: string;
   language: string;
   slug: string | null;
-  source: "sitemap" | "crawl";
+  source: "sitemap" | "crawl" | "fixed";
   isExcluded: boolean;
   excludeReason: string | null;
 }
@@ -144,7 +145,15 @@ export async function discover(): Promise<DiscoveryResult> {
   const seen = new Set<string>();
   const pages: DiscoveredPage[] = [];
 
-  for (const raw of urls) {
+  // Sitemap URLs first, then the fixed pages the sitemap omits (noindex funnel
+  // pages). Fixed URLs are part of the result, so `deactivateMissing` keeps
+  // them active instead of retiring them on every run.
+  const candidates: { raw: string; source: "sitemap" | "fixed" }[] = [
+    ...urls.map((raw) => ({ raw, source: "sitemap" as const })),
+    ...fixedUrls().map((raw) => ({ raw, source: "fixed" as const })),
+  ];
+
+  for (const { raw, source } of candidates) {
     let parsed: URL;
     try {
       parsed = new URL(raw);
@@ -167,7 +176,7 @@ export async function discover(): Promise<DiscoveryResult> {
       path,
       language: detectLanguage(path),
       slug: deriveSlug(path),
-      source: "sitemap",
+      source,
       isExcluded: excluded,
       excludeReason: reason,
     });

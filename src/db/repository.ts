@@ -67,6 +67,8 @@ export interface PageRow {
   pageKey: string;
   pathByLanguage: Partial<Record<LanguageCode, string>>;
   isActive: boolean;
+  /** Part of the daily critical scope (see config/critical.ts). */
+  isCritical: boolean;
   createdAt: Date;
 }
 
@@ -226,7 +228,7 @@ const MARKET_COLS =
   'id, country_code as "countryCode", language, is_active as "isActive", created_at as "createdAt"';
 
 const PAGE_COLS =
-  'id, page_key as "pageKey", path_by_language as "pathByLanguage", is_active as "isActive", created_at as "createdAt"';
+  'id, page_key as "pageKey", path_by_language as "pathByLanguage", is_active as "isActive", is_critical as "isCritical", created_at as "createdAt"';
 
 const SWEEP_COLS =
   'id, environment_id as "environmentId", trigger, status, started_at as "startedAt", finished_at as "finishedAt"';
@@ -364,27 +366,42 @@ export async function upsertPage(
 ): Promise<PageRow> {
   const rows = await run<PageRow>(
     exec,
-    `insert into pages (page_key, path_by_language, is_active)
-     values ($1, $2::jsonb, $3)
+    `insert into pages (page_key, path_by_language, is_active, is_critical)
+     values ($1, $2::jsonb, $3, $4)
      on conflict (page_key) do update set
        path_by_language = excluded.path_by_language,
-       is_active = excluded.is_active
+       is_active = excluded.is_active,
+       is_critical = excluded.is_critical
      returning ${PAGE_COLS}`,
-    [input.key, toJsonParam(input.pathByLanguage), input.isActive],
+    [
+      input.key,
+      toJsonParam(input.pathByLanguage),
+      input.isActive,
+      input.isCritical,
+    ],
   );
   return rows[0];
 }
 
+/**
+ * Lists pages. `criticalOnly` narrows the result to the daily funnel set; the
+ * weekly full run leaves it false and gets every page, including the ones the
+ * scenario reconciler added.
+ */
 export async function listPages(
   activeOnly = false,
+  criticalOnly = false,
   exec: Executor = pool,
 ): Promise<PageRow[]> {
-  return run<PageRow>(
-    exec,
-    `select ${PAGE_COLS} from pages
-     ${activeOnly ? "where is_active = true" : ""}
-     order by id`,
-  );
+  const conditions: string[] = [];
+  if (activeOnly) {
+    conditions.push("is_active = true");
+  }
+  if (criticalOnly) {
+    conditions.push("is_critical = true");
+  }
+  const where = conditions.length ? `where ${conditions.join(" and ")}` : "";
+  return run<PageRow>(exec, `select ${PAGE_COLS} from pages ${where} order by id`);
 }
 
 export async function getPageByKey(

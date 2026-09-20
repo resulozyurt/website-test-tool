@@ -56,6 +56,12 @@ export interface PageConfig {
   /** Path by language code, e.g. { en: "/pricing/", tr: "/tr/fiyatlandirma/" }. */
   pathByLanguage: Partial<Record<LanguageCode, string>>;
   isActive: boolean;
+  /**
+   * Part of the daily "critical" scope (the funnel pages checked every run).
+   * Pages added automatically from discovered scenarios default to false and
+   * are only visited by the weekly full run.
+   */
+  isCritical: boolean;
 }
 
 /**

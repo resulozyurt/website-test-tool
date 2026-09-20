@@ -55,6 +55,9 @@ export async function reconcilePages(): Promise<ReconcileResult> {
       key,
       pathByLanguage: { [lang]: path } as Partial<Record<LanguageCode, string>>,
       isActive: true,
+      // Scenario-derived pages belong to the weekly full run, never to the
+      // daily critical set (that list is curated in config/targets.ts).
+      isCritical: false,
     });
     served.add(signature);
     created.push(`${key} (${lang}: ${path})`);

@@ -25,6 +25,20 @@ const EXCLUDE_PATTERNS: { test: RegExp; reason: string }[] = [
   { test: /\.(?:xml|gz|json|rss|txt)$/i, reason: "non-page" },
 ];
 
+/**
+ * Pages that must stay in the inventory even though the sitemap never lists
+ * them. The trial funnel is noindex, so discovery would otherwise deactivate
+ * it on every run and the crawl could never see it. Paths are relative to
+ * TARGET_BASE_URL; add one line per fixed page.
+ */
+const FIXED_PATHS: string[] = ["/fieldpie-free-trial/"];
+
+/** Absolute URLs of the fixed, sitemap-less pages. */
+export function fixedUrls(): string[] {
+  const base = env.TARGET_BASE_URL.replace(/\/+$/, "");
+  return FIXED_PATHS.map((path) => `${base}${path}`);
+}
+
 /** Absolute origin of the target site (protocol + host). */
 export function targetOrigin(): string {
   return new URL(env.TARGET_BASE_URL).origin;
