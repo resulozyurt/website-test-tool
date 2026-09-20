@@ -6,11 +6,14 @@
  * aggregation. Deterministic and authoritative; the AI layer (Phase 4) only
  * advises and never overrides these.
  *
- * CTA correctness is intentionally NOT checked here (Phase 4c decision). The
- * differentiating CTAs ("Start Free Trial", "Book a Demo", etc.) live in the
- * global header, which DOM extraction excludes, so main-content CTA detection
- * is unreliable. CTA/experience correctness is left to the advisory AI verdict
- * and to the scenario engine (Bricks `.brxe-<id>` selectors), not text match.
+ * CTA checking is deliberately narrow. Judging which CTA *should* lead is left
+ * to the advisory AI verdict and the scenario engine (Bricks `.brxe-<id>`
+ * selectors), because this site has no single primary CTA -- the header offers
+ * a demo, pricing offers a quote, other sections offer sales. What IS checked
+ * here are the two facts that do not need judgement: a forbidden CTA must not
+ * be visible (the self-serve trial funnel leaking into the Turkish
+ * experience), and a page must keep at least one way forward. Both read
+ * markers.ctaTextBlob, which covers the header and only rendered elements.
  * The money-critical rule is still caught deterministically by the price check.
  */
 
@@ -24,6 +27,7 @@ import type {
   Severity,
 } from "../types.js";
 import type { CaptureResult, ScenarioObservation } from "./capture.js";
+import { ctaMatches } from "../config/cta.js";
 import { assessLanguage, type Lang } from "../lang/detect.js";
 
 /** A CheckResult plus optional structured evidence persisted to checks.evidence. */
@@ -303,6 +307,77 @@ function priceCheck(
   return null;
 }
 
+/**
+ * Forbidden CTAs must not be visible, and the page must keep at least one way
+ * forward. Both are evaluated against every rendered CTA on the page (header
+ * included); a Bricks country rule hides an element rather than removing it,
+ * and the marker extraction already drops hidden ones.
+ */
+function ctaChecks(
+  capture: CaptureResult,
+  exp: ExpectationSet,
+): DeterministicCheck[] {
+  const markers = capture.markers;
+  if (!markers || !exp.cta) {
+    return [];
+  }
+  const haystack = [markers.ctaTextBlob, markers.ctaCandidates.join(" | ")]
+    .filter(Boolean)
+    .join(" | ");
+  const out: DeterministicCheck[] = [];
+
+  const forbidden = exp.cta.mustNotContain ?? [];
+  if (forbidden.length > 0) {
+    const seen = forbidden.filter((text) => ctaMatches(haystack, text));
+    out.push(
+      seen.length > 0
+        ? check(
+            "cta",
+            "critical",
+            "fail",
+            `none of: ${forbidden.join(", ")}`,
+            seen.join(", "),
+            `Forbidden CTA visible to this market: ${seen.join(", ")}`,
+            { forbidden: seen, ctaCandidates: markers.ctaCandidates },
+          )
+        : check(
+            "cta",
+            "critical",
+            "pass",
+            `none of: ${forbidden.join(", ")}`,
+            "(none)",
+            "No forbidden CTA visible",
+          ),
+    );
+  }
+
+  const anyOf = exp.cta.anyOf ?? (exp.cta.primary ? [exp.cta.primary] : []);
+  if (anyOf.length > 0) {
+    const found = anyOf.filter((text) => ctaMatches(haystack, text));
+    out.push(
+      found.length > 0
+        ? check(
+            "cta",
+            "major",
+            "pass",
+            `any of: ${anyOf.join(", ")}`,
+            found.join(", "),
+            "Page offers an expected way forward",
+          )
+        : check(
+            "cta",
+            "major",
+            "warn",
+            `any of: ${anyOf.join(", ")}`,
+            markers.ctaCandidates.slice(0, 8).join(", ") || "(none)",
+            "None of the expected CTAs found on the page",
+            { ctaCandidates: markers.ctaCandidates },
+          ),
+    );
+  }
+  return out;
+}
+
 function headingCheck(
   capture: CaptureResult,
   exp: ExpectationSet,
@@ -327,11 +402,9 @@ function headingCheck(
 }
 
 /**
- * Runs every applicable per-run check. http_health always runs.
- *
- * Note: there is no deterministic CTA check (Phase 4c). See the file header --
- * CTA correctness is handled by the advisory AI verdict and the scenario
- * engine, not here.
+ * Runs every applicable per-run check. http_health always runs; the rest fire
+ * only where the market's expectations say something (see the file header for
+ * how far the CTA checks go).
  */
 export function runDeterministicChecks(
   capture: CaptureResult,
@@ -351,6 +424,7 @@ export function runDeterministicChecks(
       out.push(c);
     }
   }
+  out.push(...ctaChecks(capture, expectation));
   return out;
 }
 

@@ -21,10 +21,10 @@ import type {
 } from "./inspect.js";
 import type { AiVisualResult } from "./ai-visual.js";
 import {
-  findExpectedCta,
+  findCtas,
   type FunctionalSignals,
 } from "./functional.js";
-import type { ExpectedCta } from "./functional.js";
+import type { CtaPolicy } from "../config/cta.js";
 import { analyzeLinkCoherence } from "./coherence.js";
 import { assessLanguage, type Lang } from "../lang/detect.js";
 import type {
@@ -152,13 +152,14 @@ function isFirstPartyConsoleError(
 }
 
 /**
- * Builds all findings for one inspected page. `expectedCta` is the market's
- * primary CTA (from config); `ai` is the optional AI visual result;
- * `firstPartyHosts` is the set of hosts whose failures gate (from config).
+ * Builds all findings for one inspected page. `ctaPolicy` is the market's CTA
+ * contract (from config/cta.ts: what must be reachable, what must not appear);
+ * `ai` is the optional AI visual result; `firstPartyHosts` is the set of hosts
+ * whose failures gate (from config).
  */
 export function buildFindings(
   page: PageHealth,
-  expectedCta: ExpectedCta | undefined,
+  ctaPolicy: CtaPolicy | undefined,
   ai: AiVisualResult | null,
   firstPartyHosts: string[],
   expectedLanguage: Lang | undefined,
@@ -437,30 +438,45 @@ export function buildFindings(
     );
   }
 
-  // Expected primary CTA for the market (present + clickable).
-  if (expectedCta && f) {
-    const cta = findExpectedCta(f, expectedCta);
-    if (!cta.present) {
+  // The market's CTA contract: nothing forbidden on screen, and at least one
+  // way forward that a visitor can actually click.
+  if (ctaPolicy && f) {
+    const leaked = findCtas(f, ctaPolicy.forbidden);
+    if (leaked.length > 0) {
       out.push(
-        finding("functional", "cta_missing", "major", `Expected CTA "${expectedCta.text}" not found`, {
-          expected: expectedCta.text,
-        }),
-      );
-    } else if (!cta.clickable) {
-      out.push(
-        finding("functional", "cta_unclickable", "major", `Expected CTA "${expectedCta.text}" present but not clickable`, {
-          expected: expectedCta.text,
-          href: cta.href,
-        }),
+        finding(
+          "functional",
+          "cta_forbidden",
+          "critical",
+          `CTA not allowed in this market is visible: ${leaked.map((c) => c.text).join(", ")}`,
+          { forbidden: leaked },
+        ),
       );
     }
-    if (expectedCta.hrefContains && cta.href && !cta.href.includes(expectedCta.hrefContains)) {
-      out.push(
-        finding("functional", "cta_target", "minor", `CTA "${expectedCta.text}" target does not contain "${expectedCta.hrefContains}"`, {
-          expected: expectedCta.hrefContains,
-          actual: cta.href,
-        }),
-      );
+
+    if (ctaPolicy.anyOf.length > 0) {
+      const offered = findCtas(f, ctaPolicy.anyOf);
+      if (offered.length === 0) {
+        out.push(
+          finding(
+            "functional",
+            "cta_missing",
+            "major",
+            `None of the expected CTAs found (${ctaPolicy.anyOf.join(", ")})`,
+            { expected: ctaPolicy.anyOf },
+          ),
+        );
+      } else if (!offered.some((c) => c.clickable)) {
+        out.push(
+          finding(
+            "functional",
+            "cta_unclickable",
+            "major",
+            `Expected CTA present but not clickable: ${offered[0].text}`,
+            { cta: offered[0] },
+          ),
+        );
+      }
     }
   }
 

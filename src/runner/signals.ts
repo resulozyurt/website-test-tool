@@ -34,6 +34,13 @@ export interface ContentMarkers {
   phoneNumbers: string[];
   /** Most prominent main-content button/link texts, in document order. */
   ctaCandidates: string[];
+  /**
+   * Every rendered CTA text on the page, header included, lower-cased and
+   * pipe-joined. ctaCandidates is main-content only and capped at 15; the
+   * market-differentiating CTAs live in the header, so forbidden/expected CTA
+   * matching uses this instead.
+   */
+  ctaTextBlob: string;
   /** True when Turkish-specific characters or words are detected in the body. */
   turkishDetected: boolean;
   /** Main-content visible text sample (trimmed) for content-language detection. */
@@ -213,6 +220,38 @@ export async function extractMarkers(page: Page): Promise<ContentMarkers> {
       .map((el) => (el.textContent ?? "").replace(/\s+/g, " ").trim())
       .filter((t) => t.length > 1 && t.length <= 40);
 
+    // Document-wide CTA text, header included, restricted to elements that are
+    // actually rendered. The main-content set above deliberately drops the
+    // global header, but the CTAs that differentiate the markets ("Start Free
+    // Trial" vs "Demo Talebi") live there, and a Bricks country rule hides an
+    // element rather than removing it -- so the forbidden-CTA rule needs both
+    // the header and a visibility filter to be trustworthy. Consent dialogs
+    // stay excluded; their buttons are not CTAs.
+    const CONSENT_EXCLUDE = [
+      "[id*='cmplz']",
+      "[class*='cmplz']",
+      "[id*='cookie']",
+      "[class*='cookie']",
+      "[aria-label*='onsent']",
+    ].join(", ");
+    const visibleCtaText = Array.from(document.querySelectorAll("a, button"))
+      .filter((el) => el.closest(CONSENT_EXCLUDE) == null)
+      .filter((el) => {
+        const style = window.getComputedStyle(el as HTMLElement);
+        if (
+          style.display === "none" ||
+          style.visibility === "hidden" ||
+          Number(style.opacity) === 0
+        ) {
+          return false;
+        }
+        const rect = (el as HTMLElement).getBoundingClientRect();
+        return rect.width > 2 && rect.height > 2;
+      })
+      .map((el) => (el.textContent ?? "").replace(/\s+/g, " ").trim().toLowerCase())
+      .filter((t) => t.length > 1 && t.length <= 60)
+      .join(" | ");
+
     // Main-content text only, for currency/price detection.
     const mainText = (root as HTMLElement).innerText ?? bodyText;
 
@@ -220,7 +259,16 @@ export async function extractMarkers(page: Page): Promise<ContentMarkers> {
       document.querySelectorAll('a[href^="tel:"]'),
     ).map((el) => el.getAttribute("href")?.replace("tel:", "") ?? "");
 
-    return { bodyText, mainText, htmlLang, firstHeading, buttonText, ctaTexts, telLinks };
+    return {
+      bodyText,
+      mainText,
+      htmlLang,
+      firstHeading,
+      buttonText,
+      ctaTexts,
+      visibleCtaText,
+      telLinks,
+    };
   });
 
   const hasStartFreeTrial = raw.buttonText.includes("start free trial");
@@ -267,6 +315,7 @@ export async function extractMarkers(page: Page): Promise<ContentMarkers> {
     currencySymbols,
     phoneNumbers,
     ctaCandidates,
+    ctaTextBlob: raw.visibleCtaText,
     turkishDetected,
     textSample: (raw.mainText || raw.bodyText || "").replace(/\s+/g, " ").trim().slice(0, 5000),
     fingerprint,

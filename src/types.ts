@@ -70,7 +70,13 @@ export interface PageConfig {
  */
 export interface ExpectationSet {
   cachePolicy?: { kinstaCache?: string; mustDifferFrom?: CountryCode[] };
-  cta?: { primary?: string; mustNotContain?: string[] };
+  cta?: {
+    primary?: string;
+    /** At least one of these must be present (no single primary CTA exists). */
+    anyOf?: string[];
+    /** None of these may be present. */
+    mustNotContain?: string[];
+  };
   price?: { visible?: boolean; currency?: string };
   heading?: { contains?: string };
   phone?: { equals?: string };

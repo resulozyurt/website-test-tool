@@ -24,11 +24,8 @@
 import { mkdir } from "node:fs/promises";
 import { join } from "node:path";
 import type { CountryCode, LanguageCode } from "../types.js";
-import {
-  CRAWL_TARGETS,
-  EXPECTED_CTA_BY_LANG,
-  HEALTH_CONFIG,
-} from "../config/health.js";
+import { CRAWL_TARGETS, HEALTH_CONFIG } from "../config/health.js";
+import { ctaPolicyFor } from "../config/cta.js";
 import type { Scope } from "../config/critical.js";
 import { proxyEnvKey, resolveProxy } from "../runner/proxy.js";
 import { isStorageConfigured, uploadFile } from "../storage/r2.js";
@@ -127,9 +124,6 @@ async function crawlTarget(
     return;
   }
 
-  // CTA expectation is language-driven (US and AE share English), so resolve it
-  // from the page language rather than the country.
-  const expectedCta = EXPECTED_CTA_BY_LANG[language];
   let done = 0;
 
   await pool(
@@ -176,9 +170,13 @@ async function crawlTarget(
         }
       }
 
+      // The CTA contract depends on the visitor country as well as the page
+      // language, and is lifted on the trial funnel page itself.
+      const ctaPolicy = ctaPolicyFor(country, language, page.path);
+
       const findings = buildFindings(
         health,
-        expectedCta,
+        ctaPolicy,
         ai,
         HEALTH_CONFIG.firstPartyHosts,
         language,

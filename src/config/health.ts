@@ -30,17 +30,13 @@ export const CRAWL_TARGETS: CrawlTarget[] = [
 ];
 
 /**
- * The primary CTA each market must show, keyed by LANGUAGE (not country): the
- * button text depends on the page language, and multiple countries share a
- * language (US and AE both serve English "Start Free Trial"; TR serves the
- * Turkish "Ücretsiz Deneyin"). Keying by language keeps this correct and
- * one-line extensible: add `es`/`ar` here when those markets launch. The
- * functional check confirms this button is present and clickable.
+ * The per-market CTA contract lives in config/cta.ts, keyed by country AND
+ * language rather than language alone. Country matters: a Turkish visitor is
+ * served a sales-led experience, so "Ücretsiz Deneyin" is not merely optional
+ * for them, it must be absent -- while the same Turkish page shown to a
+ * non-Turkish visitor does carry it. Keying by language alone made the crawl
+ * demand a CTA that is hidden on purpose.
  */
-export const EXPECTED_CTA_BY_LANG: Partial<Record<LanguageCode, ExpectedCta>> = {
-  en: { text: "Start Free Trial" },
-  tr: { text: "Ücretsiz Deneyin" },
-};
 
 export interface HealthConfig {
   /** How many pages to inspect in parallel (per country). Keep small: polite. */

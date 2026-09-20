@@ -46,6 +46,7 @@ const CATALOG: Record<string, FindingMeta> = {
   link_coherence: { label: "Text ≠ link target", description: "A link's text names one place but points somewhere else." },
   cta_missing: { label: "CTA missing", description: "The market's expected call-to-action was not found." },
   cta_unclickable: { label: "CTA not clickable", description: "The expected call-to-action is present but not clickable." },
+  cta_forbidden: { label: "Forbidden CTA visible", description: "A call-to-action this market must not be shown is visible on the page (e.g. the self-serve trial funnel reaching a Turkish visitor)." },
   cta_target: { label: "CTA wrong target", description: "The call-to-action links to an unexpected destination." },
   form_no_fields: { label: "Empty form", description: "A visible form renders no input fields." },
   menu_no_reveal: { label: "Menu did not open", description: "A nav dropdown did not reveal its submenu on hover." },

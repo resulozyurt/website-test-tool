@@ -1,5 +1,6 @@
 import { pool } from "../db/client.js";
 import { listExpectations, type Executor } from "../db/repository.js";
+import { TRIAL_CTAS } from "./cta.js";
 import type { CountryCode, ExpectationSet } from "../types.js";
 
 /**
@@ -23,25 +24,85 @@ import type { CountryCode, ExpectationSet } from "../types.js";
  * then stays synchronous against the in-memory store.
  */
 
-/** Baseline kinsta-cache + locale rules for the two English markets. */
-const EN_MARKET_HOME: ExpectationSet = {
-  cachePolicy: { kinstaCache: "HIT", mustDifferFrom: ["TR"] },
-  cta: { primary: "Start Free Trial" },
-  phone: { equals: "+1 877 494 1538" },
-  language: { htmlLang: "en", mustNotBe: ["tr"] },
-};
+/*
+ * Baseline, verified by hand against the live site through each country's exit
+ * IP. These are the rules we are sure of; anything uncertain is deliberately
+ * left unset so the manifest/learning layer can fill it rather than having a
+ * guess fail a run every night.
+ *
+ * What was verified from a Turkish IP (x-geoip-caching: tr): no price anywhere,
+ * no trial CTA or link on the regular pages, Turkish phone number. From a
+ * non-Turkish IP the same Turkish pricing page shows both prices and the trial
+ * link, which is the differentiation we are protecting.
+ *
+ * Two deliberate omissions:
+ *   - AE pricing carries no price rule. The Gulf audience may be a
+ *     request-pricing one; until that is confirmed through the AE proxy, a
+ *     guess here would fire every night.
+ *   - The trial funnel page carries only a language rule. It is one English
+ *     page shared by every market (no translation, no hreflang alternate), so
+ *     it cannot differ across countries and its own trial CTAs are expected --
+ *     including for TR visitors, who simply are not linked to it.
+ */
 
-const TR_MARKET_HOME: ExpectationSet = {
-  cachePolicy: { kinstaCache: "HIT", mustDifferFrom: ["US", "AE"] },
-  phone: { equals: "+90 212 483 72 55" },
-  language: { htmlLang: "tr" },
+const EN_PHONE = "+1 877 494 1538";
+const TR_PHONE = "+90 212 483 72 55";
+
+/** Ways forward an English visitor should find; TR is sales-led (see cta.ts). */
+const EN_WAYS_FORWARD = ["Start Free Trial", "Get Started", "Book a Demo"];
+const TR_WAYS_FORWARD = ["Demo", "Fiyat Teklifi Al", "Satış Ekibiyle Görüş"];
+
+/** Rules shared by the two English markets on a regular page. */
+function enMarket(extra: ExpectationSet = {}): ExpectationSet {
+  return {
+    cachePolicy: { kinstaCache: "HIT", mustDifferFrom: ["TR"] },
+    cta: { anyOf: EN_WAYS_FORWARD },
+    phone: { equals: EN_PHONE },
+    language: { htmlLang: "en", mustNotBe: ["tr"] },
+    ...extra,
+  };
+}
+
+/**
+ * Rules shared by the Turkish market on a regular page: no price, no trial
+ * funnel, Turkish phone and language, and content that differs from what the
+ * English markets are served (the silent-fallback guard).
+ */
+function trMarket(extra: ExpectationSet = {}): ExpectationSet {
+  return {
+    cachePolicy: { kinstaCache: "HIT", mustDifferFrom: ["US", "AE"] },
+    cta: { anyOf: TR_WAYS_FORWARD, mustNotContain: TRIAL_CTAS },
+    price: { visible: false },
+    phone: { equals: TR_PHONE },
+    language: { htmlLang: "tr" },
+    ...extra,
+  };
+}
+
+/** One shared English page for every market: no geo differentiation to expect. */
+const TRIAL_FUNNEL: ExpectationSet = {
+  language: { htmlLang: "en" },
 };
 
 /** Keyed by `${countryCode}::${pageKey}`. */
 const BASELINE: Record<string, ExpectationSet> = {
-  "US::home": EN_MARKET_HOME,
-  "AE::home": EN_MARKET_HOME,
-  "TR::home": TR_MARKET_HOME,
+  "US::home": enMarket(),
+  "AE::home": enMarket(),
+  "TR::home": trMarket(),
+
+  // Pricing is the money-critical page: the US visitor must see a price, the
+  // Turkish visitor must not.
+  "US::pricing": enMarket({ price: { visible: true, currency: "$" } }),
+  "AE::pricing": enMarket(),
+  "TR::pricing": trMarket(),
+
+  "US::demo": enMarket(),
+  "AE::demo": enMarket(),
+  "TR::demo": trMarket(),
+
+  "US::free-trial": TRIAL_FUNNEL,
+  "AE::free-trial": TRIAL_FUNNEL,
+  "TR::free-trial": TRIAL_FUNNEL,
 };
 
 /** In-memory snapshot of DB expectations, keyed by `${marketId}::${pageId}`. */

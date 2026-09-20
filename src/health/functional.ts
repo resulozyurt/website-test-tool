@@ -21,6 +21,7 @@
  */
 
 import type { APIRequestContext, Page } from "playwright";
+import { ctaMatches } from "../config/cta.js";
 import type { CountryCode } from "../types.js";
 
 /** One link/CTA as read from the DOM. */
@@ -254,33 +255,16 @@ export interface ExpectedCta {
 }
 
 /**
- * Case-folds text for tolerant CTA matching. Turkish is the reason this is not
- * a plain `toLowerCase()`: the site renders CTAs in uppercase ("ÜCRETSİZ
- * DENEYİN") while config stores them in title case ("Ücretsiz Deneyin"), and
- * JS `toLowerCase()` turns the dotted capital "İ" (U+0130) into "i" + combining
- * dot (two code points), which then fails to equal a plain "i". We normalize
- * the dotted/dotless I variants to a plain ASCII "i" BEFORE lowercasing so both
- * forms fold to the same string. Runs in Node (safe to be a named function).
- */
-function foldForMatch(s: string): string {
-  return s
-    .replace(/[İIı]/g, "i")
-    .toLowerCase();
-}
-
-/**
- * Finds whether the market's expected CTA is present and clickable. Matches by
- * visible text (accent/locale-tolerant, case-insensitive contains). Returns the
- * best match or null.
+ * Finds whether one expected CTA is present and clickable. Matches by visible
+ * text, case- and locale-tolerant (see ctaMatches: the site renders CTAs in
+ * uppercase while config stores them in title case, and Turkish "İ" does not
+ * fold to "i" under a plain toLowerCase).
  */
 export function findExpectedCta(
   signals: FunctionalSignals,
   expected: ExpectedCta,
 ): { present: boolean; clickable: boolean; href: string | null } {
-  const needle = foldForMatch(expected.text);
-  const matches = signals.links.filter((l) =>
-    foldForMatch(l.text).includes(needle),
-  );
+  const matches = signals.links.filter((l) => ctaMatches(l.text, expected.text));
   if (matches.length === 0) {
     return { present: false, clickable: false, href: null };
   }
@@ -290,6 +274,43 @@ export function findExpectedCta(
     clickable: clickableMatch.clickable,
     href: clickableMatch.resolved ?? clickableMatch.href,
   };
+}
+
+/** One CTA the page actually offers, matched against a wanted text. */
+export interface CtaMatch {
+  /** The configured text that matched. */
+  wanted: string;
+  /** The CTA text as rendered. */
+  text: string;
+  clickable: boolean;
+  href: string | null;
+}
+
+/**
+ * Every rendered CTA matching one of `texts`. Only visible elements count: a
+ * Bricks country rule hides an element rather than removing it, so matching
+ * hidden markup would report a leak that no visitor can see.
+ */
+export function findCtas(
+  signals: FunctionalSignals,
+  texts: string[],
+): CtaMatch[] {
+  const out: CtaMatch[] = [];
+  for (const wanted of texts) {
+    for (const link of signals.links) {
+      if (!link.visible || !ctaMatches(link.text, wanted)) {
+        continue;
+      }
+      out.push({
+        wanted,
+        text: link.text,
+        clickable: link.clickable,
+        href: link.resolved ?? link.href,
+      });
+      break; // one example per wanted text is enough evidence
+    }
+  }
+  return out;
 }
 
 /** Type marker so config can key expected CTAs by country. */
