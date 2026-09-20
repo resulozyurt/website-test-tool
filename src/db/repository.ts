@@ -14,6 +14,7 @@
 
 import type { QueryResult, QueryResultRow } from "pg";
 import { pool } from "./client.js";
+import type { Scope } from "../config/critical.js";
 import type {
   CheckResult,
   CheckStatus,
@@ -77,6 +78,7 @@ export interface SweepRow {
   environmentId: number;
   trigger: SweepTrigger;
   status: SweepStatus;
+  scope: Scope;
   startedAt: Date;
   finishedAt: Date | null;
 }
@@ -162,6 +164,8 @@ export interface CreateSweepInput {
   environmentId: number;
   trigger?: SweepTrigger;
   status?: SweepStatus;
+  /** 'critical' (daily funnel set) or 'full' (weekly, every page). */
+  scope?: Scope;
 }
 
 export interface CreateRunInput {
@@ -231,7 +235,7 @@ const PAGE_COLS =
   'id, page_key as "pageKey", path_by_language as "pathByLanguage", is_active as "isActive", is_critical as "isCritical", created_at as "createdAt"';
 
 const SWEEP_COLS =
-  'id, environment_id as "environmentId", trigger, status, started_at as "startedAt", finished_at as "finishedAt"';
+  'id, environment_id as "environmentId", trigger, status, scope, started_at as "startedAt", finished_at as "finishedAt"';
 
 const RUN_COLS = [
   "id",
@@ -425,10 +429,15 @@ export async function createSweep(
 ): Promise<SweepRow> {
   const rows = await run<SweepRow>(
     exec,
-    `insert into sweeps (environment_id, trigger, status)
-     values ($1, coalesce($2, 'cron'), coalesce($3, 'running'))
+    `insert into sweeps (environment_id, trigger, status, scope)
+     values ($1, coalesce($2, 'cron'), coalesce($3, 'running'), coalesce($4, 'full'))
      returning ${SWEEP_COLS}`,
-    [input.environmentId, input.trigger ?? null, input.status ?? null],
+    [
+      input.environmentId,
+      input.trigger ?? null,
+      input.status ?? null,
+      input.scope ?? null,
+    ],
   );
   return rows[0];
 }

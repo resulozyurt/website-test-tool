@@ -15,13 +15,24 @@
  * so a late failure still leaves earlier progress committed. Priority of learned
  * expectations stays manual > auto > manifest.
  *
+ * Scope: the pipeline defaults to 'full' and is the weekly learning job.
+ * 'critical' keeps only the cheap stages that matter for the daily funnel set
+ * (discover -> manifest -> learn) and skips site-wide scenario generation and
+ * page reconciliation, which hit the WordPress inventory endpoint once per
+ * page. Note that the daily cron does not run this at all: relearning
+ * expectations from a live render right before checking against them would let
+ * a regression teach itself as the new normal.
+ *
  * Prerequisites: `npm run migrate` + `npm run seed`, country proxies and the
  * manifest secret in .env.
  *
- * Usage: npm run autopilot
+ * Usage:
+ *   npm run autopilot                    # full pipeline (weekly)
+ *   npm run autopilot -- --scope=critical
  */
 
 import { closePool, pool } from "./db/client.js";
+import type { Scope } from "./config/critical.js";
 import { discover } from "./discovery/discover.js";
 import { deactivateMissing, upsertDiscoveredPage } from "./discovery/store.js";
 import { generateAllScenarios } from "./scenarios/generate-all.js";
@@ -33,8 +44,24 @@ import { applyProposalsAuto } from "./learn/auto.js";
 
 const LEARN_OUTPUT_DIR = "learn-output";
 
-function banner(step: number, title: string): void {
-  console.log(`\n=== [${step}/5] ${title} ===`);
+function parseScope(argv: string[]): Scope {
+  let scope: Scope = "full";
+  for (const arg of argv) {
+    if (arg.startsWith("--scope=")) {
+      const value = arg.slice("--scope=".length).toLowerCase();
+      if (value !== "critical" && value !== "full") {
+        throw new Error(`unknown scope "${value}" (expected critical or full)`);
+      }
+      scope = value;
+    } else {
+      throw new Error(`unknown argument "${arg}"`);
+    }
+  }
+  return scope;
+}
+
+function makeBanner(total: number): (step: number, title: string) => void {
+  return (step, title) => console.log(`\n=== [${step}/${total}] ${title} ===`);
 }
 
 /** Runs a stage, logging and swallowing its error so the pipeline continues. */
@@ -154,9 +181,12 @@ async function learnStage(): Promise<void> {
 }
 
 async function main(): Promise<void> {
+  const scope = parseScope(process.argv.slice(2));
+  const siteWide = scope === "full";
+  const banner = makeBanner(siteWide ? 5 : 3);
   const startedAt = Date.now();
   const failures: string[] = [];
-  console.log("autopilot: fully-automatic discover -> learn pipeline");
+  console.log(`autopilot [${scope}]: discover -> learn pipeline`);
 
   // Stage 1 is a hard prerequisite: without discovered pages, the rest is moot.
   banner(1, "discover");
@@ -171,16 +201,21 @@ async function main(): Promise<void> {
     return;
   }
 
-  banner(2, "scenarios (site-wide geo-leak)");
-  await stage("scenarios", scenariosStage, failures);
+  let step = 1;
+  if (siteWide) {
+    banner((step += 1), "scenarios (site-wide geo-leak)");
+    await stage("scenarios", scenariosStage, failures);
 
-  banner(3, "reconcile pages");
-  await stage("reconcile", reconcileStage, failures);
+    banner((step += 1), "reconcile pages");
+    await stage("reconcile", reconcileStage, failures);
+  } else {
+    console.log("\nskipping scenarios + reconcile (critical scope)");
+  }
 
-  banner(4, "manifest -> expectations");
+  banner((step += 1), "manifest -> expectations");
   await stage("manifest sync", manifestStage, failures);
 
-  banner(5, "learn (auto-apply)");
+  banner((step += 1), "learn (auto-apply)");
   await stage("learn(auto)", learnStage, failures);
 
   const secs = ((Date.now() - startedAt) / 1000).toFixed(1);

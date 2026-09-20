@@ -13,7 +13,14 @@
  * only pages that have scenarios are probed in the DOM, so the rest do no extra
  * work.
  *
- * Usage: npm run sweep
+ * Scope: 'critical' (the default) visits only the daily funnel pages flagged
+ * in config/targets.ts; 'full' visits every active page, including the ones
+ * the scenario reconciler added, and is what the weekly job runs.
+ *
+ * Usage:
+ *   npm run sweep                      # daily funnel set
+ *   npm run sweep -- --scope=full      # every active page
+ *   npm run sweep -- --cron            # mark the sweep as cron-triggered
  */
 
 import { mkdir } from "node:fs/promises";
@@ -24,8 +31,10 @@ import type {
   LanguageCode,
   RunStatus,
   SweepStatus,
+  SweepTrigger,
 } from "../types.js";
 import { closePool } from "../db/client.js";
+import type { Scope } from "../config/critical.js";
 import {
   createRun,
   createSweep,
@@ -120,7 +129,32 @@ function scenarioKey(url: string, country: string): string {
   return `${normalizeUrl(url)}::${country.toUpperCase()}`;
 }
 
+interface SweepOptions {
+  scope: Scope;
+  trigger: SweepTrigger;
+}
+
+function parseArgs(argv: string[]): SweepOptions {
+  let scope: Scope = "critical";
+  let trigger: SweepTrigger = "manual";
+  for (const arg of argv) {
+    if (arg === "--cron") {
+      trigger = "cron";
+    } else if (arg.startsWith("--scope=")) {
+      const value = arg.slice("--scope=".length).toLowerCase();
+      if (value !== "critical" && value !== "full") {
+        throw new Error(`unknown scope "${value}" (expected critical or full)`);
+      }
+      scope = value;
+    } else {
+      throw new Error(`unknown argument "${arg}"`);
+    }
+  }
+  return { scope, trigger };
+}
+
 async function main(): Promise<void> {
+  const options = parseArgs(process.argv.slice(2));
   const environment = await getEnvironmentByKey("production");
   if (!environment || !environment.isActive) {
     throw new Error(
@@ -129,7 +163,12 @@ async function main(): Promise<void> {
   }
 
   const markets = await listMarkets(true);
-  const pages = await listPages(true);
+  const pages = await listPages(true, options.scope === "critical");
+  if (pages.length === 0) {
+    throw new Error(
+      `no ${options.scope} pages to sweep. Run \`npm run seed\` first.`,
+    );
+  }
 
   // DB-sourced expectations (manifest/manual), merged over the baseline by
   // resolveExpectations. Loaded once for the whole sweep.
@@ -165,10 +204,12 @@ async function main(): Promise<void> {
 
   const sweep = await createSweep({
     environmentId: environment.id,
-    trigger: "manual",
+    trigger: options.trigger,
+    scope: options.scope,
   });
   console.log(
-    `sweep #${sweep.id} started (env=${environment.key}, base=${environment.baseUrl})`,
+    `sweep #${sweep.id} started (env=${environment.key}, base=${environment.baseUrl}, ` +
+      `scope=${options.scope}, trigger=${options.trigger}, pages=${pages.length})`,
   );
 
   const outputDir = join("runner-output", `sweep-${sweep.id}`);
