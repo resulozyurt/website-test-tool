@@ -46,10 +46,13 @@ const EnvSchema = z.object({
   STORAGE_ACCESS_KEY_ID: z.string().optional(),
   STORAGE_SECRET_ACCESS_KEY: z.string().optional(),
 
-  // --- Email alerts; alerting phase ---
+  // --- Email alerts ---
+  // Panel settings win; these are the bootstrap path (and the safety net if
+  // the settings row is ever lost). ALERT_EMAIL_TO is a comma-separated list;
+  // ALERT_SMTP_PASSWORD is the Gmail app password, not the account password.
   ALERT_EMAIL_FROM: z.string().optional(),
   ALERT_EMAIL_TO: z.string().optional(),
-  RESEND_API_KEY: z.string().optional(),
+  ALERT_SMTP_PASSWORD: z.string().optional(),
 
   // --- AI validation; AI phase ---
   ANTHROPIC_API_KEY: z.string().optional(),

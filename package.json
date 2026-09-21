@@ -14,6 +14,7 @@
     "pages:reconcile": "tsx src/scenarios/reconcile-cli.ts",
     "sweep": "tsx src/runner/sweep.ts",
     "proxy:test": "tsx src/proxy/test-cli.ts",
+    "alert:test": "tsx src/alerts/test-cli.ts",
     "healthcheck": "tsx src/health/crawl-cli.ts",
     "manifest": "tsx src/manifest/cli.ts",
     "manifest:sync": "tsx src/manifest/sync-cli.ts",
@@ -34,6 +35,7 @@
   "dependencies": {
     "aws4fetch": "^1.0.20",
     "dotenv": "^16.4.5",
+    "nodemailer": "^6.10.1",
     "pg": "^8.13.1",
     "playwright": "1.49.1",
     "proxy-chain": "^3.0.0",
@@ -41,6 +43,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.10.0",
+    "@types/nodemailer": "^8.0.2",
     "@types/pg": "^8.11.10",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2"
