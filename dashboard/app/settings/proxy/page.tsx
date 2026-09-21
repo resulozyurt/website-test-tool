@@ -24,18 +24,18 @@ export default async function ProxySettingsPage() {
   return (
     <main className="mx-auto max-w-4xl px-4 py-8">
       <header className="mb-6">
-        <h1 className="text-xl font-semibold">Proxy sağlayıcıları</h1>
+        <h1 className="text-xl font-semibold">Proxy providers</h1>
         <p className="mt-1 text-sm text-muted">
-          Her ülke için hangi sağlayıcının kullanılacağını buradan seç. Bir kayıt
-          ancak bağlantı testi geçtikten sonra aktifleştirilebilir: testi geçmeyen
-          bir çıkış IP&apos;si, tüm kontrolleri yanlış ülke kovasına karşı çalıştırır
-          ve her şey yeşil görünürken sonuçlar anlamsızlaşır.
+          Choose which provider each country goes through. A setting can only
+          be activated after its connection test passes: an exit IP the site
+          resolves to the wrong country would run every check against the
+          wrong cache bucket, reporting green while measuring nothing.
         </p>
       </header>
 
       {loadError ? (
         <div className="mb-4 rounded-lg border border-line bg-card p-4 text-sm text-[var(--st-bad-fg)]">
-          Ayarlar okunamadı: {loadError}
+          Could not load settings: {loadError}
         </div>
       ) : null}
 

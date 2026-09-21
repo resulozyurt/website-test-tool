@@ -84,7 +84,7 @@ export async function saveProxySetting(input: {
     returning id`,
       [input.id, input.providerId, input.label ?? null, blob],
     );
-    if (!rows[0]) throw new Error(`Kayıt #${input.id} bulunamadı.`);
+    if (!rows[0]) throw new Error(`Setting #${input.id} not found.`);
     return rows[0].id;
   }
   const rows = await proxySettingsQuery<{ id: number }>(
@@ -107,9 +107,9 @@ export async function activateProxySetting(id: number): Promise<void> {
     [id],
   );
   const row = rows[0];
-  if (!row) throw new Error(`Kayıt #${id} bulunamadı.`);
+  if (!row) throw new Error(`Setting #${id} not found.`);
   if (row.lastTestOk !== true) {
-    throw new Error("Aktifleştirmeden önce bağlantı testi başarılı olmalı.");
+    throw new Error("A connection test has to pass before this can be activated.");
   }
   await proxySettingsQuery(
     `update proxy_settings set is_active = false, updated_at = now()

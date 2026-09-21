@@ -11,9 +11,9 @@ import {
 import type { ProxySettingView } from "@/lib/proxySettings";
 
 const COUNTRIES: { code: CountryCode; label: string }[] = [
-  { code: "US", label: "ABD" },
-  { code: "TR", label: "Türkiye" },
-  { code: "AE", label: "BAE" },
+  { code: "US", label: "United States" },
+  { code: "TR", label: "Turkey" },
+  { code: "AE", label: "United Arab Emirates" },
 ];
 
 interface TestResult {
@@ -40,13 +40,13 @@ async function post(body: Record<string, unknown>): Promise<Record<string, unkno
 }
 
 function formatTest(r: TestResult): string {
-  const verdict = r.ok ? "Başarılı" : r.countryMismatch ? "Yanlış ülke" : "Başarısız";
+  const verdict = r.ok ? "Passed" : r.countryMismatch ? "Wrong country" : "Failed";
   return [
     verdict,
     `IP: ${r.exitIp ?? "—"}`,
     `site: ${r.siteCountry ?? "—"}`,
     `cache: ${r.cacheCountry ?? "—"}`,
-    r.error ? `hata: ${r.error}` : null,
+    r.error ? `error: ${r.error}` : null,
   ]
     .filter(Boolean)
     .join(" · ");
@@ -96,7 +96,7 @@ function ProviderForm({
           credentials: values,
         });
         const data = await post({ action: "test", id: saved.id });
-        setMessage(`Kaydedildi. Test: ${formatTest(data.result as TestResult)}`);
+        setMessage(`Saved. Test: ${formatTest(data.result as TestResult)}`);
         setValues({});
         setLabel("");
         onDone();
@@ -110,7 +110,7 @@ function ProviderForm({
 
   return (
     <div className="mt-4 rounded-lg border border-line bg-elev p-4">
-      <label className="block text-xs font-medium text-muted">Sağlayıcı</label>
+      <label className="block text-xs font-medium text-muted">Provider</label>
       <select
         value={providerId}
         onChange={(e) => {
@@ -136,7 +136,7 @@ function ProviderForm({
           rel="noreferrer noopener"
           className="text-xs text-brand underline"
         >
-          Fiyat sayfası
+          Pricing page
         </a>
       ) : null}
 
@@ -159,13 +159,13 @@ function ProviderForm({
         ))}
         <div>
           <label className="block text-xs font-medium text-muted">
-            Etiket (isteğe bağlı)
+            Label (optional)
           </label>
           <input
             type="text"
             value={label}
             onChange={(e) => setLabel(e.target.value)}
-            placeholder="ör. ana hesap"
+            placeholder="e.g. main account"
             className="mt-1 w-full rounded-md border border-line bg-card px-3 py-2 text-sm"
           />
         </div>
@@ -178,7 +178,7 @@ function ProviderForm({
           onClick={() => run("test")}
           className="rounded-md border border-line px-3 py-1.5 text-sm disabled:opacity-50"
         >
-          {busy === "test" ? "Test ediliyor…" : "Bağlantıyı test et"}
+          {busy === "test" ? "Testing…" : "Test connection"}
         </button>
         <button
           type="button"
@@ -186,7 +186,7 @@ function ProviderForm({
           onClick={() => run("save")}
           className="rounded-md bg-brand px-3 py-1.5 text-sm font-medium text-white disabled:opacity-50"
         >
-          {busy === "save" ? "Kaydediliyor…" : "Kaydet ve test et"}
+          {busy === "save" ? "Saving…" : "Save and test"}
         </button>
       </div>
 
@@ -211,7 +211,7 @@ function SettingRow({
   const provider = getProvider(setting.providerId);
 
   async function act(action: "test" | "activate" | "delete") {
-    if (action === "delete" && !confirm("Bu proxy kaydı silinsin mi?")) {
+    if (action === "delete" && !confirm("Delete this proxy setting?")) {
       return;
     }
     setBusy(action);
@@ -254,10 +254,10 @@ function SettingRow({
           }
         >
           {setting.lastTestOk === true
-            ? "test geçti"
+            ? "test passed"
             : setting.lastTestOk === false
-              ? "test başarısız"
-              : "test edilmedi"}
+              ? "test failed"
+              : "not tested"}
         </span>
       </div>
 
@@ -276,7 +276,7 @@ function SettingRow({
           onClick={() => act("test")}
           className="rounded-md border border-line px-2.5 py-1 text-xs disabled:opacity-50"
         >
-          {busy === "test" ? "Test ediliyor…" : "Test et"}
+          {busy === "test" ? "Testing…" : "Test"}
         </button>
         {!setting.isActive ? (
           <button
@@ -285,7 +285,7 @@ function SettingRow({
             title={
               setting.lastTestOk === true
                 ? undefined
-                : "Önce başarılı bir test gerekiyor"
+                : "A passing test is required first"
             }
             onClick={() => act("activate")}
             className="rounded-md border border-line px-2.5 py-1 text-xs disabled:opacity-40"
@@ -296,7 +296,7 @@ function SettingRow({
         <button
           type="button"
           disabled={busy !== null || setting.isActive}
-          title={setting.isActive ? "Aktif kayıt silinemez" : undefined}
+          title={setting.isActive ? "The active setting cannot be deleted" : undefined}
           onClick={() => act("delete")}
           className="rounded-md border border-line px-2.5 py-1 text-xs text-[var(--st-bad-fg)] disabled:opacity-40"
         >
@@ -324,13 +324,13 @@ export function ProxySettings({
   if (!keyConfigured) {
     return (
       <div className="rounded-xl border border-line bg-card p-6 text-sm">
-        <p className="font-medium">SETTINGS_SECRET_KEY tanımlı değil.</p>
+        <p className="font-medium">SETTINGS_SECRET_KEY is not configured.</p>
         <p className="mt-2 text-muted">
-          Proxy kimlik bilgileri bu anahtarla şifrelenip saklanıyor. Anahtar
-          olmadan panel hiçbir şey kaydetmez; en az 16 karakterlik bir değeri
-          hem panel hem runner servisine ekle, sonra bu sayfayı yenile. Anahtar
-          yokken sistem eskisi gibi PROXY_US / PROXY_TR / PROXY_AE değişkenlerini
-          kullanmaya devam eder.
+          Proxy credentials are encrypted with this key before they are
+          stored, so nothing is saved without it. Set a value of at least 16
+          characters on both the panel and the runner service, then reload
+          this page. Until then the system keeps using the PROXY_US, PROXY_TR
+          and PROXY_AE variables exactly as before.
         </p>
       </div>
     );
@@ -349,14 +349,14 @@ export function ProxySettings({
               </h2>
               <span className="text-xs text-muted">
                 {active
-                  ? `Aktif: ${getProvider(active.providerId)?.name ?? active.providerId}`
-                  : "Aktif sağlayıcı yok — PROXY_" + code + " kullanılıyor"}
+                  ? `Active: ${getProvider(active.providerId)?.name ?? active.providerId}`
+                  : "No active provider — falling back to PROXY_" + code}
               </span>
             </div>
 
             <div className="mt-2">
               {rows.length === 0 ? (
-                <p className="py-3 text-sm text-muted">Henüz kayıtlı sağlayıcı yok.</p>
+                <p className="py-3 text-sm text-muted">No provider saved yet.</p>
               ) : (
                 rows.map((s) => (
                   <SettingRow key={s.id} setting={s} onChanged={refresh} />
@@ -378,7 +378,7 @@ export function ProxySettings({
                 onClick={() => setOpenForm(code)}
                 className="mt-3 rounded-md border border-line px-3 py-1.5 text-sm"
               >
-                Sağlayıcı ekle
+                Add provider
               </button>
             )}
           </section>

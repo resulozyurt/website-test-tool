@@ -55,7 +55,7 @@ export async function verifyProxy(
       const body = (await res.body.json()) as { ip?: string };
       detail.exitIp = body.ip ?? null;
     } catch (err) {
-      detail.error = `çıkış IP'si alınamadı: ${err instanceof Error ? err.message : String(err)}`;
+      detail.error = `exit ip lookup failed: ${err instanceof Error ? err.message : String(err)}`;
     }
 
     const base = process.env.TARGET_BASE_URL ?? "https://www.fieldpie.com";

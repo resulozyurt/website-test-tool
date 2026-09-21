@@ -63,24 +63,24 @@ function credentialsOf(input: unknown): Record<string, string> {
 
 export async function GET() {
   if (!keyConfigured()) {
-    return NextResponse.json({ error: "SETTINGS_SECRET_KEY tanımlı değil." }, { status: 503 });
+    return NextResponse.json({ error: "SETTINGS_SECRET_KEY is not configured." }, { status: 503 });
   }
   return NextResponse.json({ settings: await listProxySettings() });
 }
 
 export async function POST(req: NextRequest) {
   if (!keyConfigured()) {
-    return NextResponse.json({ error: "SETTINGS_SECRET_KEY tanımlı değil." }, { status: 503 });
+    return NextResponse.json({ error: "SETTINGS_SECRET_KEY is not configured." }, { status: 503 });
   }
   if (!sameOrigin(req)) {
-    return NextResponse.json({ error: "Cross-origin istek reddedildi." }, { status: 403 });
+    return NextResponse.json({ error: "Cross-origin request refused." }, { status: 403 });
   }
 
   let body: Record<string, unknown>;
   try {
     body = (await req.json()) as Record<string, unknown>;
   } catch {
-    return NextResponse.json({ error: "Geçersiz istek gövdesi." }, { status: 400 });
+    return NextResponse.json({ error: "Malformed request body." }, { status: 400 });
   }
 
   const action = body.action;
@@ -88,11 +88,11 @@ export async function POST(req: NextRequest) {
   try {
     if (action === "save") {
       if (!isCountry(body.country)) {
-        return NextResponse.json({ error: "Geçersiz ülke." }, { status: 400 });
+        return NextResponse.json({ error: "Unknown country." }, { status: 400 });
       }
       const provider = getProvider(String(body.providerId ?? ""));
       if (!provider) {
-        return NextResponse.json({ error: "Bilinmeyen sağlayıcı." }, { status: 400 });
+        return NextResponse.json({ error: "Unknown provider." }, { status: 400 });
       }
       const credentials = credentialsOf(body.credentials);
       const missing = provider.fields
@@ -100,7 +100,7 @@ export async function POST(req: NextRequest) {
         .map((f) => f.label);
       if (missing.length > 0) {
         return NextResponse.json(
-          { error: `Eksik alan: ${missing.join(", ")}` },
+          { error: `Missing field: ${missing.join(", ")}` },
           { status: 400 },
         );
       }
@@ -126,12 +126,12 @@ export async function POST(req: NextRequest) {
       if (id) {
         const saved = await getProxyCredentials(id);
         if (!saved) {
-          return NextResponse.json({ error: "Kayıt bulunamadı." }, { status: 404 });
+          return NextResponse.json({ error: "Setting not found." }, { status: 404 });
         }
         ({ country, providerId, credentials } = saved);
       } else {
         if (!isCountry(body.country)) {
-          return NextResponse.json({ error: "Geçersiz ülke." }, { status: 400 });
+          return NextResponse.json({ error: "Unknown country." }, { status: 400 });
         }
         country = body.country;
         providerId = String(body.providerId ?? "");
@@ -140,7 +140,7 @@ export async function POST(req: NextRequest) {
 
       const provider = getProvider(providerId);
       if (!provider) {
-        return NextResponse.json({ error: "Bilinmeyen sağlayıcı." }, { status: 400 });
+        return NextResponse.json({ error: "Unknown provider." }, { status: 400 });
       }
 
       const built = buildProxy(provider, credentials, country);
@@ -153,7 +153,7 @@ export async function POST(req: NextRequest) {
 
     if (action === "activate") {
       if (typeof body.id !== "number") {
-        return NextResponse.json({ error: "Kayıt kimliği gerekli." }, { status: 400 });
+        return NextResponse.json({ error: "A setting id is required." }, { status: 400 });
       }
       await activateProxySetting(body.id);
       return NextResponse.json({ ok: true });
@@ -161,18 +161,18 @@ export async function POST(req: NextRequest) {
 
     if (action === "delete") {
       if (typeof body.id !== "number") {
-        return NextResponse.json({ error: "Kayıt kimliği gerekli." }, { status: 400 });
+        return NextResponse.json({ error: "A setting id is required." }, { status: 400 });
       }
       await deleteProxySetting(body.id);
       return NextResponse.json({ ok: true });
     }
 
-    return NextResponse.json({ error: "Bilinmeyen işlem." }, { status: 400 });
+    return NextResponse.json({ error: "Unknown action." }, { status: 400 });
   } catch (err) {
     // Never echo the exception verbatim to the browser beyond its message:
     // messages here are ours, but stack traces could carry connection strings.
     return NextResponse.json(
-      { error: err instanceof Error ? err.message : "İşlem başarısız." },
+      { error: err instanceof Error ? err.message : "The action failed." },
       { status: 500 },
     );
   }

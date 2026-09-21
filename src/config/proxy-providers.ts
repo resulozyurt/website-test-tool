@@ -58,8 +58,8 @@ export interface ProviderDef {
 
 const PASSWORD_FIELD: ProviderField = {
   key: "password",
-  label: "Parola",
-  help: "Sağlayıcı panelindeki proxy kullanıcısının parolası.",
+  label: "Password",
+  help: "The password of the proxy user in your provider's dashboard.",
   secret: true,
 };
 
@@ -75,7 +75,7 @@ export const PROVIDERS: ProviderDef[] = [
       {
         key: "login",
         label: "Login",
-        help: "DataImpulse panelinde oluşturduğun alt kullanıcının login'i.",
+        help: "The login of the sub-user you created in the DataImpulse dashboard.",
         example: "abc12345",
       },
       PASSWORD_FIELD,
@@ -84,7 +84,7 @@ export const PROVIDERS: ProviderDef[] = [
     passwordTemplate: "{password}",
     session: { field: "username", prefix: ";sessid.", suffix: "", length: 8 },
     setupHint:
-      "Ülke ve oturum kullanıcı adının içine yazılır (__cr.tr;sessid.xxxx).",
+      "Country and session go inside the username (__cr.tr;sessid.xxxx).",
   },
   {
     id: "evomi",
@@ -96,8 +96,8 @@ export const PROVIDERS: ProviderDef[] = [
     fields: [
       {
         key: "username",
-        label: "Kullanıcı adı",
-        help: "Evomi panelindeki residential ürününün kullanıcı adı.",
+        label: "Username",
+        help: "The username of your residential product in the Evomi dashboard.",
       },
       PASSWORD_FIELD,
     ],
@@ -105,7 +105,7 @@ export const PROVIDERS: ProviderDef[] = [
     passwordTemplate: "{password}_country-{country}_session-{session}_lifetime-30m",
     session: { field: "password", prefix: "_session-", suffix: "_lifetime-", length: 8 },
     setupHint:
-      "Ülke, oturum ve oturum ömrü parolanın sonuna parametre olarak eklenir.",
+      "Country, session and session lifetime are appended to the password as parameters.",
   },
   {
     id: "iproyal",
@@ -117,8 +117,8 @@ export const PROVIDERS: ProviderDef[] = [
     fields: [
       {
         key: "username",
-        label: "Kullanıcı adı",
-        help: "IPRoyal panelinde Residential ürününün kullanıcı adı.",
+        label: "Username",
+        help: "The username of your Residential product in the IPRoyal dashboard.",
       },
       PASSWORD_FIELD,
     ],
@@ -127,11 +127,11 @@ export const PROVIDERS: ProviderDef[] = [
     // IPRoyal rejects a session id that is not exactly 8 characters.
     session: { field: "password", prefix: "_session-", suffix: "_lifetime-", length: 8 },
     setupHint:
-      "Parola alanına parametre eklenir; oturum kimliği tam 8 karakter olmalı.",
+      "Parameters go in the password field; the session id has to be exactly 8 characters.",
   },
   {
     id: "decodo",
-    name: "Decodo (eski Smartproxy)",
+    name: "Decodo (formerly Smartproxy)",
     host: "gate.decodo.com",
     port: 7000,
     pricingUrl: "https://decodo.com/proxies/residential-proxies",
@@ -139,8 +139,8 @@ export const PROVIDERS: ProviderDef[] = [
     fields: [
       {
         key: "username",
-        label: "Kullanıcı adı",
-        help: "Decodo panelindeki proxy kullanıcısı (başındaki 'user-' otomatik eklenir).",
+        label: "Username",
+        help: "Your Decodo proxy user; the 'user-' prefix is added for you.",
       },
       PASSWORD_FIELD,
     ],
@@ -148,7 +148,7 @@ export const PROVIDERS: ProviderDef[] = [
       "user-{username}-country-{country}-session-{session}-sessionduration-30",
     passwordTemplate: "{password}",
     session: { field: "username", prefix: "-session-", suffix: "-sessionduration-", length: 10 },
-    setupHint: "Tüm parametreler kullanıcı adına tire ile eklenir.",
+    setupHint: "Every parameter is appended to the username, separated by hyphens.",
   },
   {
     id: "oxylabs",
@@ -160,15 +160,15 @@ export const PROVIDERS: ProviderDef[] = [
     fields: [
       {
         key: "username",
-        label: "Customer kullanıcı adı",
-        help: "Oxylabs panelindeki alt kullanıcı (başındaki 'customer-' otomatik eklenir).",
+        label: "Customer username",
+        help: "Your Oxylabs sub-user; the 'customer-' prefix is added for you.",
       },
       PASSWORD_FIELD,
     ],
     usernameTemplate: "customer-{username}-cc-{country}-sessid-{session}-sesstime-10",
     passwordTemplate: "{password}",
     session: { field: "username", prefix: "-sessid-", suffix: "-sesstime-", length: 10 },
-    setupHint: "Ülke 'cc-', oturum 'sessid-' ile kullanıcı adına eklenir.",
+    setupHint: "Country goes in as 'cc-' and the session as 'sessid-' on the username.",
   },
   {
     id: "brightdata",
@@ -181,51 +181,51 @@ export const PROVIDERS: ProviderDef[] = [
       {
         key: "host",
         label: "Gateway host",
-        help: "Zone'un erişim sayfasında yazar. Genellikle brd.superproxy.io.",
+        help: "Shown on the zone's access page. Usually brd.superproxy.io.",
         example: "brd.superproxy.io",
       },
       {
         key: "port",
         label: "Port",
-        help: "Zone'un erişim sayfasındaki port. Genellikle 33335.",
+        help: "The port on the zone's access page. Usually 33335.",
         example: "33335",
       },
       {
         key: "customerId",
         label: "Customer ID",
-        help: "Panelde 'brd-customer-' sonrasındaki kimlik.",
+        help: "The id that follows 'brd-customer-' in your dashboard.",
       },
-      { key: "zone", label: "Zone adı", help: "Residential zone'un adı." },
-      { key: "password", label: "Zone parolası", help: "Zone'a ait parola.", secret: true },
+      { key: "zone", label: "Zone name", help: "The name of your residential zone." },
+      { key: "password", label: "Zone password", help: "The password for that zone.", secret: true },
     ],
     usernameTemplate:
       "brd-customer-{customerId}-zone-{zone}-country-{country}-session-{session}",
     passwordTemplate: "{password}",
     session: { field: "username", prefix: "-session-", suffix: "", length: 10 },
     setupHint:
-      "Önce panelde bir residential zone oluştur; host ve port o zone'un erişim sayfasında yazar.",
+      "Create a residential zone first; its access page shows the host and port.",
   },
   {
     id: "custom",
-    name: "Özel (ham şablon)",
+    name: "Custom (raw template)",
     host: null,
     port: null,
     pricingUrl: "",
     countryCase: "lower",
     fields: [
-      { key: "host", label: "Gateway host", help: "Örn. gw.saglayici.com" },
-      { key: "port", label: "Port", help: "Örn. 8000" },
+      { key: "host", label: "Gateway host", help: "For example gw.provider.com" },
+      { key: "port", label: "Port", help: "For example 8000" },
       {
         key: "usernameTemplate",
-        label: "Kullanıcı adı şablonu",
-        help: "{country} ve {session} yer tutucularını kullanabilirsin.",
-        example: "kullanici-country-{country}-session-{session}",
+        label: "Username template",
+        help: "The {country} and {session} placeholders are substituted for you.",
+        example: "user-country-{country}-session-{session}",
       },
       {
         key: "passwordTemplate",
-        label: "Parola şablonu",
-        help: "Parametre parolaya giriyorsa burada kullan.",
-        example: "parola",
+        label: "Password template",
+        help: "Use this when the provider puts its parameters in the password.",
+        example: "password",
         secret: true,
       },
     ],
@@ -233,7 +233,7 @@ export const PROVIDERS: ProviderDef[] = [
     passwordTemplate: "{passwordTemplate}",
     session: { field: "username", prefix: "", suffix: "", length: 10 },
     setupHint:
-      "Katalogdaki bir sağlayıcı şablonunu değiştirdiyse ya da listede yoksa burayı kullan.",
+      "Use this when a provider changed its format, or is not in the list.",
   },
 ];
 
