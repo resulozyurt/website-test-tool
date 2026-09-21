@@ -35,14 +35,16 @@ import type { CountryCode, ExpectationSet } from "../types.js";
  * non-Turkish IP the same Turkish pricing page shows both prices and the trial
  * link, which is the differentiation we are protecting.
  *
- * Two deliberate omissions:
- *   - AE pricing carries no price rule. The Gulf audience may be a
- *     request-pricing one; until that is confirmed through the AE proxy, a
- *     guess here would fire every night.
- *   - The trial funnel page carries only a language rule. It is one English
- *     page shared by every market (no translation, no hreflang alternate), so
- *     it cannot differ across countries and its own trial CTAs are expected --
- *     including for TR visitors, who simply are not linked to it.
+ * Prices are a US-only feature: only a United States visitor sees them. AE and
+ * TR both expect no price at all, which also means the US pricing page must
+ * render differently from the other two -- that difference is asserted through
+ * cachePolicy.mustDifferFrom, so a silent fallback serving US content to the
+ * Gulf or Turkey is caught rather than passing quietly.
+ *
+ * One deliberate omission: the trial funnel page carries only a language rule.
+ * It is one English page shared by every market (no translation, no hreflang
+ * alternate), so it cannot differ across countries and its own trial CTAs are
+ * expected -- including for TR visitors, who simply are not linked to it.
  */
 
 const EN_PHONE = "+1 877 494 1538";
@@ -62,6 +64,9 @@ function enMarket(extra: ExpectationSet = {}): ExpectationSet {
     ...extra,
   };
 }
+
+/** Markets that must never be shown a price: everyone except the US. */
+const NO_PRICE: ExpectationSet["price"] = { visible: false };
 
 /**
  * Rules shared by the Turkish market on a regular page: no price, no trial
@@ -87,17 +92,24 @@ const TRIAL_FUNNEL: ExpectationSet = {
 /** Keyed by `${countryCode}::${pageKey}`. */
 const BASELINE: Record<string, ExpectationSet> = {
   "US::home": enMarket(),
-  "AE::home": enMarket(),
+  "AE::home": enMarket({ price: NO_PRICE }),
   "TR::home": trMarket(),
 
-  // Pricing is the money-critical page: the US visitor must see a price, the
-  // Turkish visitor must not.
-  "US::pricing": enMarket({ price: { visible: true, currency: "$" } }),
-  "AE::pricing": enMarket(),
+  // Pricing is the money-critical page. Prices are US-only: the US visitor
+  // must see one, AE and TR must not -- and the US page must therefore differ
+  // from both, which is what catches US content leaking to another market.
+  "US::pricing": enMarket({
+    price: { visible: true, currency: "$" },
+    cachePolicy: { kinstaCache: "HIT", mustDifferFrom: ["AE", "TR"] },
+  }),
+  "AE::pricing": enMarket({
+    price: NO_PRICE,
+    cachePolicy: { kinstaCache: "HIT", mustDifferFrom: ["US", "TR"] },
+  }),
   "TR::pricing": trMarket(),
 
   "US::demo": enMarket(),
-  "AE::demo": enMarket(),
+  "AE::demo": enMarket({ price: NO_PRICE }),
   "TR::demo": trMarket(),
 
   "US::free-trial": TRIAL_FUNNEL,
