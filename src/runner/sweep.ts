@@ -52,7 +52,7 @@ import { listActiveScenarios } from "../scenarios/store.js";
 import { verifyExperience } from "../ai/verify.js";
 import { capturePage, type CaptureResult } from "./capture.js";
 import { isStorageConfigured, uploadFile } from "../storage/r2.js";
-import { proxyEnvKey, resolveProxy } from "./proxy.js";
+import { loadProxyOverrides, proxyEnvKey, resolveProxy } from "./proxy.js";
 import {
   aggregateRunStatus,
   crossCountryCheck,
@@ -155,6 +155,16 @@ function parseArgs(argv: string[]): SweepOptions {
 
 async function main(): Promise<void> {
   const options = parseArgs(process.argv.slice(2));
+
+  // Panel-managed providers, when configured; otherwise PROXY_* is used.
+  const proxyReport = await loadProxyOverrides();
+  if (proxyReport.loaded.length > 0) {
+    console.log(`proxy settings from panel: ${proxyReport.loaded.join(", ")}`);
+  }
+  for (const err of proxyReport.errors) {
+    console.warn(`  ! ${err}`);
+  }
+
   const environment = await getEnvironmentByKey("production");
   if (!environment || !environment.isActive) {
     throw new Error(

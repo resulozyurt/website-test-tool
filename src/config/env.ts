@@ -53,6 +53,12 @@ const EnvSchema = z.object({
 
   // --- AI validation; AI phase ---
   ANTHROPIC_API_KEY: z.string().optional(),
+
+  // --- Panel-managed proxy settings ---
+  // Key for the AES-256-GCM envelope around stored proxy credentials. Without
+  // it the runner falls back to PROXY_* and the panel refuses to read or write
+  // provider settings, rather than storing anything in the clear.
+  SETTINGS_SECRET_KEY: z.string().optional(),
 });
 
 export type Env = z.infer<typeof EnvSchema>;

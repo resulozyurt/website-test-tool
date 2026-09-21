@@ -21,7 +21,7 @@ import { env } from "../config/env.js";
 import { MARKETS, PAGES } from "../config/targets.js";
 import type { CountryCode, ExpectationSet, LanguageCode } from "../types.js";
 import { capturePage } from "../runner/capture.js";
-import { proxyEnvKey, resolveProxy } from "../runner/proxy.js";
+import { loadProxyOverrides, proxyEnvKey, resolveProxy } from "../runner/proxy.js";
 import { fetchManifest } from "../manifest/client.js";
 import { mapManifestToExpectations } from "../manifest/map.js";
 
@@ -80,6 +80,7 @@ function merge(base: ExpectationSet, over: ExpectationSet): ExpectationSet {
  * writes a screenshot per page under `${outputDir}/screenshots`.
  */
 export async function buildProposals(outputDir: string): Promise<ProposalsFile> {
+  await loadProxyOverrides();
   const manifest = await fetchManifest({ fresh: true });
 
   const baseByKey = new Map<string, ExpectationSet>();

@@ -13,6 +13,7 @@
     "scenarios:gen": "tsx src/scenarios/generate-all-cli.ts",
     "pages:reconcile": "tsx src/scenarios/reconcile-cli.ts",
     "sweep": "tsx src/runner/sweep.ts",
+    "proxy:test": "tsx src/proxy/test-cli.ts",
     "healthcheck": "tsx src/health/crawl-cli.ts",
     "manifest": "tsx src/manifest/cli.ts",
     "manifest:sync": "tsx src/manifest/sync-cli.ts",

@@ -1,4 +1,11 @@
 import { anonymizeProxy, closeAnonymizedProxy } from "proxy-chain";
+import {
+  buildProxy,
+  getProvider,
+  newSessionId,
+  type SessionSpec,
+} from "../config/proxy-providers.js";
+import { isEncryptionConfigured } from "../proxy/crypto.js";
 import type { CountryCode } from "../types.js";
 
 /** Playwright-compatible proxy configuration. */
@@ -6,6 +13,78 @@ export interface ProxyConfig {
   server: string;
   username?: string;
   password?: string;
+  /**
+   * Where this provider keeps its sticky-session id, when the config came
+   * from the catalogue. Lets withFreshSession rotate the session without
+   * guessing at the format.
+   */
+  session?: SessionSpec;
+  /** Catalogue id, for logging which provider a run actually used. */
+  providerId?: string;
+}
+
+/**
+ * Active per-country settings loaded from the database, when the operator has
+ * configured providers in the panel. Empty until loadProxyOverrides runs, so
+ * a caller that forgets simply gets the environment variables -- the previous
+ * behaviour -- rather than no proxy at all.
+ */
+const overrides = new Map<CountryCode, ProxyConfig>();
+
+export interface ProxyOverrideReport {
+  loaded: CountryCode[];
+  errors: string[];
+}
+
+/**
+ * Loads the panel-managed providers into memory. Best-effort by design: this
+ * runs at the start of every sweep and crawl, and a settings table that is
+ * unreachable (or an unset SETTINGS_SECRET_KEY) must not take the monitoring
+ * down -- it falls back to PROXY_* and says so.
+ */
+export async function loadProxyOverrides(): Promise<ProxyOverrideReport> {
+  const report: ProxyOverrideReport = { loaded: [], errors: [] };
+  overrides.clear();
+  if (!isEncryptionConfigured()) {
+    return report;
+  }
+  let rows;
+  try {
+    const store = await import("../proxy/store.js");
+    rows = await store.getActiveProxySettings();
+  } catch (err) {
+    report.errors.push(
+      `could not read proxy settings: ${err instanceof Error ? err.message : String(err)}`,
+    );
+    return report;
+  }
+  for (const row of rows) {
+    const provider = getProvider(row.providerId);
+    if (!provider) {
+      report.errors.push(`${row.country}: unknown provider "${row.providerId}"`);
+      continue;
+    }
+    try {
+      const built = buildProxy(provider, row.credentials, row.country);
+      overrides.set(row.country, {
+        server: built.server,
+        username: built.username,
+        password: built.password,
+        session: provider.session,
+        providerId: provider.id,
+      });
+      report.loaded.push(row.country);
+    } catch (err) {
+      report.errors.push(
+        `${row.country}: ${err instanceof Error ? err.message : String(err)}`,
+      );
+    }
+  }
+  return report;
+}
+
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 /** Environment variable name holding a country's proxy URL (PROXY_US, ...). */
@@ -14,15 +93,19 @@ export function proxyEnvKey(country: CountryCode): string {
 }
 
 /**
- * Reads the proxy URL for a country from the environment and converts it into
- * the structure Playwright expects. Returns null when the variable is empty so
- * the caller can record a clear "proxy not configured" result instead of
- * crashing.
+ * The proxy for a country: the provider configured in the panel when there is
+ * one, otherwise the PROXY_* environment variable. Stays synchronous so every
+ * existing call site is unchanged; loadProxyOverrides fills the panel layer in
+ * once per run.
  *
- * Accepted input format: http://USERNAME:PASSWORD@HOST:PORT
- * (DataImpulse encodes country + sticky session inside the username.)
+ * Environment variable format: http://USERNAME:PASSWORD@HOST:PORT, with the
+ * provider's country and session parameters already embedded by hand.
  */
 export function resolveProxy(country: CountryCode): ProxyConfig | null {
+  const override = overrides.get(country);
+  if (override) {
+    return override;
+  }
   const raw = process.env[proxyEnvKey(country)];
   if (!raw || raw.trim().length === 0) {
     return null;
@@ -40,16 +123,44 @@ export function resolveProxy(country: CountryCode): ProxyConfig | null {
 }
 
 /**
- * DataImpulse pins a sticky IP via ";sessid.<id>" in the username. Replacing
- * the id (or appending one) forces a different exit IP, which lets us tell
+ * Forces a different exit IP by rotating the sticky-session id, which tells us
  * whether a block is specific to one IP or affects the whole country pool.
- * Reserved for a future retry path; exported so later steps can use it.
+ *
+ * A config that came from the catalogue knows where its session id lives and
+ * how long it may be (IPRoyal, for one, rejects anything but 8 characters).
+ * Configs that came from a hand-written PROXY_* variable fall back to
+ * recognising the two formats this project has used.
  */
 export function withFreshSession(proxy: ProxyConfig): ProxyConfig {
+  if (proxy.session) {
+    const spec = proxy.session;
+    const id = newSessionId(spec.length);
+    const current = spec.field === "username" ? proxy.username : proxy.password;
+    if (current && spec.prefix && current.includes(spec.prefix)) {
+      const pattern = new RegExp(
+        `${escapeRegExp(spec.prefix)}[^${spec.suffix ? escapeRegExp(spec.suffix[0]) : "\\s"}]*`,
+      );
+      const replaced = current.replace(pattern, `${spec.prefix}${id}`);
+      return spec.field === "username"
+        ? { ...proxy, username: replaced }
+        : { ...proxy, password: replaced };
+    }
+  }
+
+  const token = `r${Math.random().toString(36).slice(2, 10)}`;
+
+  // Evomi: session lives in the password (..._session-XXXX)
+  if (proxy.password && /_session-[^_]+/.test(proxy.password)) {
+    return {
+      ...proxy,
+      password: proxy.password.replace(/_session-[^_]+/, `_session-${token}`),
+    };
+  }
+
+  // DataImpulse: session lives in the username (;sessid.<id>)
   if (!proxy.username) {
     return proxy;
   }
-  const token = `r${Math.random().toString(36).slice(2, 10)}`;
   const hasSession = /;sessid\.[^;]+/.test(proxy.username);
   const username = hasSession
     ? proxy.username.replace(/;sessid\.[^;]+/, `;sessid.${token}`)

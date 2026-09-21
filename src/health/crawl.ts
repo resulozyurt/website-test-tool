@@ -27,7 +27,7 @@ import type { CountryCode, LanguageCode } from "../types.js";
 import { CRAWL_TARGETS, HEALTH_CONFIG } from "../config/health.js";
 import { ctaPolicyFor } from "../config/cta.js";
 import type { Scope } from "../config/critical.js";
-import { proxyEnvKey, resolveProxy } from "../runner/proxy.js";
+import { loadProxyOverrides, proxyEnvKey, resolveProxy } from "../runner/proxy.js";
 import { isStorageConfigured, uploadFile } from "../storage/r2.js";
 import { inspectPage, type PageHealth } from "./inspect.js";
 import { buildFindings, aggregatePageStatus } from "./checks.js";
@@ -263,6 +263,15 @@ export async function runCrawl(options: CrawlOptions): Promise<void> {
   if (targets.length === 0) {
     console.log("no matching crawl targets");
     return;
+  }
+
+  // Panel-managed providers, when configured; otherwise PROXY_* is used.
+  const proxyReport = await loadProxyOverrides();
+  if (proxyReport.loaded.length > 0) {
+    console.log(`proxy settings from panel: ${proxyReport.loaded.join(", ")}`);
+  }
+  for (const err of proxyReport.errors) {
+    console.warn(`  ! ${err}`);
   }
 
   // Close out runs abandoned by a previously crashed process, so the dashboard
