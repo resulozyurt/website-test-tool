@@ -84,10 +84,21 @@ export async function getAlertSettings(): Promise<AlertSettings> {
   const hasPassword = Boolean(
     row?.credentials || process.env.ALERT_SMTP_PASSWORD?.trim(),
   );
+  // An untouched row (no sender, no recipients) means nobody has used the
+  // settings page yet, so the environment decides -- including whether
+  // alerting is on at all. Migration 0009 seeds that row with enabled=false,
+  // and treating it as authoritative would silently ignore a perfectly good
+  // environment configuration, which is exactly how alerting ends up dead
+  // without anyone noticing. Once the row carries a sender or recipients it
+  // has been configured deliberately and wins.
+  const rowConfigured = Boolean(
+    row && (row.fromAddress || (row.recipients?.length ?? 0) > 0),
+  );
+
   return {
-    // With no row at all, alerting is on as soon as the environment has
-    // somewhere to send to; an explicit row is authoritative.
-    enabled: row ? row.enabled : Boolean(fromAddress && recipients.length > 0),
+    enabled: rowConfigured
+      ? (row as SettingsRow).enabled
+      : Boolean(fromAddress && recipients.length > 0 && hasPassword),
     fromAddress,
     recipients,
     minSeverity: row?.minSeverity ?? "major",

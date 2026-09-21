@@ -42,6 +42,17 @@ function formatDate(value: Date): string {
 export async function notifyRun(input: NotifyInput): Promise<void> {
   const settings = await getAlertSettings();
   if (!settings.enabled) {
+    // Say so out loud. Alerting that is quietly off looks exactly like
+    // alerting that found nothing wrong, and that ambiguity costs an
+    // afternoon the first time something actually breaks.
+    const missing: string[] = [];
+    if (!settings.fromAddress) missing.push("sender address");
+    if (settings.recipients.length === 0) missing.push("recipients");
+    if (!settings.hasPassword) missing.push("app password");
+    console.log(
+      `alerts: disabled, ${input.problems.length} problem(s) not emailed` +
+        (missing.length > 0 ? ` (missing: ${missing.join(", ")})` : ""),
+    );
     return;
   }
 
