@@ -29,6 +29,8 @@ import { ctaPolicyFor } from "../config/cta.js";
 import type { Scope } from "../config/critical.js";
 import { loadProxyOverrides, proxyEnvKey, resolveProxy } from "../runner/proxy.js";
 import { isStorageConfigured, uploadFile } from "../storage/r2.js";
+import { notifyRun } from "../alerts/notify.js";
+import type { Problem } from "../alerts/state.js";
 import { inspectPage, type PageHealth } from "./inspect.js";
 import { buildFindings, aggregatePageStatus } from "./checks.js";
 import { reviewPageVisual } from "./ai-visual.js";
@@ -67,6 +69,8 @@ interface Progress {
   fail: number;
   worst: HealthStatus;
   aiCost: number;
+  /** Gating findings across the target, for the alert digest. */
+  problems: Problem[];
 }
 
 function slugOf(page: CrawlPage): string {
@@ -182,6 +186,22 @@ async function crawlTarget(
         language,
       );
       const status = aggregatePageStatus(health, findings);
+
+      // Anything that gates the page is worth an email; minor findings are
+      // advisory and would only add noise.
+      for (const fnd of findings) {
+        if (fnd.severity === "minor") {
+          continue;
+        }
+        progress.problems.push({
+          lane: "health",
+          country,
+          pageKey: slug,
+          findingType: fnd.type,
+          severity: fnd.severity,
+          detail: fnd.message,
+        });
+      }
 
       // Persist the full-page screenshot to R2 (local disk is ephemeral on
       // Railway). Store the R2 key when configured (null on upload failure);
@@ -321,7 +341,13 @@ export async function runCrawl(options: CrawlOptions): Promise<void> {
         `${pages.length} page(s)${options.ai ? " (AI on)" : ""}`,
     );
 
-    const progress: Progress = { ok: 0, fail: 0, worst: "pass", aiCost: 0 };
+    const progress: Progress = {
+      ok: 0,
+      fail: 0,
+      worst: "pass",
+      aiCost: 0,
+      problems: [],
+    };
     let crawlError: unknown = null;
 
     try {
@@ -366,11 +392,38 @@ export async function runCrawl(options: CrawlOptions): Promise<void> {
     if (crawlError) {
       const message =
         crawlError instanceof Error ? crawlError.message : String(crawlError);
+      // A crawl that died is itself the alert: silence here would read as
+      // "everything is fine".
+      progress.problems.push({
+        lane: "health",
+        country: target.country,
+        pageKey: null,
+        findingType: "run_aborted",
+        severity: "critical",
+        detail: message.slice(0, 300),
+      });
+      await notifyRun({
+        lane: "health",
+        countries: [target.country],
+        runLabel: `health run #${run.id} ${target.country}/${target.language}`,
+        summary: `Crawl aborted after ${inspected}/${pages.length} page(s): ${message}`,
+        problems: progress.problems,
+      }).catch((err) => console.warn(`  ! alerting failed: ${err}`));
       console.error(
         `health run #${run.id} ${target.country} ABORTED after ${inspected}/${pages.length} page(s): ${message}`,
       );
       throw crawlError;
     }
+
+    await notifyRun({
+      lane: "health",
+      countries: [target.country],
+      runLabel: `health run #${run.id} ${target.country}/${target.language} [${options.scope}]`,
+      summary:
+        `${pages.length} page(s) checked, ${progress.ok} ok, ${progress.fail} failed ` +
+        `(status ${runStatus}).`,
+      problems: progress.problems,
+    }).catch((err) => console.warn(`  ! alerting failed: ${err}`));
 
     console.log(
       `health run #${run.id} ${target.country} finished -> ${runStatus}` +

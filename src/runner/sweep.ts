@@ -63,6 +63,8 @@ import {
   type RunScenario,
 } from "./checks.js";
 import { interactionChecks } from "./interaction.js";
+import { notifyRun } from "../alerts/notify.js";
+import type { Problem } from "../alerts/state.js";
 import { runSecurityChecks } from "./security.js";
 
 const STATUS_RANK: Record<RunStatus, number> = {
@@ -227,6 +229,8 @@ async function main(): Promise<void> {
 
   let worstRun: RunStatus = "pass";
   let aiCostUsd = 0;
+  /** Gating check failures across the sweep, for the alert digest. */
+  const problems: Problem[] = [];
 
   // How many captures Pass 1 will attempt (markets x pages with a path).
   const totalCaptures = markets.reduce(
@@ -415,6 +419,22 @@ async function main(): Promise<void> {
       );
     }
 
+    // A failed check that is not minor is what an alert is for; warnings and
+    // minor findings stay in the panel.
+    for (const c of checks) {
+      if (c.status !== "fail" || c.severity === "minor") {
+        continue;
+      }
+      problems.push({
+        lane: "sweep",
+        country: item.country,
+        pageKey: item.pageKey,
+        findingType: c.type,
+        severity: c.severity,
+        detail: c.message,
+      });
+    }
+
     const failed = checks.filter((c) => c.status !== "pass");
     const tail = failed.length
       ? ` [${failed.map((c) => `${c.type}:${c.status}`).join(", ")}]`
@@ -461,6 +481,17 @@ async function main(): Promise<void> {
   const sweepStatus = rollUp(worstRun);
   await finishSweep(sweep.id, sweepStatus);
   console.log(`sweep #${sweep.id} finished -> ${sweepStatus}`);
+
+  await notifyRun({
+    lane: "sweep",
+    countries: [...new Set(markets.map((m) => m.countryCode))],
+    runLabel: `geo sweep #${sweep.id} [${options.scope}]`,
+    summary:
+      `${captured.length} capture(s) across ${markets.length} market(s) and ` +
+      `${pages.length} page(s); sweep status ${sweepStatus}.`,
+    problems,
+    sweepId: sweep.id,
+  }).catch((err) => console.warn(`  ! alerting failed: ${err}`));
   if (aiCostUsd > 0) {
     console.log(`ai cost this sweep: $${aiCostUsd.toFixed(5)}`);
   }
