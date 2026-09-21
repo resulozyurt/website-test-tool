@@ -74,3 +74,19 @@ export async function proxySettingsQuery<T>(
   const result = await getPool().query(text, params);
   return result.rows as T[];
 }
+
+/**
+ * The second write exception: alert settings. Same reasoning as
+ * proxySettingsQuery -- the settings page has to persist what the operator
+ * types, and nothing beyond that one table is reachable from here.
+ */
+export async function alertSettingsQuery<T>(
+  text: string,
+  params?: unknown[],
+): Promise<T[]> {
+  if (!/\balert_settings\b/i.test(text)) {
+    throw new Error("alertSettingsQuery only allows statements on alert_settings.");
+  }
+  const result = await getPool().query(text, params);
+  return result.rows as T[];
+}
