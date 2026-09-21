@@ -57,3 +57,20 @@ export async function readQuery<T>(
   const result = await getPool().query(text, params);
   return result.rows as T[];
 }
+
+/**
+ * The one exception to the read-only rule: proxy provider settings, which the
+ * settings page has to write. Narrow on purpose -- the statement must mention
+ * proxy_settings and nothing else is reachable through this helper, so the
+ * dashboard still cannot touch runs, findings or expectations.
+ */
+export async function proxySettingsQuery<T>(
+  text: string,
+  params?: unknown[],
+): Promise<T[]> {
+  if (!/\bproxy_settings\b/i.test(text)) {
+    throw new Error("proxySettingsQuery only allows statements on proxy_settings.");
+  }
+  const result = await getPool().query(text, params);
+  return result.rows as T[];
+}

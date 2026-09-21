@@ -7,6 +7,7 @@ const LINKS: { href: string; label: string }[] = [
   { href: "/", label: "Overview" },
   { href: "/health", label: "Health" },
   { href: "/geo", label: "Geo sweep" },
+  { href: "/settings/proxy", label: "Proxy" },
 ];
 
 function isActive(pathname: string, href: string): boolean {

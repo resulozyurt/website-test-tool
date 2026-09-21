@@ -19,7 +19,8 @@
     "pg": "8.13.1",
     "react": "19.0.1",
     "react-dom": "19.0.1",
-    "recharts": "^3.9.2"
+    "recharts": "^3.9.2",
+    "undici": "^7.29.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.2",

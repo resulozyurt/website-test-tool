@@ -24,7 +24,9 @@
     "cron": "sh scripts/cron.sh",
     "cron:daily": "npm run migrate && npm run seed && (npm run sweep -- --cron || true) && (npm run healthcheck -- --cron || true)",
     "cron:weekly": "npm run migrate && npm run seed && (npm run autopilot || true) && (npm run sweep -- --cron --scope=full || true) && (npm run healthcheck -- --cron --scope=full || true)",
-    "typecheck": "tsc --noEmit"
+    "catalog:sync": "node scripts/sync-proxy-catalog.mjs",
+    "catalog:check": "node scripts/sync-proxy-catalog.mjs --check",
+    "typecheck": "npm run catalog:check && tsc --noEmit"
   },
   "engines": {
     "node": ">=20"
